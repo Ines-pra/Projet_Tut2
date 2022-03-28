@@ -23,7 +23,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    
+    "electron" :"npx cap open electron",
+    "ionic" :"npx cap open android",
+    "sync": "npm run build && npx cap sync android && npx cap sync electron"
   },
   "eslintConfig": {
     "extends": [
