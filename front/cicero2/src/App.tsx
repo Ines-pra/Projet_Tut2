@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  console.log(process.env.REACT_APP_ENV);
+  console.log(process.env.APP_ENV);
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -16,11 +19,15 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Lol
+         { process.env.REACT_APP_ENV }
+         { process.env.APP_ENV }
+
         </a>
       </header>
     </div>
   );
+
+  
 }
 
 export default App;
