@@ -2,23 +2,23 @@ import { Case } from '../../metier/Case';
 import CaseDAO from '../CaseDAO';
 
 export class sqlCaseDAO implements CaseDAO {
-    public create(object: Case): number {
+    public async create(object: Case): Promise<number> {
         
         return object.id;
     }
-    public update(object: Case): boolean {
+    public async update(object: Case): Promise<boolean> {
         
         return true;
     }
-    public delete(id: number): boolean {
+    public async delete(id: number): Promise<boolean> {
         
         return true;
     }
-    public findAll(): Case[] {
+    public async findAll(): Promise<Case[]> {
         
         return [];
     }
-    public findById(id: number): Case {
+    public async findById(id: number): Promise<Case> {
         
         return new Case(id, "web", "", new Date(), true, new Date(), 1, []);
     }

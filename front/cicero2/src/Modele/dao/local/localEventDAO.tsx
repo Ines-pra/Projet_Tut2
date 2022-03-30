@@ -3,23 +3,23 @@ import EventDAO from '../EventDAO';
 
 
 export class localEventDAO implements EventDAO {
-    public create(object: Event): number {
+    public async create(object: Event): Promise<number> {
         
         return object.id;
     }
-    public update(object: Event): boolean {
+    public async update(object: Event): Promise<boolean> {
         
         return true;
     }
-    public delete(id: number): boolean {
+    public async delete(id: number): Promise<boolean> {
         
         return true;
     }
-    public findAll(): Event[] {
+    public async findAll(): Promise<Event[]> {
         
         return [];
     }
-    public findById(id: number): Event {
+    public async findById(id: number): Promise<Event> {
         
         return new Event(id, 1, "electron", new Date(), 30);
     }

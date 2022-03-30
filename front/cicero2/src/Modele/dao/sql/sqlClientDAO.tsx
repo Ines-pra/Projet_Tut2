@@ -2,23 +2,23 @@ import { Client } from '../../metier/Client';
 import ClientDAO from '../ClientDAO';
 
 export class sqlClientDAO implements ClientDAO {
-    public create(client: Client): number {
+    public async create(client: Client): Promise<number> {
         
         return client.id;
     }
-    public update(client: Client): boolean {
+    public async update(client: Client): Promise<boolean> {
         
         return true;
     }
-    public delete(id: number): boolean {
+    public async delete(id: number): Promise<boolean> {
         
         return true;
     }
-    public findAll(): Client[] {
+    public async findAll(): Promise<Client[]> {
         
         return [];
     }
-    public findById(id: number): Client {
+    public async findById(id: number): Promise<Client> {
         
         return new Client(id, "web", "", "", new Date(), new Date());
     }
