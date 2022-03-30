@@ -6,6 +6,7 @@ import SideBar from '../Components/SideBar';
 import { Container } from '@mui/material';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
+import  DAOFactory from '../Modele/dao/factory/DAOFactory';
 
 const styleHeader = {
     background: '#535454',
@@ -15,6 +16,16 @@ const styleHeader = {
 
 export default function Home(){
     const env = useSelector((state: any) => state.env.environnement);
+
+    const daoF = DAOFactory.getDAOFactory();
+    const clients = daoF!.getClientDAO().findById(1);
+
+    console.log(clients);
+
+    const lastIdInserted = daoF!.getClientDAO().create(clients);
+
+    console.log(lastIdInserted);
+
     return (
 
     <Grid>
