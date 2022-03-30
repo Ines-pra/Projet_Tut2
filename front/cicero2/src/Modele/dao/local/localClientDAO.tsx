@@ -1,25 +1,18 @@
 import { Client } from '../../metier/Client';
 import ClientDAO from '../ClientDAO';
 
-// declare global {
-//     interface Window {
-//       require: any;
-//     }
-//   }
-
-// const app = window.require('electron');
-// const fs = app.require('fs')
+// import fs from 'fs';
 
 export class localClientDAO implements ClientDAO {
-    public create(client: Client): number {
+    public create(object: Client): number {
         
-        // fs.appendFile('nouveauFichier.txt', 'Mon contenu', function (err : any) {
+        // fs.appendFile('clients.json', 'Test', function (err : any) {
         //     if (err) throw err;
         //     console.log('Fichier créé !');
         //  });
-        return client.id;
+        return object.id;
     }
-    public update(client: Client): boolean {
+    public update(object: Client): boolean {
         
         return true;
     }

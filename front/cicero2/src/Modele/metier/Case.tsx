@@ -1,6 +1,6 @@
 import { Event } from './Event';
 
-export class Folder {
+export class Case {
     id: number;
     code: string;
     description: string;

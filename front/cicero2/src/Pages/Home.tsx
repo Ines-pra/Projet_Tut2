@@ -19,12 +19,12 @@ export default function Home(){
 
     const daoF = DAOFactory.getDAOFactory();
     const clients = daoF!.getClientDAO().findById(1);
+    const cas = daoF!.getCaseDAO().findById(1);
+    const event = daoF!.getEventDAO().findById(1);
 
     console.log(clients);
-
-    const lastIdInserted = daoF!.getClientDAO().create(clients);
-
-    console.log(lastIdInserted);
+    console.log(cas);
+    console.log(event);
 
     return (
 
