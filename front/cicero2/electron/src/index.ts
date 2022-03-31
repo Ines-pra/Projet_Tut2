@@ -1,6 +1,6 @@
 import type { CapacitorElectronConfig } from '@capacitor-community/electron';
 import { getCapacitorElectronConfig, setupElectronDeepLinking } from '@capacitor-community/electron';
-import type { MenuItemConstructorOptions } from 'electron';
+import { MenuItemConstructorOptions } from 'electron';
 import { app, MenuItem } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import unhandled from 'electron-unhandled';

@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const env = process.env.REACT_APP_ENV ==='web' ? 'web' : 'electron';
+const env = process.env.REACT_APP_ENV === 'web' ?  'web' : 'electron';
 
 interface Env {
-    environnement: string,
+    environnement: string | undefined,
 }
 
 const initialState: Env = {
