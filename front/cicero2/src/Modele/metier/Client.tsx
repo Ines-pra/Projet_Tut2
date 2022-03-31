@@ -4,13 +4,13 @@ export class Client {
     lastname: string;
     address: string;
     birthDate: Date;
-    createdAt: Date;
-    constructor(id:number, firstname:string, lastname:string, address:string, birthDate:Date, createdAt:Date) {
+    createdDate: Date;
+    constructor(id:number, firstname:string, lastname:string, address:string, birthDate:Date, createdDate:Date) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.address = address;
         this.birthDate = birthDate;
-        this.createdAt = createdAt;
+        this.createdDate = createdDate;
     }
 }

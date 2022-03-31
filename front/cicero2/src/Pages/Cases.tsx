@@ -32,7 +32,7 @@ export default function Cases(){
     };
 
     const writeCaseFile = async () => {
-      let cas = new Case(1, "electron", "", new Date(), true, new Date(), 1, []);
+      let cas = new Case(1, "electron", "", new Date(), true, new Date(), [], []);
       daoF!.getCaseDAO().create(cas);
     };
     const deleteCase = async () => {
@@ -47,7 +47,7 @@ export default function Cases(){
     };
 
     const updateCaseFile = async () => {
-      let cas = new Case(3, "OwO", "UwU", new Date(), true, new Date(), 1, []);
+      let cas = new Case(3, "OwO", "UwU", new Date(), true, new Date(), [], []);
       daoF!.getCaseDAO().update(cas);
     };
 

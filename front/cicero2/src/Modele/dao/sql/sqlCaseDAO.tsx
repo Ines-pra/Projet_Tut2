@@ -20,7 +20,7 @@ export class sqlCaseDAO implements CaseDAO {
     }
     public async findById(id: number): Promise<Case> {
         
-        return new Case(id, "web", "", new Date(), true, new Date(), 1, []);
+        return new Case(id, "web", "", new Date(), true, new Date(), [], []);
     }
 
 
