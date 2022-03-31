@@ -1,10 +1,10 @@
 ### PROJET CICERO 2 BACK END
 
 Choix des technologies:
-    GraphQL avec Apollo
-    Sequelize pour communication avec la base de données
-    MySql/MariaDB pour la base de données
-    PhpMyAdmin pour la gestion de la base de données
+-    GraphQL avec Apollo
+-    Sequelize pour communication avec la base de données
+-    MySql/MariaDB pour la base de données
+-    PhpMyAdmin pour la gestion de la base de données
 
 ## Information du back-end (pour web et mobile)
 
@@ -18,3 +18,4 @@ Choix des technologies:
         APP_DBUSERNAME=<your_username>
         APP_DBPASS=<your_pass>
     ```
+
