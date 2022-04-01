@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import { Container } from '@mui/material';
 import { Stack } from '@mui/material';
+import Header from '../Components/Header';
 
 const styleHeader = {
     background: '#535454',
@@ -15,9 +16,7 @@ export default function Clients(){
     return (
 
     <Box>
-        <Stack sx={styleHeader}>
-            <h1>HEADER</h1>
-        </Stack>
+        <Header/>
         <Box sx={{ display: 'flex' }}>
             <SideBar />
             <main className="content">

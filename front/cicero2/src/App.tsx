@@ -8,6 +8,7 @@ import {
 import Home from './Pages/Home';
 import Clients from './Pages/Clients';
 import Folders from './Pages/Folders';
+import Modify from './Pages/Modify';
 
 function App() {
   return (
@@ -18,7 +19,9 @@ function App() {
           <Route path="/clients" element={<Clients />}>
           </Route>  
           <Route path="/dossiers" element={<Folders />}>
-          </Route>  
+          </Route>
+          <Route path="/modify" element={<Modify />}>
+          </Route> 
       </Routes>
     </Router>
   );

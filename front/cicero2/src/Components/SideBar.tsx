@@ -25,7 +25,7 @@ const navigationLinks = [
     position: 'relative',
     whiteSpace: 'nowrap',
     width: 240,
-    height: '19%',
+    height: '91vh',
     paddingTop: '10px',
     paddingBottom: '10px',
     background: '#535454',
@@ -88,8 +88,8 @@ export default function SideBar(){
                                 </ListItemIcon>
                                 <NavLink
                                     
-                                style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20}
-                                                    : {marginRight: 20,textDecoration: "none",}}
+                                style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20, color: "white"}
+                                                    : {marginRight: 20,textDecoration: "none", color: "rgb(193, 193, 194)"}}
                         
                                 
                                 color="textPrimary"

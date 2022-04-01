@@ -14,7 +14,7 @@ const styleHeader = {
     width: '100%',
 };
 
-export default function Home(){
+export default function Modify(){
     const env = useSelector((state: any) => state.env.environnement);
     return (
 
