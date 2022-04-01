@@ -1,7 +1,7 @@
 {
   "name": "cicero2",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "build/src/index.js",
   "homepage": "./",
   "description": "An Amazing Capacitor App",
   "author": {
@@ -13,7 +13,6 @@
     "url": ""
   },
   "license": "MIT",
-  "main": "build/src/index.js",
   "scripts": {
     "build": "tsc && electron-rebuild",
     "electron:start-live": "npm install && node ./live-runner.js",
