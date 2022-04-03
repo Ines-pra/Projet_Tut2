@@ -101,13 +101,13 @@ export default function Cases(){
         >
             Read cases
         </button>
-        <button
+        {/* <button
             onClick={() => {
-                ()deleteCaseFile
+                deleteCaseFile()
             }}
         >
             Delete case file
-        </button>
+        </button> */}
         <button
             onClick={() => {
                 deleteCase()

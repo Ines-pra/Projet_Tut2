@@ -2,12 +2,13 @@ import React, { useState, useRef, createRef, RefObject } from "react";
 import { CREATE_USER_MUTATION } from "../GraphQL/Mutations";
 import { useMutation } from "@apollo/client";
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
 import { Case } from "../Modele/metier/Case";
 import { Event } from "../Modele/metier/Event";
 import { Label } from "@mui/icons-material";
 import { textAlign, width } from "@mui/system";
-import './main.css'
+import './main.css';
+import CloseIcon from '@mui/icons-material/Close';
 
 function Form() {
 
@@ -159,174 +160,137 @@ function Form() {
         padding:1
       }
 
-    
+      const [open, setOpen] = React.useState(false);
+
+      const style = {
+        position: 'absolute' as 'absolute',
+        left:'50%',
+        top:'45%',
+        transform: 'translate(-50%, -50%)',
+        width: '80%',
+        bgcolor: 'white',
+        border: '2px solid black',
+        boxShadow: 24,
+        p: 4,
+        mt: 3
+      };
 
   return (
 
-    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3}} >
 
-            <Grid container spacing={2} sx={StyleBoxContainer}>
+    <div>
+      <Button variant="contained" sx={{height:'35px',marginRight:'2%'}} onClick={()=>setOpen(!open)}>Modifier</Button>
 
-              <Box sx={StyleTitle} >
-                Création de Dossier
-              </Box>
+    <Modal
+    open={open}
+    onClose={()=>setOpen(false)}>
 
-                <Grid item xs={12} sm={6}>
 
-                  {/* <TextField
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={style} >
+     
+        <Button sx={{alignSelf:'flex-end',color:'black'}}  onClick={()=>setOpen(false)}>
+          <CloseIcon />
+        </Button>
+      
+        <Grid container spacing={2} sx={StyleBoxContainer}>
+
+          <Box sx={StyleTitle} >
+            Création de Dossier
+          </Box>
+
+            <Grid item xs={12} sm={6}>
+
+
+            </Grid>
+
+            <Grid sx={windowSize >= 650 ? StyleBoxRow : StyleBoxColumn}>
+
+              <Grid item xs={12} sm={6} sx={ windowSize >= 650 ? {marginRight:'10%'} : {}} >
+                  <TextField
                       variant="outlined"
                       margin="normal"
                       required
+                      type="text"                                                                                                                                                                                                
+                      name="Description"
+                      multiline
                       fullWidth
-                      type="text"
-                      placeholder="Code"
-                      name="Code"
-                      onChange={handleChange}
-                      autoFocus
+                      placeholder="Description"
+                      onChange={handleChange}  
                       
-                  /> */}
+                  />
                 </Grid>
+                  <Grid item xs={6} sm={3} sx={{display:'flex', flexDirection:'row', minWidth:'230px'}}>
+                    <div className="labelDate">Date de création</div>
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        type="date"
+                        name="DateStart"
+                        placeholder="DateStart"
+                        onChange={handleChange}
+                    />
+                
+              </Grid>
 
-                <Grid sx={windowSize >= 650 ? StyleBoxRow : StyleBoxColumn}>
+            </Grid>
 
-                  <Grid item xs={12} sm={6} sx={ windowSize >= 650 ? {marginRight:'10%'} : {}} >
-                      <TextField
-                          variant="outlined"
-                          margin="normal"
-                          required
-                          type="text"                                                                                                                                                                                                
-                          name="Description"
-                          multiline
-                          fullWidth
-                          placeholder="Description"
-                          onChange={handleChange}  
-                          
-                      />
-                    </Grid>
-                      <Grid item xs={6} sm={3} sx={{display:'flex', flexDirection:'row', minWidth:'230px'}}>
-                        <div className="labelDate">Date de création</div>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            type="date"
-                            name="DateStart"
-                            placeholder="DateStart"
-                            onChange={handleChange}
-                        />
+              <Grid>
+                { Clients.map((client:any)=> {
+                    return <div>{client?.nom} {client?.prenom}</div>
+                })}
+              </Grid>
+
+              <Grid item xs={12} sm={6} sx={{marginBottom:'5%'}}>
+
+                <FormControl fullWidth>
+                  <InputLabel id="clientInput">Client</InputLabel>
+                  <Select
+                    labelId="client"
+                    id="client"
+                    name="client"
+                    value={Client}
+                    ref={refSelect}
+                    label="Client"
+                    sx={{marginBottom:'10px'}}
+                    onChange={handleChangeClient}
+                  >
                     
-                  </Grid>
-
-                </Grid>
-
-                  <Grid>
-                    { Clients.map((client:any)=> {
-                        return <div>{client?.nom} {client?.prenom}</div>
-                    })}
-                  </Grid>
-
-                  <Grid item xs={12} sm={6} sx={{marginBottom:'5%'}}>
-
-                    <FormControl fullWidth>
-                      <InputLabel id="clientInput">Client</InputLabel>
-                      <Select
-                        labelId="client"
-                        id="client"
-                        name="client"
-                        value={Client}
-                        ref={refSelect}
-                        label="Client"
-                        sx={{marginBottom:'10px'}}
-                        onChange={handleChangeClient}
-                      >
-                        
-                        { clients.map((client)=> {
-                          
-                          // Client restant :
-                          //if (!Clients.includes(client) ) {
-                            return <MenuItem value={client?.nom + client?.prenom}> {client?.nom} {client?.prenom}</MenuItem>
-                          //}
-                          
-                              
-                          })}
-                        
-                      </Select>
-                      <Button 
-                      type="submit"
+                    { clients.map((client)=> {
                       
-                      onClick={addClient}
-                      fullWidth
-                      >
-                        Ajouter Client
-                      </Button>
-                    </FormControl>
+                      // Client restant :
+                      //if (!Clients.includes(client) ) {
+                        return <MenuItem value={client?.nom + client?.prenom}> {client?.nom} {client?.prenom}</MenuItem>
+                      //}
+                      
+                          
+                      })}
+                    
+                  </Select>
+                  <Button 
+                  type="submit"
                   
-                  </Grid>
+                  onClick={addClient}
+                  fullWidth
+                  >
+                    Ajouter Client
+                  </Button>
+                </FormControl>
+              
+              </Grid>
 
-                    <FormControl sx={{width:'100%', marginBottom: '30px'}}>
+                
 
-                      <Grid sx={windowSize >=650 ? StyleBoxRow : StyleBoxColumn}>
-                        
-                         
-                        <Grid item xs={12} sm={6} sx={windowSize >= 650 ? {marginRight:'10%'} : {}} >
-                          <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                type="Text"
-                                name="description"
-                                placeholder="Description"
-                                onChange={handleChangeEvent}
-                                sx={{width:'100%'}}
-                            />
-                        </Grid>
-                       
-                        <Grid item xs={6} sm={4} sx={{display:'flex', flexDirection:'row', minWidth:'205px',marginRight:'7%'}}>
-                          <div className="labelDate">Date de création</div>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                type="date"
-                                name="Date"
-                                placeholder="Date"
-                                onChange={handleChangeEvent}
-                            />
-                      
-                        </Grid>
-                      
-
-                        <Grid item xs={6} sm={2} >
-                          <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                type="number"
-                                name="Duree"
-                                placeholder="Duree"
-                                onChange={handleChangeEvent}
-                            />
-                        </Grid>
-
-                      </Grid >
-                      <Button 
-                        type="submit"
-                        
-                        onClick={addEvent}
-                        
-                        >
-                          Ajouter un Evenement
-                        </Button>
-                        
-                    </FormControl>
-
-
-            
+        
+  
+          <Button fullWidth variant="contained" type="submit" sx={{width:'50%', height:'15%', alignSelf:'center',fontSize: 'h6.fontSize', }}> Créer un dossier</Button>
       
-              <Button fullWidth variant="contained" type="submit" sx={{width:'50%', height:'15%', alignSelf:'center',fontSize: 'h6.fontSize', }}> Créer un dossier</Button>
-          
-        </Grid>
-    </Box>
+      </Grid>
+    
+      </Box>
+    </Modal>
+    </div>
+    
   );
 }
 

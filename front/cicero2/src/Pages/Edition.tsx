@@ -24,7 +24,7 @@ import {
     cache: new InMemoryCache(),
   });
 
-export default function Create(){
+export default function Edition(){
     const env = useSelector((state: any) => state.env.environnement);
     return (
 

@@ -9,7 +9,7 @@ import Home from './Pages/Home';
 import Clients from './Pages/Clients';
 import Folders from './Pages/Folders';
 import Modify from './Pages/Modify';
-import Create from './Pages/Create';
+import Create from './Pages/Edition';
 import SpeFolder from './Pages/SpeFolder';
 
 function App() {
@@ -22,8 +22,8 @@ function App() {
           </Route>  
           <Route path="/dossiers" element={<Folders />}>
           </Route>
-          <Route path="/modify" element={<Modify />}>
-          </Route>
+          {/* <Route path="/modify" element={<Modify />}> */}
+          {/* </Route> */}
           <Route path="/create" element={<Create />}>
           </Route> 
           <Route path="/dossier" element={<SpeFolder />}>

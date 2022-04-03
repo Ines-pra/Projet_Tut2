@@ -26,12 +26,39 @@ export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
 
+    const clients1 = [
+        {'id':1,'lastname':'Labrio','firstname':'Jacques','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
+       
+      ]
+    
+      const clients2 = [
+        {'id':3,'lastname':'Frosh','firstname':'Frank','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
+        
+      ]
+
+      const clients = [
+        {'id':5,'lastname':'Doni','firstname':'hubert','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
+      
+      ]
+
     const elements = [
-        {'id':1, 'folder':23, 'employee':'Jacques', 'clôturé' : 'en cours', 'description':'bbbbbbb', 'date':'17/03/2021',},
-        {'id':2, 'folder':123, 'employee':'Michel', 'clôturé' : 'en cours'},
-        {'id':3, 'folder':44, 'employee':'René', 'clôturé' : 'en cours'},
-        {'id':4, 'folder':11, 'employee':'Pierre', 'clôturé' : 'clôturée'},
+        {'id':10, 'folder':23, 'clients':clients, 'status' : false, 'description':'bbbbbbb', 'date':'17/03/2021',},
+        {'id':20, 'folder':123, 'clients':clients1, 'status' : false,'description':'bbbbbbb', 'date':'17/03/2021',},
+        {'id':30, 'folder':44, 'clients':clients2,'status' : true,'description':'bbbbbbb', 'date':'17/03/2021',},
     ]
+
+    const [windowSize, setWindowSize] = React.useState(window.innerWidth);
+
+
+    React.useEffect(() => {
+     function handleResize() {
+         setWindowSize(window.innerWidth);
+       }
+ 
+       window.addEventListener("resize", handleResize);
+     return () => window.removeEventListener("resize", handleResize);
+     }, []);
+
 
     const defaultCase: Case[] | (() => Case[]) = []
 const defaultEvent: Event[] | (() => Event[]) = []
@@ -113,7 +140,7 @@ const defaultEvent: Event[] | (() => Event[]) = []
     };
 
     const searchInput = {
-        width: "160px",
+        width: "95px",
         margin: "5px",
     };
 
@@ -137,23 +164,26 @@ const defaultEvent: Event[] | (() => Event[]) = []
 
     const getElement = (id:number) => {
 
-        console.log(SelectChoice.toLowerCase() + ' | ' + elements[id].clôturé.toLowerCase())
+        //console.log(SelectChoice.toLowerCase() + ' | ' + elements[id].clôturé.toLowerCase())
 
         
-            casesList[id]?.clients.map((client:Client) => {
+             return elements[id]?.clients.map((client:any) => {
 
-                let status = casesList[id].status ? 'clôturée' : 'En cours'
+                let status = elements[id].status ? 'clôturée' : 'En cours'
 
-                if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())  && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
-                    // 
+                if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                    
+                    console.log(client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase()));
                     return (
-                        <TableRow key={id}>
-                            <TableCell component="th" scope="row" align="center" width={'15%'} >{casesList[id].id}</TableCell>
-                            <TableCell align="center" width={'15%'} sx={StyleCell}>{casesList[id].status ? 'clôturée' : 'En cours'}</TableCell>
-        
-                            {casesList[id].clients.map((client:Client) => {
-                                <TableCell align="center" sx={StyleCell}>{client.lastname} {client.firstname}</TableCell>
+                        <TableRow key={client.id}>
+                            <TableCell component="th" scope="row" align="center" width={'15%'} >{elements[id].id}</TableCell>
+                            <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].status ? 'clôturée' : 'En cours'}</TableCell>
+
+                            <TableCell align="center" sx={StyleCell}>
+                            {elements[id].clients.map((client:any) => {
+                               return <span>{client.lastname} {client.firstname}</span>
                             })}
+                            </TableCell>
                             
                             <TableCell align="center" width={'15%'} sx={StyleCell}>
                                 
@@ -188,9 +218,12 @@ const defaultEvent: Event[] | (() => Event[]) = []
             <main className='main'>
 
                 <Box maxWidth="lg" sx={MainStyle}>
-                    <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
-                        <h3>Dossiers</h3>
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+                    <Grid sx={windowSize >= 750 ?{ display: 'flex', justifyContent:'space-between', marginTop:5}:{display: 'flex',marginTop:5}}>
+                        <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
+                            <h3>Dossiers</h3>
+                        </Box>
+                        
+                        <Box sx={ windowSize >= 750 ?{ display: 'flex', justifyContent: 'flex-end'}: {display:'flex', flexDirection:'column'}}>
                             <FormControl fullWidth sx={FormStyle}>
                                 <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
                                 <Select
@@ -215,29 +248,36 @@ const defaultEvent: Event[] | (() => Event[]) = []
                                     onChange={handleSearchChange}
                                     label="Recherche"
                                     variant="standard"
+                                    
                                     />
                                 </Box>
                             </Toolbar>
                         </Box>
                     </Grid>
                 </Box>
-            
-                    <Table aria-label="customized table" sx={styletable}>
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Code</TableCell>
-                            <TableCell align="center">Statut</TableCell>
-                            <TableCell align="center">Clients</TableCell>
-                            <TableCell align="center">Actions</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {Object.keys(elements).map(                        
-                                (id:any) => getElement(id)
-                            )}
-                        </TableBody>
-
-                    </Table>
+                    <Grid>
+                        <Table aria-label="customized table" sx={styletable}>
+                            
+                            <TableHead>
+                                
+                                <TableRow>
+                                    <TableCell align="center">Code</TableCell>
+                                    <TableCell align="center">Statut</TableCell>
+                                    <TableCell align="center">Clients</TableCell>
+                                    <TableCell align="center">Actions</TableCell>
+                                </TableRow>
+                            
+                            </TableHead>
+                            
+                            {/* <Grid> */}
+                                <TableBody>
+                                    {Object.keys(elements).map(                        
+                                        (id:any) => getElement(id)
+                                    )}
+                                </TableBody>
+                            {/* </Grid> */}
+                        </Table>
+                    </Grid>
             </main>
         </Box>
     </Grid>
