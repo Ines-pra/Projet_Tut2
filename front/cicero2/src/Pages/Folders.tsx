@@ -91,8 +91,7 @@ export default function Folders(){
                     <TableCell align="center" sx={StyleCell}>{elements[id].employee}</TableCell>
                     <TableCell align="center" width={'15%'} sx={StyleCell}>
                         
-                    <Link to={'/modify'}>
-                        
+                    <Link to={'/modify'}>  
                        <NoteAltIcon />
                     </Link>
                         <DeleteIcon/>                    
