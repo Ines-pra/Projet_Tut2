@@ -65,7 +65,7 @@ export default function SideBar(){
     function handleResize() {
         setWindowSize(window.innerWidth);
       }
-      console.log(windowSize)
+    //   console.log(windowSize)
 
       window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -73,7 +73,7 @@ export default function SideBar(){
 
 
 
-    console.log(window.innerWidth)
+    // console.log(window.innerWidth)
     return(
         <AppBar sx={windowSize >= 900 ? styleSideBarLarge : styleSideBar}>
             <Container maxWidth="md">

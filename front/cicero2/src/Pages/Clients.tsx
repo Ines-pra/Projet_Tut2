@@ -11,6 +11,7 @@ import { Client } from "../Modele/metier/Client";
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import { NavLink } from 'react-router-dom';
+import ClientModal from './Modal/ClientModal';
 
 const searchContainer = {
     display: "flex",
@@ -43,10 +44,17 @@ const StyleCell = {
 const MainStyle = {
     justifyContent : 'flex-end'
 }
+const ModalStyle = {
+    width: 500,
+    height:500,
+    backgroundColor: '#fff',
+    border: '1px solid black'
+};
 const defaultClient: Client[] | (() => Client[]) = []
 
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
+    const [modalOpen, setModalOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
 
@@ -168,12 +176,14 @@ export default function Clients(){
                                     {clientsList.map(client => { 
                                         if (client.firstname.toLowerCase().includes(filter.toLowerCase())) {
                                             return <TableRow key={client.id}>
-                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >{client.firstname} {client.lastname}</TableCell>
+                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >
+                                                            <NavLink to={{ pathname: '/clientsInfo', search: "?clientId=" + client.id }}>
+                                                                {client.firstname} {client.lastname}
+                                                            </NavLink>
+                                                        </TableCell>
                                                         <TableCell align="center" sx={StyleCell}>{client.id}</TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                        <NavLink to={'/modify'}>
-                                                           <NoteAltIcon />
-                                                        </NavLink>
+                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }}/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }}/>                    
                                                         </TableCell>
                                                     </TableRow>
@@ -181,6 +191,13 @@ export default function Clients(){
                                             })}
                                 </TableBody>   
                             </Table>
+                            <ClientModal modalOpen={modalOpen}>  
+                                <Box maxWidth="lg" sx={ModalStyle}>
+                                    <button type="button" className="btn_modalContent" onClick={()=>
+                                        {setModalOpen(false);}}> X </button>
+                                    <p> Test Modal </p>
+                                </Box>
+                            </ClientModal>
                     </main>
                 </Box>
             </Grid>
