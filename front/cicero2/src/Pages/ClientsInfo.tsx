@@ -7,6 +7,7 @@ import Header from '../Components/Header';
 
 import { useSearchParams  } from 'react-router-dom';
 import ClientModal from './Modal/ClientModal';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function ClientsInfo(){
 
@@ -32,6 +33,13 @@ export default function ClientsInfo(){
     const StyleAll = {
         width : '100%'
     }
+    const ModalStyle = {
+        width: 1000,
+        height: 750,
+        backgroundColor: '#fff',
+        border: '1px solid black'
+    };
+
 
     return (            
         <Grid sx={StyleAll}>
@@ -77,10 +85,18 @@ export default function ClientsInfo(){
 
                     </Box>
 
-                    <ClientModal modalOpen={modalOpen}>  
-                        <div>
-                            Test Modal
-                        </div>
+                    
+                <ClientModal modalOpen={modalOpen}>  
+                <Box sx={ModalStyle}>
+                <Grid sx={{ display: 'flex', justifyContent:'end', marginTop:2, marginRight:2}}>
+                
+                    <IconButton onClick={()=> {setModalOpen(false);}}>
+                        <CloseIcon />
+                    </IconButton>
+                    
+                </Grid>
+                    <p> Modal Client Update </p>
+                    </Box>
                     </ClientModal>
             </main>
         </Box>
