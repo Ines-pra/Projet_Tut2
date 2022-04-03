@@ -5,12 +5,17 @@ import SideBar from '../Components/SideBar';
 import { Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
-import './Folders.css';
+import './main.css';
 import { getElementError } from '@testing-library/react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import { height, margin } from '@mui/system';
 import { Link } from 'react-router-dom';
+
+
+// query Clients {
+//     ""
+// }
 
 
 export default function Folders(){
@@ -19,7 +24,7 @@ export default function Folders(){
     const [filter, setFilter] = useState("");
 
     const elements = [
-        {'id':1, 'folder':23, 'employee':'Jacques', 'clôturé' : 'en cours'},
+        {'id':1, 'folder':23, 'employee':'Jacques', 'clôturé' : 'en cours', 'description':'bbbbbbb', 'date':'17/03/2021',},
         {'id':2, 'folder':123, 'employee':'Michel', 'clôturé' : 'en cours'},
         {'id':3, 'folder':44, 'employee':'René', 'clôturé' : 'en cours'},
         {'id':4, 'folder':11, 'employee':'Pierre', 'clôturé' : 'clôturée'},

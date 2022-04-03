@@ -9,6 +9,8 @@ import Home from './Pages/Home';
 import Clients from './Pages/Clients';
 import Folders from './Pages/Folders';
 import Modify from './Pages/Modify';
+import Create from './Pages/Create';
+import SpeFolder from './Pages/SpeFolder';
 
 function App() {
   return (
@@ -21,6 +23,10 @@ function App() {
           <Route path="/dossiers" element={<Folders />}>
           </Route>
           <Route path="/modify" element={<Modify />}>
+          </Route>
+          <Route path="/create" element={<Create />}>
+          </Route> 
+          <Route path="/dossier" element={<SpeFolder />}>
           </Route> 
       </Routes>
     </Router>
