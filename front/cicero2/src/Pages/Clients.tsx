@@ -2,16 +2,11 @@
 import React from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-<<<<<<< HEAD
-import { Container } from '@mui/material';
-import { Stack } from '@mui/material';
-=======
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import { Container } from '@mui/material';
 import { Stack } from '@mui/material';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
->>>>>>> e986bf99925d8a4f2ff1b93042ba64702b525d8d
 
 const styleHeader = {
     background: '#535454',
@@ -19,12 +14,6 @@ const styleHeader = {
     width: '100%',
 };
 
-<<<<<<< HEAD
-export default function Clients(){
-    return (
-
-    <Box>
-=======
 const defaultClient: Client[] | (() => Client[]) = []
 
 export default function Clients(){
@@ -40,7 +29,7 @@ export default function Clients(){
 
 
     const writeClientFile = async () => {
-      let client = new Client(2, "electron", "", "", new Date(), new Date());
+      let client = new Client(2, "Jean", "Paul", "7 rue du test", new Date(), new Date());
       daoF!.getClientDAO().create(client);
     };
     const deleteClientFile = async () => {
@@ -97,7 +86,6 @@ export default function Clients(){
         >
             Update client
         </button>
->>>>>>> e986bf99925d8a4f2ff1b93042ba64702b525d8d
         <Stack sx={styleHeader}>
             <h1>HEADER</h1>
         </Stack>

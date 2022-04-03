@@ -1,6 +1,9 @@
 import { Case } from '../../metier/Case';
 import CaseDAO from '../CaseDAO';
 
+
+
+
 export class sqlCaseDAO implements CaseDAO {
     public async create(object: Case): Promise<number> {
         
