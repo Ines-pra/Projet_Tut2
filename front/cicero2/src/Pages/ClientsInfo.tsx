@@ -13,10 +13,10 @@ export default function ClientsInfo(){
     const [modalOpen, setModalOpen] = useState(false);
 
     const elements = [
-        {'id':1, 'nom': 'test nom', 'adresse':23, 'prenom':'Jacques', 'dateNaissance' : 'en cours','createdAt' : 'en cours'},
-        {'id':2, 'nom': 'test nom', 'adresse':123, 'prenom':'Michel', 'dateNaissance' : 'en cours','createdAt' : 'en cours'},
-        {'id':3, 'nom': 'test nom', 'adresse':44, 'prenom':'René', 'dateNaissance' : 'en cours','createdAt' : 'en cours'},
-        {'id':4, 'nom': 'test nom', 'adresse':11, 'prenom':'Pierre', 'dateNaissance' : 'clôturée','createdAt' : 'en cours'},
+        {'id':1, 'nom': 'PAS', 'adresse':23, 'prenom':'Tèque', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
+        {'id':2, 'nom': 'KI', 'adresse':123, 'prenom':'Wi', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
+        {'id':3, 'nom': 'BA', 'adresse':44, 'prenom':'Nane', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
+        {'id':4, 'nom': 'AVO', 'adresse':11, 'prenom':'Cat', 'dateNaissance' : 'clôturée','createdAt' : 'en cours', 'dossier':123},
     ];
 
     let [searchParams, setSearchParams] = useSearchParams();
@@ -44,7 +44,31 @@ export default function ClientsInfo(){
                     </div>
                     <Box sx={{ display:"flex" }}>
                         <Container>
-                            Div 1
+                            
+                            {client.map((client:any) => 
+
+                            <Grid>
+                                <Grid sx={{display:"flex"}}>
+                                    <Container>
+                                        <h2> Photo </h2>
+                                    </Container>
+                                    <Container>
+                                        <h2> {client.nom} {client.prenom}</h2>
+                                        <p> client depuis le {client.createdAt}</p>
+                                    </Container>  
+                                </Grid> 
+                                <Grid>
+                                    <h3> Adresse </h3>
+                                    <p> {client.adresse} </p>
+                                    <h3> Date de naissance </h3>
+                                    <p> {client.dateNaissance} </p>
+                                    <h3> Dossiers associés </h3>
+                                    <p> {client.dossier} </p> 
+                                </Grid>
+                            </Grid>
+                            
+
+                            )}
                         </Container>
                         <Container>
                             {/* <Button onClick={setModalOpen(true)}> Modifier </Button> */}

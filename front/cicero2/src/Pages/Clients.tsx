@@ -2,15 +2,16 @@
 import React, { useState } from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, IconButton } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import CloseIcon from '@mui/icons-material/Close';
 import './Folders.css';
 import { Link } from 'react-router-dom';
 import ClientModal from './Modal/ClientModal';
-import { grey } from '@mui/material/colors';
+import { height , width } from '@mui/system';
 
 export default function Clients(){
 
@@ -18,10 +19,10 @@ export default function Clients(){
     const [modalOpen, setModalOpen] = useState(false);
 
     const elements = [
-        {'id':1, 'nom': 'Nom', 'adresse':23, 'prenom':'Jacques', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
-        {'id':2, 'nom': 'Nom', 'adresse':123, 'prenom':'Michel', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
-        {'id':3, 'nom': 'Nom', 'adresse':44, 'prenom':'René', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
-        {'id':4, 'nom': 'Nom', 'adresse':11, 'prenom':'Pierre', 'dateNaissance' : 'clôturée','createdAt' : 'en cours', 'dossier':123},
+        {'id':1, 'nom': 'Pas', 'adresse':23, 'prenom':'Teque', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
+        {'id':2, 'nom': 'Ki', 'adresse':123, 'prenom':'Wi', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
+        {'id':3, 'nom': 'Ba', 'adresse':44, 'prenom':'Nane', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
+        {'id':4, 'nom': 'Avo', 'adresse':11, 'prenom':'Cat', 'dateNaissance' : 'clôturée','createdAt' : 'en cours', 'dossier':123},
     ];
 
     const elements2 = [
@@ -44,11 +45,16 @@ export default function Clients(){
     };
 
     const ModalStyle = {
-        width: 500,
-        height:500,
+        width: 1000,
+        height: 750,
         backgroundColor: '#fff',
         border: '1px solid black'
     };
+
+    // const ModalStyle = {
+    //     backgroundColor: '#fff',
+    //     border: '1px solid black'
+    // };
     
     const handleSearchChange = (e:any) => {
         setFilter(e.target.value);
@@ -97,23 +103,19 @@ export default function Clients(){
 
             return (
                 <TableRow key={id}>
-                
-                    <TableCell component="th" scope="row" width={'15%'} >
-                        <Link to={'/clientsInfo?id='+elements[id].id}> 
+                    <TableCell component="th" scope="row" width={'15%'}>
+                        <Link to={'/clientsInfo?id='+elements[id].id} style={{ textDecoration: 'none' }}> 
                          {elements[id].nom} {elements[id].prenom}</Link>
                     </TableCell>
-                    {/* <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].prenom}</TableCell>
-                    <TableCell align="center" sx={StyleCell}>{elements[id].adresse}</TableCell>
-                    <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].dateNaissance}</TableCell> */}
                     <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].dossier} </TableCell>
-                
-                     <TableCell align="center" width={'15%'} sx={StyleCell}>
+                    <TableCell align="center" width={'15%'} sx={StyleCell}>
                         <NoteAltIcon onClick={()=>{setModalOpen(true)}}/>
                         <DeleteIcon/>    
                         {/* <Link to={'/clientsInfo?id='+elements[id].id}>
                         <p> Voir informations ... </p> 
                         </Link> */}
                     </TableCell>
+                
                 </TableRow>    
             )
         }
@@ -158,9 +160,6 @@ export default function Clients(){
                     <TableHead>
                         <TableRow>
                             <TableCell>NOM Prenom</TableCell>
-                            {/* <TableCell align="center">Prénom</TableCell>
-                            <TableCell align="center">Adresse</TableCell>
-                            <TableCell align="center">Date de naissance</TableCell> */}
                             <TableCell align="center">Dossiers </TableCell>
                             <TableCell align="center">Actions</TableCell>
                         </TableRow>
@@ -173,10 +172,15 @@ export default function Clients(){
                 </Table>
 
                 <ClientModal modalOpen={modalOpen}>  
-                <Box maxWidth="lg" sx={ModalStyle}>
-                <button type="button" className="btn_modalContent" onClick={()=>
-                                {setModalOpen(false);}}> X </button>
-                    <p> Test Modal </p>
+                <Box sx={ModalStyle}>
+                <Grid sx={{ display: 'flex', justifyContent:'end', marginTop:2, marginRight:2}}>
+                
+                    <IconButton onClick={()=> {setModalOpen(false);}}>
+                        <CloseIcon />
+                    </IconButton>
+                    
+                </Grid>
+                    <p> Modal Client Update </p>
                     </Box>
                     </ClientModal>
             </main>
