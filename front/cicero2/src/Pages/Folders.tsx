@@ -201,18 +201,14 @@ export default function Folders(){
                             {casesList.map(casee => {
                                 return casee.clients.map((client: Client) => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
-                                    if (client.firstname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                                    if ((client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || casee.code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
                                         return (
                                             <TableRow key={casee.id}>
-                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.id}</TableCell>
+                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
                                                 <TableCell align="center" sx={StyleCell}>{client.firstname} {client.lastname}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
-
-                                                <Link to={'/modify'}>
-
-                                                   <NoteAltIcon />
-                                                </Link>
+                                                    <NoteAltIcon />
                                                     <DeleteIcon onClick={() => { deleteCase(casee.id) }}/>                    
                                                 </TableCell>
                                             </TableRow>
