@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home";
 import Clients from "./Pages/Clients";
-import Folders from "./Pages/Cases";
+import Cases from "./Pages/Cases";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/clients" element={<Clients />}></Route>
-        <Route path="/dossiers" element={<Folders />}></Route>
+        <Route path="/dossiers" element={<Cases />}></Route>
       </Routes>
     </Router>
   );  

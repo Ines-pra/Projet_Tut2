@@ -2,6 +2,7 @@ import { Case } from '../../metier/Case';
 import CaseDAO from '../CaseDAO';
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 
+// Lecture du fichier case.json //
 const readOnFile = async () => {
     try {
         const contents = await Filesystem.readFile({
@@ -15,7 +16,7 @@ const readOnFile = async () => {
         return "";
     }
   };
-
+// Ecriture dans le fichier case.json //
 const writeOnFile = async (char: string) => {
     try {
         const file = await Filesystem.writeFile({
@@ -28,23 +29,21 @@ const writeOnFile = async (char: string) => {
         console.log(e)
     }
 }
-
-function cutText(text: string) {
-    let pos = text.length;
-    return text.substring(1, pos -1);
-}
-
+// Fonction qui permet de formater le texte pour qu'il soit de type json //
 function getCaseText(caseText: string) {
-    let cas = cutText(caseText);  
-    return cas;
-}
+    let pos = caseText.length; 
 
+    return caseText.substring(1, pos -1);
+}
+// Fontion qui permet de récupérer l'id du dernier dossier //
 const getIdCase = async (list: any) => {
     if( list === "") {
+
         return 1;
     }
     let cases = JSON.parse(list);
     let id = cases[0].id + 1;
+
     return id;
 };
 
