@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
@@ -21,61 +21,68 @@ const defaultEvent: Event[] | (() => Event[]) = []
 export default function Cases(){
     const [casesList, setCasesList] = React.useState(defaultCase);
     const [eventsList, setEventsList] = React.useState(defaultEvent);
-
     const daoF = DAOFactory.getDAOFactory();
+    // Récupération de la liste des dossiers //
+    useEffect (() => {
+        async function fetchData() {
+            const response = await daoF!.getCaseDAO().findAll();
+            console.log(response);
+            setCasesList(response);
+            return response;
+            }
+            fetchData();
+    }, []);
 
     //////\ CASE /\\\\\\
+    // Lecture du fichier case.json //
     const readCaseFile = async () => {
-      let cases = await daoF!.getCaseDAO().findAll();
-      setCasesList(cases);
-      console.log(cases);
+        let ca = await daoF!.getCaseDAO().findAll();
+        console.log(ca);
     };
-
+    // Ajout d'un dossier //
     const writeCaseFile = async () => {
       let cas = new Case(1, "electron", "", new Date(), true, new Date(), [], []);
+      setCasesList([...casesList, cas]);
       daoF!.getCaseDAO().create(cas);
     };
+    // Suppression d'un dossier //
     const deleteCase = async () => {
-      daoF!.getCaseDAO().delete(9);
-    };
+      daoF!.getCaseDAO().delete(3);
+      setCasesList(casesList.filter(c => c.id !== 3));
 
-    const deleteCaseFile = async () => {
-      await Filesystem.deleteFile({
-        path: 'case.json',
-        directory: Directory.Documents,
-      });
     };
-
+    // // Suppression du fichier case.json //
+    // const deleteCaseFile = async () => {
+    //   await Filesystem.deleteFile({
+    //     path: 'case.json',
+    //     directory: Directory.Documents,
+    //   });
+    // };
+    // Mise à jour du fichier case.json //
     const updateCaseFile = async () => {
-      let cas = new Case(3, "OwO", "UwU", new Date(), true, new Date(), [], []);
+      let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
+      setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
       daoF!.getCaseDAO().update(cas);
     };
 
     //////\ EVENT /\\\\\\
+    // Lecture du fichier event.json //
     const readEventFile = async () => {
       let events = await daoF!.getEventDAO().findAll();
       setEventsList(events);
       console.log(events);
     };
-
+    // Ajout d'un événement //
     const writeEventFile = async () => {
       let event = new Event(1, 2, "electron", new Date(), 30);
       daoF!.getEventDAO().create(event);
     };
-    const deleteEvent = async () => {
-      daoF!.getEventDAO().delete(9);
-    };
-
+    // Suppression du fichier event.json //
     const deleteEventFile = async () => {
       await Filesystem.deleteFile({
         path: 'event.json',
         directory: Directory.Documents,
       });
-    };
-
-    const updateEventFile = async () => {
-      let event = new Event(1, 2, "electron", new Date(), 30);
-      daoF!.getEventDAO().update(event);
     };
 
     return (
@@ -96,7 +103,7 @@ export default function Cases(){
         </button>
         <button
             onClick={() => {
-                deleteCaseFile()
+                ()deleteCaseFile
             }}
         >
             Delete case file
@@ -144,20 +151,12 @@ export default function Cases(){
                     >
                         Delete event file
                     </button>
-                    <button
-                        onClick={() => {
-                            deleteEvent()
-                        }}
-                    >
-                        Delete event
-                    </button>
-                    <button
-                        onClick={() => {
-                            updateEventFile()
-                        }}
-                    >
-                        Update event
-                    </button>
+                    {casesList.map((caseItem: Case) => (
+                        <div key={caseItem.id}>
+                            <p>{caseItem.code}</p>
+
+                        </div>
+                    ))}
                 </Container>
             </main>
         </Box>

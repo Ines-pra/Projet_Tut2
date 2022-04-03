@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import { Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
@@ -11,6 +11,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import { height, margin } from '@mui/system';
 import { Link } from 'react-router-dom';
+import DAOFactory from '../Modele/dao/factory/DAOFactory';
+import { Case } from '../Modele/metier/Case';
+import { Client } from '../Modele/metier/Client';
 
 
 // query Clients {
@@ -29,6 +32,55 @@ export default function Folders(){
         {'id':3, 'folder':44, 'employee':'René', 'clôturé' : 'en cours'},
         {'id':4, 'folder':11, 'employee':'Pierre', 'clôturé' : 'clôturée'},
     ]
+
+    const defaultCase: Case[] | (() => Case[]) = []
+const defaultEvent: Event[] | (() => Event[]) = []
+ 
+    const [casesList, setCasesList] = React.useState(defaultCase);
+    const [eventsList, setEventsList] = React.useState(defaultEvent);
+    const daoF = DAOFactory.getDAOFactory();
+    // Récupération de la liste des dossiers //
+    useEffect (() => {
+        async function fetchData() {
+            const response = await daoF!.getCaseDAO().findAll();
+            console.log(response);
+            setCasesList(response);
+            return response;
+            }
+            fetchData();
+    }, []);
+
+    //////\ CASE /\\\\\\
+    // Lecture du fichier case.json //
+    const readCaseFile = async () => {
+        let ca = await daoF!.getCaseDAO().findAll();
+        console.log(ca);
+    };
+    // Ajout d'un dossier //
+    const writeCaseFile = async () => {
+      let cas = new Case(1, "electron", "", new Date(), true, new Date(), [], []);
+      setCasesList([...casesList, cas]);
+      daoF!.getCaseDAO().create(cas);
+    };
+    // Suppression d'un dossier //
+    const deleteCase = async () => {
+      daoF!.getCaseDAO().delete(3);
+      setCasesList(casesList.filter(c => c.id !== 3));
+
+    };
+    // // Suppression du fichier case.json //
+    // const deleteCaseFile = async () => {
+    //   await Filesystem.deleteFile({
+    //     path: 'case.json',
+    //     directory: Directory.Documents,
+    //   });
+    // };
+    // Mise à jour du fichier case.json //
+    const updateCaseFile = async () => {
+      let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
+      setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
+      daoF!.getCaseDAO().update(cas);
+    };
 
     function handleChangeSelect(event:any){
         setSelectChoice(event.target.value)
@@ -87,29 +139,42 @@ export default function Folders(){
 
         console.log(SelectChoice.toLowerCase() + ' | ' + elements[id].clôturé.toLowerCase())
 
-        if (elements[id].employee.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(elements[id].clôturé.toLowerCase())) {
+        
+            casesList[id]?.clients.map((client:Client) => {
 
-            return (
-                <TableRow key={id}>
-                    <TableCell component="th" scope="row" align="center" width={'15%'} >{elements[id].id}</TableCell>
-                    <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].clôturé}</TableCell>
-                    <TableCell align="center" sx={StyleCell}>{elements[id].employee}</TableCell>
-                    <TableCell align="center" width={'15%'} sx={StyleCell}>
-                        
-                    <Link to={'/modify'}>
-                        
-                       <NoteAltIcon />
-                    </Link>
-                        <DeleteIcon/>                    
-                    </TableCell>
-                </TableRow>
-                // <ListItem key={id}>
-                //     {elements[id].employee}
-                //     {elements[id].clôturé}
-                // </ListItem>
-    
-            )
-        }
+                let status = casesList[id].status ? 'clôturée' : 'En cours'
+
+                if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())  && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                    // 
+                    return (
+                        <TableRow key={id}>
+                            <TableCell component="th" scope="row" align="center" width={'15%'} >{casesList[id].id}</TableCell>
+                            <TableCell align="center" width={'15%'} sx={StyleCell}>{casesList[id].status ? 'clôturée' : 'En cours'}</TableCell>
+        
+                            {casesList[id].clients.map((client:Client) => {
+                                <TableCell align="center" sx={StyleCell}>{client.lastname} {client.firstname}</TableCell>
+                            })}
+                            
+                            <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                
+                            <Link to={'/modify'}>
+                                
+                               <NoteAltIcon />
+                            </Link>
+                                <DeleteIcon/>                    
+                            </TableCell>
+                        </TableRow>
+                        // <ListItem key={id}>
+                        //     {elements[id].employee}
+                        //     {elements[id].clôturé}
+                        // </ListItem>
+            
+                    )  
+                }         
+           
+            }
+        )
+       
 
         
     }
