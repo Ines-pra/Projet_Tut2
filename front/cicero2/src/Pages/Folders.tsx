@@ -1,123 +1,154 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import './main.css';
-import { getElementError } from '@testing-library/react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { height, margin } from '@mui/system';
 import { Link } from 'react-router-dom';
+import DAOFactory from "../Modele/dao/factory/DAOFactory";
+import { Case } from "../Modele/metier/Case";
+import { Client } from "../Modele/metier/Client";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 
-
-// query Clients {
-//     ""
-// }
-
+const searchContainer = {
+    display: "flex",
+    paddingLeft: "20px",
+    paddingRight: "20px",
+    marginTop: "5px",
+    marginBottom: "5px",
+};
+const searchIcon = {
+    alignSelf: "flex-end",
+    marginBottom: "5px",
+};
+const searchInput = {
+    width: "160px",
+    margin: "5px",
+};
+const StyleAll = {
+    width : '100%'
+}
+const styletable = {
+    border:'2px solid black',
+    margin:'0 auto',
+    marginTop:5,
+    maxWidth: '75%',
+}
+const StyleCell = {
+   boder:'1px solid grey',
+   height:40
+}
+const FormStyle = {
+    minWidth:200
+}
+const MainStyle = {
+    justifyContent : 'flex-end'
+}
+const defaultCase: Case[] | (() => Case[]) = []
 
 export default function Folders(){
-
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
-
-    const elements = [
-        {'id':1, 'folder':23, 'employee':'Jacques', 'clôturé' : 'en cours', 'description':'bbbbbbb', 'date':'17/03/2021',},
-        {'id':2, 'folder':123, 'employee':'Michel', 'clôturé' : 'en cours'},
-        {'id':3, 'folder':44, 'employee':'René', 'clôturé' : 'en cours'},
-        {'id':4, 'folder':11, 'employee':'Pierre', 'clôturé' : 'clôturée'},
-    ]
+    const [casesList, setCasesList] = React.useState(defaultCase);
+    const daoF = DAOFactory.getDAOFactory();
 
     function handleChangeSelect(event:any){
         setSelectChoice(event.target.value)
-    }
-
-
-    const FormStyle = {
-        minWidth:200
-    }
-
-    const MainStyle = {
-        justifyContent : 'flex-end'
     }
 
     const handleSearchChange = (e:any) => {
         setFilter(e.target.value);
       };
 
-    const searchContainer = {
-        display: "flex",
-        //backgroundColor: fade(theme.palette.common.white, 0.15),
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        marginTop: "5px",
-        marginBottom: "5px",
+     // Récupération de la liste des dossiers //
+    useEffect (() => {
+        async function fetchData() {
+            const response = await daoF!.getCaseDAO().findAll();
+            console.log(response);
+            setCasesList(response);
+            return response;
+            }
+            fetchData();
+    }, []);
+
+    //////\ CASE /\\\\\\
+    // Lecture du fichier case.json //
+    const readCaseFile = async () => {
+        let ca = await daoF!.getCaseDAO().findAll();
+        console.log(ca);
     };
-    const searchIcon = {
-        alignSelf: "flex-end",
-    marginBottom: "5px",
+    // Ajout d'un dossier //
+    const writeCaseFile = async () => {
+        let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
+        let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
+        let cas = new Case(1, code, "", new Date(), true, new Date(), [client], []);
+        let id = await daoF!.getCaseDAO().create(cas);
+        cas.id = id;
+        setCasesList([...casesList, cas]);
+    };
+    // Suppression d'un dossier //
+    const deleteCase = async (id: number) => {
+      daoF!.getCaseDAO().delete(id);
+      setCasesList(casesList.filter(c => c.id !== id));
     };
 
-    const searchInput = {
-        width: "160px",
-        margin: "5px",
+    const deleteCaseFile = async () => {
+      await Filesystem.deleteFile({
+        path: 'case.json',
+        directory: Directory.Documents,
+      });
     };
 
-    const StyleAll = {
-        width : '100%'
-    }
-
-    const styletable = {
-        border:'2px solid black',
-    
-         margin:'0 auto',
-         marginTop:5,
-        //padding:4,
-        maxWidth: '75%',
-    }
-
-    const StyleCell = {
-       boder:'1px solid grey',
-       height:40
-    }
-
-    const getElement = (id:number) => {
-
-        console.log(SelectChoice.toLowerCase() + ' | ' + elements[id].clôturé.toLowerCase())
-
-        if (elements[id].employee.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(elements[id].clôturé.toLowerCase())) {
-
-            return (
-                <TableRow key={id}>
-                    <TableCell component="th" scope="row" align="center" width={'15%'} >{elements[id].id}</TableCell>
-                    <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].clôturé}</TableCell>
-                    <TableCell align="center" sx={StyleCell}>{elements[id].employee}</TableCell>
-                    <TableCell align="center" width={'15%'} sx={StyleCell}>
-                        
-                    <Link to={'/modify'}>
-                        
-                       <NoteAltIcon />
-                    </Link>
-                        <DeleteIcon/>                    
-                    </TableCell>
-                </TableRow>
-                // <ListItem key={id}>
-                //     {elements[id].employee}
-                //     {elements[id].clôturé}
-                // </ListItem>
-    
-            )
-        }
-
-        
-    }
+    // Mise à jour du fichier case.json //
+    const updateCaseFile = async () => {
+      let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
+      setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
+      daoF!.getCaseDAO().update(cas);
+    };
 
     return (
 
     <Grid sx={StyleAll}>
         <Header/>
+                <button
+            onClick={() => {
+                writeCaseFile()
+            }}
+        >
+            Create case
+        </button>
+        <button
+            onClick={() => {
+                readCaseFile()
+            }}
+        >
+            Read cases
+        </button>
+        <button
+            onClick={() => {
+                deleteCaseFile()
+            }}
+        >
+            Delete case file
+        </button>
+                <button
+            onClick={() => {
+                deleteCase(2)
+            }}
+        >
+            Delete case
+        </button>
+        <button
+            onClick={() => {
+                updateCaseFile()
+            }}
+        >
+            Update case
+        </button>
         <Box sx={{ display: 'flex', minWidth: 700 }}>
             <SideBar />
             <main className='main'>
@@ -167,9 +198,28 @@ export default function Folders(){
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                            {Object.keys(elements).map(                        
-                                (id:any) => getElement(id)
-                            )}
+                            {casesList.map(casee => {
+                                return casee.clients.map((client: Client) => {
+                                    let status = casee.status ? 'clôturée' : 'En cours'
+                                    if (client.firstname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                                        return (
+                                            <TableRow key={casee.id}>
+                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.id}</TableCell>
+                                                <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
+                                                <TableCell align="center" sx={StyleCell}>{client.firstname} {client.lastname}</TableCell>
+                                                <TableCell align="center" width={'15%'} sx={StyleCell}>
+
+                                                <Link to={'/modify'}>
+
+                                                   <NoteAltIcon />
+                                                </Link>
+                                                    <DeleteIcon onClick={() => { deleteCase(casee.id) }}/>                    
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    }
+                                })
+                            })}
                         </TableBody>
 
                     </Table>

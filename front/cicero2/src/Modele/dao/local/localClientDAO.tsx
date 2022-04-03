@@ -41,7 +41,7 @@ const getIdClient = async (list: any) => {
         return 1;
     }
     let clients = JSON.parse(list);
-    let id = clients[0].id + 1;
+    let id = clients[clients.length - 1].id + 1;
     
     return id;
 };
@@ -57,7 +57,7 @@ export class localClientDAO implements ClientDAO {
         if( clientsList === '') {
             writeOnFile("[" + JSON.stringify(object) +"]");
         } else {
-            writeOnFile("[" + JSON.stringify(object)+ "," + getClientText(clientsList) +"]");
+            writeOnFile("[" + getClientText(clientsList) + "," + JSON.stringify(object) +"]");
         }
 
         return object.id;
