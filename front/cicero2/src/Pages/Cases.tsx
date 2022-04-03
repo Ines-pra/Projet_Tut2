@@ -23,6 +23,16 @@ export default function Cases(){
     const [casesList, setCasesList] = React.useState(defaultCase);
     const [eventsList, setEventsList] = React.useState(defaultEvent);
     const daoF = DAOFactory.getDAOFactory();
+    // Récupération de la liste des dossiers //
+    useEffect (() => {
+        async function fetchData() {
+            const response = await daoF!.getCaseDAO().findAll();
+            console.log(response);
+            setCasesList(response);
+            return response;
+            }
+            fetchData();
+    }, []);
 
     // Récupération de la liste des dossiers //
     useEffect (() => {

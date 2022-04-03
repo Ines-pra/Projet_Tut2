@@ -44,7 +44,6 @@ const getIdCase = async (list: any) => {
     }
     let cases = JSON.parse(list);
     let id = cases[cases.length - 1].id + 1;
-
     return id;
 };
 
