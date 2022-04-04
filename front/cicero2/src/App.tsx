@@ -12,6 +12,7 @@ import Modify from './Pages/Modify';
 import Create from './Pages/Create';
 import SpeFolder from './Pages/SpeFolder';
 import Cases from './Pages/Cases';
+import ClientsInfo from './Pages/ClientsInfo';
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
           <Route path="/create" element={<Create />}>
           </Route> 
           <Route path="/dossier" element={<SpeFolder />}>
+          </Route> 
+          <Route path="/clientsInfo" element={<ClientsInfo />}>
           </Route> 
       </Routes>
     </Router>

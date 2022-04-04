@@ -1,16 +1,18 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
+import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { NavLink } from 'react-router-dom';
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Client } from "../Modele/metier/Client";
+import { Case } from "../Modele/metier/Case";
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
-import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Client } from "../Modele/metier/Client";
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { NavLink } from 'react-router-dom';
+import ClientModal from './Modal/ClientModal';
 
 const searchContainer = {
     display: "flex",
@@ -43,10 +45,19 @@ const StyleCell = {
 const MainStyle = {
     justifyContent : 'flex-end'
 }
+const ModalStyle = {
+    width: 500,
+    height:500,
+    backgroundColor: '#fff',
+    border: '1px solid black'
+};
 const defaultClient: Client[] | (() => Client[]) = []
+const defaultCase: Case[] | (() => Case[]) = []
 
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
+    const [casesList, setCasesList] = React.useState(defaultCase);
+    const [modalOpen, setModalOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
 
@@ -54,7 +65,8 @@ export default function Clients(){
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getClientDAO().findAll();
-            console.log(response);
+            const response2 = await daoF!.getCaseDAO().findAll();
+            setCasesList(response2);
             setClientsList(response);
             return response;
             }
@@ -95,6 +107,28 @@ export default function Clients(){
     const handleSearchChange = (e:any) => {
         setFilter(e.target.value);
       };
+
+    const getClientCases = (id: number) => {
+        let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
+        let concat = "";
+        if(clientCases[0][0] === null){
+            return " / ";
+        } else {
+            for(let i = 0; i < clientCases.length; i++){
+                if(i + 1 === clientCases.length){
+                    if(clientCases[i][0] !== null){
+                        concat += clientCases[i][0]!.code.toString();
+                    }
+                } else {
+                    if(clientCases[i][0] !== null){
+                        concat += clientCases[i][0]!.code.toString() + " - ";
+                    }
+                }
+            }
+            return concat;
+        }
+    }
+
 
     return (
         <Grid sx={StyleAll}>
@@ -166,14 +200,19 @@ export default function Clients(){
                                 </TableHead>
                                 <TableBody>
                                     {clientsList.map(client => { 
-                                        if (client.firstname.toLowerCase().includes(filter.toLowerCase())) {
+                                        if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) {
                                             return <TableRow key={client.id}>
-                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >{client.firstname} {client.lastname}</TableCell>
-                                                        <TableCell align="center" sx={StyleCell}>{client.id}</TableCell>
+                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >
+                                                            <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
+                                                                {client.firstname} {client.lastname}
+                                                            </NavLink>
+                                                        </TableCell>
+                                                        <TableCell align="center" sx={StyleCell}>
+                                                            {/* {getClientCases(client.id).map(c => c[0] !== null ? c[0].code + " - " : " / ") } */}
+                                                            {getClientCases(client.id)}
+                                                        </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                        <NavLink to={'/modify'}>
-                                                           <NoteAltIcon />
-                                                        </NavLink>
+                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }}/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }}/>                    
                                                         </TableCell>
                                                     </TableRow>
@@ -181,6 +220,13 @@ export default function Clients(){
                                             })}
                                 </TableBody>   
                             </Table>
+                            <ClientModal modalOpen={modalOpen}>  
+                                <Box maxWidth="lg" sx={ModalStyle}>
+                                    <button type="button" className="btn_modalContent" onClick={()=>
+                                        {setModalOpen(false);}}> X </button>
+                                    <p> Test Modal </p>
+                                </Box>
+                            </ClientModal>
                     </main>
                 </Box>
             </Grid>

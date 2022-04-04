@@ -1,18 +1,17 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useState, useEffect } from 'react';
+import { Case } from "../Modele/metier/Case";
+import { Client } from "../Modele/metier/Client";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import './main.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { Link } from 'react-router-dom';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { Case } from "../Modele/metier/Case";
-import { Client } from "../Modele/metier/Client";
-import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const searchContainer = {
     display: "flex",
@@ -201,18 +200,14 @@ export default function Folders(){
                             {casesList.map(casee => {
                                 return casee.clients.map((client: Client) => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
-                                    if (client.firstname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                                    if ((client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || casee.code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
                                         return (
                                             <TableRow key={casee.id}>
-                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.id}</TableCell>
+                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
                                                 <TableCell align="center" sx={StyleCell}>{client.firstname} {client.lastname}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
-
-                                                <Link to={'/modify'}>
-
-                                                   <NoteAltIcon />
-                                                </Link>
+                                                    <NoteAltIcon />
                                                     <DeleteIcon onClick={() => { deleteCase(casee.id) }}/>                    
                                                 </TableCell>
                                             </TableRow>
