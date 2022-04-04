@@ -2,7 +2,7 @@ import { Client } from '../../metier/Client';
 import ClientDAO from '../ClientDAO';
 import { client } from '../../../index';
 import { gql } from '@apollo/client';
-import { CREATE_CLIENT, DELETE_CLIENT } from '../../../graphql/Mutations/mutationsClient';
+import { CREATE_CLIENT, DELETE_CLIENT, UPDATE_CLIENT } from '../../../graphql/Mutations/mutationsClient';
 import { GET_ALL_CLIENT, GET_CLIENT_ID } from '../../../graphql/Query/queryClient';
     
 
@@ -15,14 +15,28 @@ export class sqlClientDAO implements ClientDAO {
                         lastname: cli.lastname,
                         firstname: cli.firstname,
                         address: cli.address,
-                        birthDate:"2022-03-31T22:43:47.000Z",
-                        createdDate:"2022-03-31T22:43:47.000Z" 
+                        birthDate:cli.birthDate,
+                        createdDate:cli.createdDate 
                 }
             });
         
         return cli.id;
     }
-    public async update(client: Client): Promise<boolean> {
+    public async update(cli: Client): Promise<boolean> {
+        client.
+            mutate(
+                {
+                    mutation: UPDATE_CLIENT,
+                    variables: {
+                        id: cli.id,
+                        lastname: cli.lastname,
+                        firstname:cli.firstname,
+                        address:cli.address,
+                        birthDate:cli.birthDate,
+                        createdDate:cli.createdDate,
+                      }
+                }
+            )
         
         return true;
     }
@@ -30,19 +44,22 @@ export class sqlClientDAO implements ClientDAO {
         client.
         mutate({
             mutation: DELETE_CLIENT,
-            variables: {id:id}
+            variables: {deleteClientId:id}
         });
         return true;
     }
     public async findAll(): Promise<Client[]> {
         let obj:Array<Client> = [];
-        client
+        await client
             .query({
                 query: GET_ALL_CLIENT,
             })
-            .then(result =>{
+            .then(result =>  {
                 result.data.clients.forEach((element:Client) => {
-                    obj.push(element);
+                    let cli = new Client(element.id, element.firstname, element.lastname, element.address, element.birthDate, element.createdDate)
+                    obj.push(cli);
+                   
+                    
                 });
             });
 

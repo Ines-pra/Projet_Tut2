@@ -18,16 +18,8 @@ export const DELETE_CLIENT = gql`
     }
 `
 
-
-
 export const UPDATE_CLIENT = gql`
-    mutation Mutation( $lastname: String!, $firstname:String!, $address:String!, $birthDate:DateTime!, $createdDate:DateTime!) {
-        createClient(input: { lastname:$lastname, firstname:$firstname, address:$address, birthDate:$birthDate, createdDate:$createdDate}) {
-            firstname
-            address
-            lastname
-            birthDate
-            createdDate
-        }
+    mutation Mutation($id:ID!, $lastname: String!, $firstname:String!, $address:String!, $birthDate:DateTime!, $createdDate:DateTime!) {
+        updateClient(input: {id:$id,lastname:$lastname, firstname:$firstname, address:$address, birthDate:$birthDate, createdDate:$createdDate}) 
     }
 `

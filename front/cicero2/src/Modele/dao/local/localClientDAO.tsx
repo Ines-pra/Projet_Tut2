@@ -2,6 +2,7 @@ import { Client } from '../../metier/Client';
 import ClientDAO from '../ClientDAO';
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 
+// Lecture du fichier client.json //
 const readOnFile = async () => {
     try {
         const contents = await Filesystem.readFile({
@@ -15,7 +16,7 @@ const readOnFile = async () => {
         return "";
     }
   };
-
+// Ecriture dans le fichier client.json //
 const writeOnFile = async (char: string) => {
     try {
         const file = await Filesystem.writeFile({
@@ -28,23 +29,20 @@ const writeOnFile = async (char: string) => {
         console.log(e)
     }
 }
-
-function cutText(text: string) {
-    let pos = text.length;
-    return text.substring(1, pos -1);
-}
-
+// Fonction qui permet de formater le texte pour qu'il soit de type json //
 function getClientText(clientText: string) {
-    let client = cutText(clientText);  
-    return client;
+    let pos = clientText.length;
+    return clientText.substring(1, pos -1);
 }
-
+// Fontion qui permet de récupérer l'id du dernier client //
 const getIdClient = async (list: any) => {
     if( list === "") {
+
         return 1;
     }
     let clients = JSON.parse(list);
-    let id = clients[0].id + 1;
+    let id = clients[clients.length - 1].id + 1;
+    
     return id;
 };
 
@@ -59,7 +57,7 @@ export class localClientDAO implements ClientDAO {
         if( clientsList === '') {
             writeOnFile("[" + JSON.stringify(object) +"]");
         } else {
-            writeOnFile("[" + JSON.stringify(object)+ "," + getClientText(clientsList) +"]");
+            writeOnFile("[" + getClientText(clientsList) + "," + JSON.stringify(object) +"]");
         }
 
         return object.id;

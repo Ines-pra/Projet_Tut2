@@ -2,6 +2,7 @@ import { Event } from '../../metier/Event';
 import EventDAO from '../EventDAO';
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 
+// Lecture du fichier event.json //
 const readOnFile = async () => {
     try {
         const contents = await Filesystem.readFile({
@@ -15,7 +16,34 @@ const readOnFile = async () => {
         return "";
     }
   };
-
+// Lecture du fichier case.json //
+const readCaseFile = async () => {
+  try {
+      const contents = await Filesystem.readFile({
+          path: 'case.json',
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8,
+        });
+        return contents.data
+  } catch (e) {
+      console.log(e)
+      return "";
+  }
+};
+// Ecriture dans le fichier case.json //
+const writeCaseFile = async (char: string) => {
+  try {
+      const file = await Filesystem.writeFile({
+          data: char,
+          path: 'case.json',
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8,
+      });
+  } catch (e) {
+      console.log(e)
+  }
+}
+// Ecriture dans le fichier event.json //
 const writeOnFile = async (char: string) => {
     try {
         const file = await Filesystem.writeFile({
@@ -29,37 +57,14 @@ const writeOnFile = async (char: string) => {
     }
 }
 
-function cutText(text: string) {
-    let pos = text.length;
-    return text.substring(1, pos -1);
-}
-
-function getEventText(eventText: string) {
-    let event = cutText(eventText);  
-    return event;
-}
-
-const getIdEvent = async (list: any) => {
-    if( list === "") {
-        return 1;
-    }
-    let events = JSON.parse(list);
-    let id = events[0].id + 1;
-    return id;
-};
-
 export class localEventDAO implements EventDAO {
     public async create(object: Event): Promise<number> {
-        writeOnFile("");    
-        let eventsList = await readOnFile();
-        let id = await getIdEvent(eventsList);
-        object.id = id;
-
-        if( eventsList === '') {
-            writeOnFile("[" + JSON.stringify(object) +"]");
-        } else {
-            writeOnFile("[" + JSON.stringify(object)+ "," + getEventText(eventsList) +"]");
-        }
+        let casesText = await readCaseFile();
+        let cases = JSON.parse(casesText);
+        let cas = cases.find((cas: Event) => cas.id === object.idCase);
+        let index = cases.indexOf(cas);
+        cases[index].events = [...cases[index].events, object];
+        writeCaseFile(JSON.stringify(cases));
 
         return object.id;
     }

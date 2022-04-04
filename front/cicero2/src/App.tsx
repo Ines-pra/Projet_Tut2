@@ -1,9 +1,17 @@
-import React from "react";
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./Pages/Home";
-import Clients from "./Pages/Clients";
-import Folders from "./Pages/Cases";
+import React from 'react';
+import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Home from './Pages/Home';
+import Clients from './Pages/Clients';
+import Folders from './Pages/Folders';
+import Modify from './Pages/Modify';
+import Create from './Pages/Create';
+import SpeFolder from './Pages/SpeFolder';
+import Cases from './Pages/Cases';
 
 function App() {
   console.log(process.env.REACT_APP_ENV);
@@ -12,12 +20,21 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/clients" element={<Clients />}></Route>
-        <Route path="/dossiers" element={<Folders />}></Route>
+          <Route path="/" element={<Home />}>
+          </Route>
+          <Route path="/clients" element={<Clients />}>
+          </Route>  
+          <Route path="/dossiers" element={<Folders />}>
+          </Route>
+          <Route path="/modify" element={<Modify />}>
+          </Route>
+          <Route path="/create" element={<Create />}>
+          </Route> 
+          <Route path="/dossier" element={<SpeFolder />}>
+          </Route> 
       </Routes>
     </Router>
-  );  
+  );
 }
 
 export default App;
