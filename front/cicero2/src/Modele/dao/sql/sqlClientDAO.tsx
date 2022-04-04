@@ -55,8 +55,6 @@ export class sqlClientDAO implements ClientDAO {
                 query: GET_ALL_CLIENT,
             })
             .then(result =>  {
-                console.log(result);
-                
                 result.data.clients.forEach((element:Client) => {
                     let cli = new Client(element.id, element.firstname, element.lastname, element.address, element.birthDate, element.createdDate)
                     obj.push(cli);

@@ -65,8 +65,8 @@ export default function Clients(){
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getClientDAO().findAll();
-            // const response2 = await daoF!.getCaseDAO().findAll();
-            // setCasesList(response2);
+            const response2 = await daoF!.getCaseDAO().findAll();
+            setCasesList(response2);
             setClientsList(response);
             return response;
             }
@@ -109,25 +109,28 @@ export default function Clients(){
       };
 
     const getClientCases = (id: number) => {
+        console.log(casesList);
         if (casesList.length === 0) {
             return " / ";
         }
         let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
+        console.log(clientCases, "clientCases", id);
+        
         let concat = "";
-        if(clientCases[0][0] === null){
-            return " / ";
-        } else {
-            for(let i = 0; i < clientCases.length; i++){
-                if(i + 1 === clientCases.length){
-                    if(clientCases[i][0] !== null){
-                        concat += clientCases[i][0]!.code.toString();
-                    }
-                } else {
-                    if(clientCases[i][0] !== null){
-                        concat += clientCases[i][0]!.code.toString() + " - ";
-                    }
+        for(let i = 0; i < clientCases.length; i++){
+            if(i + 1 === clientCases.length){
+                if(clientCases[i][0] !== null){
+                    concat += clientCases[i][0]!.code.toString();
+                }
+            } else {
+                if(clientCases[i][0] !== null){
+                    concat += clientCases[i][0]!.code.toString() + " - ";
                 }
             }
+        }
+        if(concat === ""){
+            return " / ";
+        } else {
             return concat;
         }
     }
@@ -206,17 +209,15 @@ export default function Clients(){
                                         if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) {
                                             return <TableRow key={client.id}>
                                                         <TableCell component="th" scope="row" align="center" width={'15%'} >
-                                                            <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
                                                                 {client.firstname} {client.lastname}
-                                                            </NavLink>
                                                         </TableCell>
                                                         <TableCell align="center" sx={StyleCell}>
                                                             {getClientCases(client.id)}
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <InfoIcon />
-                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }}/>
-                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }}/>                    
+                                                            <InfoIcon color="primary"/>
+                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
+                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
                                                     </TableRow>
                                             }

@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
 import { Case } from '../Modele/metier/Case';
 import Form from "../Components/form";
+import InfoIcon from '@mui/icons-material/Info';
 
 const searchContainer = {
     display: "flex",
@@ -252,8 +253,9 @@ export default function Folders(){
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
                                                 <TableCell align="center" sx={StyleCell}>{client.firstname} {client.lastname}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                    <NoteAltIcon />
-                                                    <DeleteIcon onClick={() => { deleteCase(casee.id) }}/>                    
+                                                    <InfoIcon color="primary"/>
+                                                    <NoteAltIcon color="success"/>
+                                                    <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
                                                 </TableCell>
                                             </TableRow>
                                         )

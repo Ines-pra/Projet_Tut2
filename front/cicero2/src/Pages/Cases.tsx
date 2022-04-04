@@ -9,6 +9,7 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Case } from "../Modele/metier/Case";
 import { Event } from "../Modele/metier/Event";
 import { Client } from "../Modele/metier/Client";
+import InfoIcon from '@mui/icons-material/Info';
 
 const styleHeader = {
     background: '#535454',
@@ -65,13 +66,6 @@ export default function Cases(){
       setCasesList(casesList.filter(c => c.id !== 3));
 
     };
-    // // Suppression du fichier case.json //
-    // const deleteCaseFile = async () => {
-    //   await Filesystem.deleteFile({
-    //     path: 'case.json',
-    //     directory: Directory.Documents,
-    //   });
-    // };
     // Mise à jour du fichier case.json //
     const updateCaseFile = async () => {
       let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
