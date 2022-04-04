@@ -187,7 +187,7 @@ const defaultEvent: Event[] | (() => Event[]) = []
                             
                             <TableCell align="center" width={'15%'} sx={StyleCell}>
                                 
-                            <Link to={'/modify'}>
+                            <Link to={'/dossier'}>
                                 
                                <NoteAltIcon />
                             </Link>
