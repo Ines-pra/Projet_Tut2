@@ -33,7 +33,7 @@ function App() {
           </Route> 
           <Route path="/dossier" element={<SpeFolder />}>
           </Route> 
-          <Route path="/clientsInfo" element={<ClientsInfo />}>
+          <Route path="/clientsInfo/:id" element={<ClientsInfo />}>
           </Route> 
       </Routes>
     </Router>

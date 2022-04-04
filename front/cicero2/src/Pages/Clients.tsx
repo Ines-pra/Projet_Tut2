@@ -217,7 +217,7 @@ export default function Clients(){
                                                             {getClientCases(client.id)}
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <Link to={'/clientsInfo?id='+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
+                                                            <Link to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
                                                             <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
