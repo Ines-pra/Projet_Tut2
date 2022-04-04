@@ -1,5 +1,4 @@
 import React, { useState, useRef, createRef, RefObject } from "react";
-import { CREATE_USER_MUTATION } from "../GraphQL/Mutations";
 import { useMutation } from "@apollo/client";
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";

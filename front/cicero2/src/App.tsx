@@ -12,6 +12,7 @@ import Modify from './Pages/Modify';
 import ClientsInfo from './Pages/ClientsInfo';
 import { Create } from '@mui/icons-material';
 import SpeFolder from './Pages/SpeFolder';
+import Cases from './Pages/Cases';
 
 function App() {
   return (
@@ -29,7 +30,6 @@ function App() {
           </Route> 
           <Route path="/dossier" element={<SpeFolder />}>
           </Route> 
-          
           <Route path="/clientsInfo" element={<ClientsInfo />}>
           </Route> 
       </Routes>
