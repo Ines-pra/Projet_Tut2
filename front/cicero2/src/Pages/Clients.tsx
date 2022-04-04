@@ -85,23 +85,23 @@ export default function Clients(){
       client.id = id;
       setClientsList([...clientsList, client]);
     };
+    // Suppression du fichier client.json //
+    const deleteClientFile = async () => {
+        await Filesystem.deleteFile({
+          path: 'client.json',
+          directory: Directory.Documents,
+        });
+      };
+    // Mise à jour du fichier client.json //
+    const updateClientFile = async () => {
+        let client = new Client(5, "OwO", "Yolo", "UwU", new Date(), new Date());
+        daoF!.getClientDAO().update(client);
+        setClientsList(clientsList.map(c => c.id === client.id ? client : c));
+      };
     // Suppression d'un client //
     const deleteClient = async (id: number) => {
       daoF!.getClientDAO().delete(id);
       setClientsList(clientsList.filter(c => c.id !== id));
-    };
-    // Suppression du fichier client.json //
-    const deleteClientFile = async () => {
-      await Filesystem.deleteFile({
-        path: 'client.json',
-        directory: Directory.Documents,
-      });
-    };
-    // Mise à jour du fichier client.json //
-    const updateClientFile = async () => {
-      let client = new Client(5, "OwO", "Yolo", "UwU", new Date(), new Date());
-      daoF!.getClientDAO().update(client);
-      setClientsList(clientsList.map(c => c.id === client.id ? client : c));
     };
 
     const handleSearchChange = (e:any) => {

@@ -9,10 +9,10 @@ import Home from './Pages/Home';
 import Clients from './Pages/Clients';
 import Folders from './Pages/Folders';
 import Modify from './Pages/Modify';
-import Create from './Pages/Create';
+import ClientsInfo from './Pages/ClientsInfo';
+import { Create } from '@mui/icons-material';
 import SpeFolder from './Pages/SpeFolder';
 import Cases from './Pages/Cases';
-import ClientsInfo from './Pages/ClientsInfo';
 
 function App() {
   return (
@@ -24,8 +24,8 @@ function App() {
           </Route>  
           <Route path="/dossiers" element={<Folders />}>
           </Route>
-          <Route path="/modify" element={<Modify />}>
-          </Route>
+          {/* <Route path="/modify" element={<Modify />}> */}
+          {/* </Route> */}
           <Route path="/create" element={<Create />}>
           </Route> 
           <Route path="/dossier" element={<SpeFolder />}>
