@@ -9,7 +9,7 @@ const styleHeader = {
 export default function Header(){
     return (
         <Stack sx={styleHeader}>
-            <h1>HEADER</h1>
+            <img src="https://www.cicero.fr/sites/default/files/styles/logo_cicero_large/public/logo_cicero_large.png?itok=QZ-_jZ-_" alt="logo" />
         </Stack>
     );
 } 

@@ -13,6 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
+import InfoIcon from '@mui/icons-material/Info';
 
 const searchContainer = {
     display: "flex",
@@ -60,12 +61,7 @@ export default function Clients(){
     const [modalOpen, setModalOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
-    // let cli = new Client(1, "jjf", "kkd", "kdf", new Date, new Date);
-    // const tab = [cli, cli];
-    // console.log(tab);
-    
 
-    // Récupération de la liste des clients //
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getClientDAO().findAll();
@@ -113,22 +109,28 @@ export default function Clients(){
       };
 
     const getClientCases = (id: number) => {
-        let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
-        let concat = "";
-        if(clientCases[0][0] === null){
+        console.log(casesList);
+        if (casesList.length === 0) {
             return " / ";
-        } else {
-            for(let i = 0; i < clientCases.length; i++){
-                if(i + 1 === clientCases.length){
-                    if(clientCases[i][0] !== null){
-                        concat += clientCases[i][0]!.code.toString();
-                    }
-                } else {
-                    if(clientCases[i][0] !== null){
-                        concat += clientCases[i][0]!.code.toString() + " - ";
-                    }
+        }
+        let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
+        console.log(clientCases, "clientCases", id);
+        
+        let concat = "";
+        for(let i = 0; i < clientCases.length; i++){
+            if(i + 1 === clientCases.length){
+                if(clientCases[i][0] !== null){
+                    concat += clientCases[i][0]!.code.toString();
+                }
+            } else {
+                if(clientCases[i][0] !== null){
+                    concat += clientCases[i][0]!.code.toString() + " - ";
                 }
             }
+        }
+        if(concat === ""){
+            return " / ";
+        } else {
             return concat;
         }
     }
@@ -207,17 +209,15 @@ export default function Clients(){
                                         if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) {
                                             return <TableRow key={client.id}>
                                                         <TableCell component="th" scope="row" align="center" width={'15%'} >
-                                                            <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
                                                                 {client.firstname} {client.lastname}
-                                                            </NavLink>
                                                         </TableCell>
                                                         <TableCell align="center" sx={StyleCell}>
-                                                            {/* {getClientCases(client.id).map(c => c[0] !== null ? c[0].code + " - " : " / ") } */}
                                                             {getClientCases(client.id)}
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }}/>
-                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }}/>                    
+                                                            <InfoIcon color="primary"/>
+                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
+                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
                                                     </TableRow>
                                             }
