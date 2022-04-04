@@ -15,6 +15,9 @@ import SpeFolder from './Pages/SpeFolder';
 import Cases from './Pages/Cases';
 
 function App() {
+  console.log(process.env.REACT_APP_ENV);
+  console.log(process.env.APP_ENV);
+  
   return (
     <Router>
       <Routes>

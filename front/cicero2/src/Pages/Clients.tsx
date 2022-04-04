@@ -60,6 +60,10 @@ export default function Clients(){
     const [modalOpen, setModalOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
+    // let cli = new Client(1, "jjf", "kkd", "kdf", new Date, new Date);
+    // const tab = [cli, cli];
+    // console.log(tab);
+    
 
     // Récupération de la liste des clients //
     useEffect (() => {

@@ -242,6 +242,7 @@ export default function Folders(){
                         </TableHead>
                         <TableBody>
                             {casesList.map(casee => {
+                                
                                 return casee.clients.map((client: Client) => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
                                     if ((client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || casee.code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
