@@ -8,8 +8,8 @@ import { GET_ALL_CLIENT, GET_CLIENT_ID } from '../../../graphql/Query/queryClien
 
 export class sqlClientDAO implements ClientDAO {
     public async create(cli: Client): Promise<number> {
-        client.
-            mutate({
+        client
+            .mutate({
                 mutation: CREATE_CLIENT,
                 variables: {
                         lastname: cli.lastname,
@@ -23,8 +23,8 @@ export class sqlClientDAO implements ClientDAO {
         return cli.id;
     }
     public async update(cli: Client): Promise<boolean> {
-        client.
-            mutate(
+        client
+            .mutate(
                 {
                     mutation: UPDATE_CLIENT,
                     variables: {
@@ -41,8 +41,8 @@ export class sqlClientDAO implements ClientDAO {
         return true;
     }
     public async delete(id: number): Promise<boolean> {
-        client.
-        mutate({
+        client
+        .mutate({
             mutation: DELETE_CLIENT,
             variables: {deleteClientId:id}
         });
@@ -55,6 +55,8 @@ export class sqlClientDAO implements ClientDAO {
                 query: GET_ALL_CLIENT,
             })
             .then(result =>  {
+                console.log(result);
+                
                 result.data.clients.forEach((element:Client) => {
                     let cli = new Client(element.id, element.firstname, element.lastname, element.address, element.birthDate, element.createdDate)
                     obj.push(cli);
@@ -66,7 +68,7 @@ export class sqlClientDAO implements ClientDAO {
         return obj;
     }
     public async findById(id: number): Promise<Client> {
-        let c1:Client = new Client(1,"", "", "", new Date, new Date);
+        let c1:Client = new Client(1,"", "", "", new Date(), new Date());
         client
             .query({
                 query: GET_CLIENT_ID,

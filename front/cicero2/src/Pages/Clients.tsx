@@ -13,6 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
+import InfoIcon from '@mui/icons-material/Info';
 
 const searchContainer = {
     display: "flex",
@@ -60,17 +61,12 @@ export default function Clients(){
     const [modalOpen, setModalOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
-    // let cli = new Client(1, "jjf", "kkd", "kdf", new Date, new Date);
-    // const tab = [cli, cli];
-    // console.log(tab);
-    
 
-    // Récupération de la liste des clients //
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getClientDAO().findAll();
-            const response2 = await daoF!.getCaseDAO().findAll();
-            setCasesList(response2);
+            // const response2 = await daoF!.getCaseDAO().findAll();
+            // setCasesList(response2);
             setClientsList(response);
             return response;
             }
@@ -113,6 +109,9 @@ export default function Clients(){
       };
 
     const getClientCases = (id: number) => {
+        if (casesList.length === 0) {
+            return " / ";
+        }
         let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
         let concat = "";
         if(clientCases[0][0] === null){
@@ -212,10 +211,10 @@ export default function Clients(){
                                                             </NavLink>
                                                         </TableCell>
                                                         <TableCell align="center" sx={StyleCell}>
-                                                            {/* {getClientCases(client.id).map(c => c[0] !== null ? c[0].code + " - " : " / ") } */}
                                                             {getClientCases(client.id)}
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                                            <InfoIcon />
                                                             <NoteAltIcon onClick={()=>{ setModalOpen(true) }}/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }}/>                    
                                                         </TableCell>
