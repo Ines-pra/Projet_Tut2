@@ -51,8 +51,8 @@ db.Sequelize = Sequelize
 db.case_af.belongsToMany(db.client, { through: db.eq_client_case });
 db.client.belongsToMany(db.case_af, { through: db.eq_client_case });
 
-db.case_af.hasMany(db.event, {foreignKey: 'idCase'});
-db.event.belongsTo(db.case_af, {foreignKey: 'idCase'});
+db.case_af.hasMany(db.event, {foreignKey: 'idCase', onDelete:"cascade"});
+db.event.belongsTo(db.case_af, {foreignKey: 'idCase', onDelete:"cascade"});
 
 
 module.exports = {db, connection};
