@@ -1,10 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
+import { Button } from '@mui/material';
+import { confirmAlert } from 'react-confirm-alert';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
@@ -13,11 +15,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
-import InfoIcon from '@mui/icons-material/Info';
-import { confirmAlert } from 'react-confirm-alert'; 
+import InfoIcon from '@mui/icons-material/Info'; 
 import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { Button } from '@mui/material';
 
 const searchContainer = {
     display: "flex",
@@ -156,13 +156,10 @@ export default function Clients(){
       };
 
     const getClientCases = (id: number) => {
-        console.log(casesList);
         if (casesList.length === 0) {
             return " / ";
         }
         let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
-        console.log(clientCases, "clientCases", id);
-        
         let concat = "";
         for(let i = 0; i < clientCases.length; i++){
             for(let y = 0; y < clientCases[i].length; y++){
@@ -170,11 +167,11 @@ export default function Clients(){
                     if(clientCases[i][y] !== null){
                         concat += clientCases[i][y]!.code.toString();
                     }
-            } else {
-                if(clientCases[i][y] !== null){
-                    concat += clientCases[i][y]!.code.toString() + " - ";
+                } else {
+                    if(clientCases[i][y] !== null){
+                        concat += clientCases[i][y]!.code.toString() + " - ";
+                    }
                 }
-            }
             }
         }
         if(concat === ""){
@@ -191,85 +188,83 @@ export default function Clients(){
         return false;
     }
 
-
     return (
         <Grid sx={StyleAll}>
-                <Header/>
-                <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
-                    <SideBar />
-                    <main className='main'>
-
-                        <Box maxWidth="lg" sx={MainStyle}>
-                            <Grid sx={windowSize >= 750 ? { display: 'flex', justifyContent:'space-between', marginTop:5} : {display:'flex', marginTop:5}}>
-                                <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
-                                    <h3>Clients</h3>
-                                </Box>
-                                <Box sx={windowSize >= 750 ? { display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
-                                    <Toolbar>
-                                        <Box sx={searchContainer}>
-                                            <SearchIcon sx={searchIcon} />
-                                            <TextField
-                                            sx={searchInput}
-                                            onChange={handleSearchChange}
-                                            label="Recherche"
-                                            variant="standard"
-                                            />
-                                        </Box>
-                                    </Toolbar>
-                                </Box>
-                            </Grid>
+            <Header/>
+            <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
+                <SideBar />
+                <main className='main'>
+                    <Box maxWidth="lg" sx={MainStyle}>
+                        <Grid sx={windowSize >= 750 ? { display: 'flex', justifyContent:'space-between', marginTop:5} : {display:'flex', marginTop:5}}>
+                            <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
+                                <h3>Clients</h3>
+                            </Box>
+                            <Box sx={windowSize >= 750 ? { display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
+                                <Toolbar>
+                                    <Box sx={searchContainer}>
+                                        <SearchIcon sx={searchIcon} />
+                                        <TextField
+                                        sx={searchInput}
+                                        onChange={handleSearchChange}
+                                        label="Recherche"
+                                        variant="standard"
+                                        />
+                                    </Box>
+                                </Toolbar>
+                            </Box>
+                        </Grid>
+                    </Box>
+                    <Table aria-label="customized table" sx={styletable}>
+                        <TableHead>
+                        <TableRow>
+                            <TableCell align="center">Nom</TableCell>
+                            <TableCell align="center">Affaires associées</TableCell>
+                            <TableCell align="center">Actions</TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {clientsList.map(client => { 
+                                if (checkFilter(getClientCases(client.id), client)) {
+                                    return <TableRow key={client.id}>
+                                                <TableCell component="th" scope="row" align="center" width={'15%'} >
+                                                        {client.firstname} {client.lastname}
+                                                </TableCell>
+                                                <TableCell align="center" sx={StyleCell}>
+                                                    {getClientCases(client.id)}
+                                                </TableCell>
+                                                <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                                    <InfoIcon color="primary"/>
+                                                    <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
+                                                    {getClientCases(client.id) === " / " ? <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/> : <DeleteIcon color="disabled"/> }                   
+                                                </TableCell>
+                                            </TableRow>
+                                }
+                            })}
+                        </TableBody>   
+                    </Table>
+                    <ClientModal modalOpen={modalOpen}>  
+                        <Box maxWidth="lg" sx={ModalStyle}>
+                            <button type="button" className="btn_modalContent" onClick={()=>
+                                {setModalOpen(false);}}> X </button>
+                            <p> Test Modal </p>
                         </Box>
-                            <Table aria-label="customized table" sx={styletable}>
-                                <TableHead>
-                                <TableRow>
-                                    <TableCell align="center">Nom</TableCell>
-                                    <TableCell align="center">Affaires associées</TableCell>
-                                    <TableCell align="center">Actions</TableCell>
-                                </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {clientsList.map(client => { 
-                                        if (checkFilter(getClientCases(client.id), client)) {
-                                            return <TableRow key={client.id}>
-                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >
-                                                                {client.firstname} {client.lastname}
-                                                        </TableCell>
-                                                        <TableCell align="center" sx={StyleCell}>
-                                                            {getClientCases(client.id)}
-                                                        </TableCell>
-                                                        <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <InfoIcon color="primary"/>
-                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
-                                                            {getClientCases(client.id) === " / " ? <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/> : <DeleteIcon color="disabled"/> }                   
-                                                        </TableCell>
-                                                    </TableRow>
-                                            }
-                                            })}
-                                </TableBody>   
-                            </Table>
-                            <ClientModal modalOpen={modalOpen}>  
-                                <Box maxWidth="lg" sx={ModalStyle}>
-                                    <button type="button" className="btn_modalContent" onClick={()=>
-                                        {setModalOpen(false);}}> X </button>
-                                    <p> Test Modal </p>
-                                </Box>
-                            </ClientModal>
-        <button
-            onClick={() => {
-                writeClientFile()
-            }}
-        >
-            Write client
-        </button>
-        <button
-            onClick={() => {
-                deleteClientFile()
-            }}
-        >
-            Delete file
-        </button>
-                    </main>
-                </Box>
-            </Grid>
+                    </ClientModal>
+                    <button
+                        onClick={() => {
+                            writeClientFile()
+                        }}
+                    >
+                    Write client
+                    </button>
+                    <button
+                        onClick={() => {
+                            deleteClientFile()
+                        }}
+                    >
+                        Delete file
+                    </button>
+                </main>
+            </Box>
+        </Grid>
     );
 } 

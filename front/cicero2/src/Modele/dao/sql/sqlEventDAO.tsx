@@ -6,8 +6,8 @@ import { CREATE_EVENT, DELETE_EVENT } from '../../../graphql/Mutations/mutations
 
 export class sqlEventDAO implements EventDAO {
     public async create(object: Event): Promise<number> {
-        client.
-        mutate({
+        client
+        .mutate({
             mutation: CREATE_EVENT,
             variables: {
                     idCase:object.idCase,
@@ -23,8 +23,8 @@ export class sqlEventDAO implements EventDAO {
         return true;
     }
     public async delete(id: number): Promise<boolean> {
-        client.
-        mutate({
+        client
+        .mutate({
             mutation: DELETE_EVENT,
             variables: {deleteEventId:id}
         });
@@ -46,22 +46,22 @@ export class sqlEventDAO implements EventDAO {
         return obj;
     }
     public async findById(id: number): Promise<Event> {
-        let e1:Event = new Event(1,1, "", new Date,3);
-        client
+        let e1:Event = new Event(1,1, "", new Date(),3);
+        await client
             .query({
                 query: GET_EVENT_ID,
-                variables:{id:id}
+                variables:{eventId:id}
             })
             .then(result =>{
                 
                     e1 = new Event(
                         result.data.id,
                         1,
-                        result.data.description,
-                        result.data.createdDate,
-                        result.data.duration,
+                        result.data.event.description,
+                        result.data.event.createdDate,
+                        result.data.event.duration,
                     );
-                    console.log(e1);
+                    console.log();
                     
              
             });

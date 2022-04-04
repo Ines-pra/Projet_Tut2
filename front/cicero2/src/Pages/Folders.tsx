@@ -1,22 +1,21 @@
 /* eslint-disable import/no-anonymous-default-export */
+import React, { useState, useEffect } from 'react';
+import { confirmAlert } from 'react-confirm-alert'; 
+import { Case } from '../Modele/metier/Case';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Client } from "../Modele/metier/Client";
+import { Event } from "../Modele/metier/Event";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { NavLink } from 'react-router-dom';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { Button, Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Toolbar } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import { Client } from "../Modele/metier/Client";
-import { Filesystem, Directory } from "@capacitor/filesystem";
-// import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { height, margin } from '@mui/system';
-import { Link } from 'react-router-dom';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
-import { Case } from '../Modele/metier/Case';
 import Form from "../Components/form";
 import InfoIcon from '@mui/icons-material/Info';
-import { confirmAlert } from 'react-confirm-alert'; 
 import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -56,8 +55,6 @@ const MainStyle = {
     justifyContent : 'flex-end'
 }
 const defaultCase: Case[] | (() => Case[]) = []
-const defaultClient: Client[] | (() => Client[]) = []
-const defaultEvent: Event[] | (() => Event[]) = []
 
 export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
@@ -71,12 +68,10 @@ export default function Folders(){
          setWindowSize(window.innerWidth);
        }
  
-       window.addEventListener("resize", handleResize);
-     return () => window.removeEventListener("resize", handleResize);
-     }, []);
+    window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
  
-    // Récupération de la liste des dossiers //
-
     function handleChangeSelect(event:any){
         setSelectChoice(event.target.value)
     }
@@ -97,16 +92,12 @@ export default function Folders(){
     }, []);
 
     //////\ CASE /\\\\\\
-    // Lecture du fichier case.json //
-    const readCaseFile = async () => {
-        let ca = await daoF!.getCaseDAO().findAll();
-        console.log(ca);
-    };
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
         let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
+        let event = new Event(1, 1, "Description", new Date(), 10);
         let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
-        let cas = new Case(1, code, "", new Date(), true, new Date(), [client], []);
+        let cas = new Case(1, code, "Affaire de corruption", new Date(), true, new Date(), [client], [event]);
         let id = await daoF!.getCaseDAO().create(cas);
         cas.id = id;
         setCasesList([...casesList, cas]);
@@ -164,10 +155,16 @@ export default function Folders(){
     };
 
     const checkFilter = (code: string, status: string, clients: Client[]) => {
-        for (let i = 0; i < clients.length; i++) {
-            if((clients[i].firstname.toLowerCase().includes(filter.toLowerCase()) || clients[i].lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+        if(clients.length === 0) {
+            if(code.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
                 return true;
             } 
+        } else {
+            for (let i = 0; i < clients.length; i++) {
+                if((clients[i].firstname.toLowerCase().includes(filter.toLowerCase()) || clients[i].lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                    return true;
+                } 
+            }
         }
         return false;
     }
@@ -191,13 +188,11 @@ export default function Folders(){
         <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
             <SideBar />
             <main className='main'>
-
                 <Box maxWidth="lg" sx={MainStyle}>
                     <Grid sx={windowSize >= 750 ?{ display: 'flex', justifyContent:'space-between', marginTop:5} : {display: 'flex', marginTop:5}}>
                         <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
                             <h3>Dossiers</h3>
                         </Box>
-                        
                         <Box sx={ windowSize >= 750 ?{ display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
                             <FormControl fullWidth sx={FormStyle}>
                                 <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
@@ -213,8 +208,6 @@ export default function Folders(){
                                     <MenuItem value={'Clôturées'}>Clôturées</MenuItem>
                                 </Select>
                             </FormControl>
-
-
                             <Toolbar>
                                 <Box sx={searchContainer}>
                                     <SearchIcon sx={searchIcon} />
@@ -223,7 +216,6 @@ export default function Folders(){
                                     onChange={handleSearchChange}
                                     label="Recherche"
                                     variant="standard"
-                                    
                                     />
                                 </Box>
                             </Toolbar>
@@ -231,37 +223,38 @@ export default function Folders(){
                         <Form />
                     </Grid>
                 </Box>
-            
-                    <Table aria-label="customized table" sx={styletable}>
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Code</TableCell>
-                            <TableCell align="center">Statut</TableCell>
-                            <TableCell align="center">Clients</TableCell>
-                            <TableCell align="center">Actions</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {casesList.map(casee => {
-                                    let status = casee.status ? 'clôturée' : 'En cours'
-                                    if (checkFilter(casee.code, status, casee.clients)) {
-                                        return (
-                                            <TableRow key={casee.id}>
-                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
-                                                <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
-                                                <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
-                                                <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                    <InfoIcon color="primary"/>
-                                                    <NoteAltIcon color="success"/>
-                                                    <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    }
-                            })}
-                        </TableBody>
-
-                    </Table>
+                <Table aria-label="customized table" sx={styletable}>
+                    <TableHead>
+                    <TableRow>
+                        <TableCell align="center">Code</TableCell>
+                        <TableCell align="center">Statut</TableCell>
+                        <TableCell align="center">Clients</TableCell>
+                        <TableCell align="center">Actions</TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {casesList.map(casee => {
+                            let status = casee.status ? 'clôturée' : 'En cours'
+                            console.log(casee);
+                            if (checkFilter(casee.code, status, casee.clients)) {
+                                return (
+                                    <TableRow key={casee.id}>
+                                        <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
+                                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
+                                        <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
+                                        <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                            <NavLink to={`/dossierinfo/`+ casee.id}>
+                                                <InfoIcon color="primary"/>
+                                            </NavLink>
+                                            <NoteAltIcon color="success"/>
+                                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            }
+                        })}
+                    </TableBody>
+                </Table>
         <button
             onClick={() => {
                 writeCaseFile()
