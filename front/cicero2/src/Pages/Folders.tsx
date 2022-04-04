@@ -2,7 +2,7 @@
 import React, { useState,useEffect } from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Button, Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import './main.css';
@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
 import { Case } from '../Modele/metier/Case';
 import { Client } from '../Modele/metier/Client';
+import Form from "../Components/form";
 
 
 // query Clients {
@@ -171,10 +172,11 @@ const defaultEvent: Event[] | (() => Event[]) = []
 
                 let status = elements[id].status ? 'clôturée' : 'En cours'
 
-                if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                if ((client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
                     
-                    console.log(client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase()));
+                    console.log(status);
                     return (
+                        
                         <TableRow key={client.id}>
                             <TableCell component="th" scope="row" align="center" width={'15%'} >{elements[id].id}</TableCell>
                             <TableCell align="center" width={'15%'} sx={StyleCell}>{elements[id].status ? 'clôturée' : 'En cours'}</TableCell>
@@ -194,11 +196,10 @@ const defaultEvent: Event[] | (() => Event[]) = []
                                 <DeleteIcon/>                    
                             </TableCell>
                         </TableRow>
-                        // <ListItem key={id}>
-                        //     {elements[id].employee}
-                        //     {elements[id].clôturé}
-                        // </ListItem>
-            
+                        // /*{ // <ListItem key={id}>
+                        // //     {elements[id].employee}
+                        // //     {elements[id].clôturé}
+                        // </ListItem> }*            
                     )  
                 }         
            
@@ -253,10 +254,11 @@ const defaultEvent: Event[] | (() => Event[]) = []
                                 </Box>
                             </Toolbar>
                         </Box>
+                        <Form />
                     </Grid>
                 </Box>
-                    <Grid>
-                        <Table aria-label="customized table" sx={styletable}>
+                    <Grid item xs={12}>
+                        <Table aria-label="customized table" sx={styletable} >
                             
                             <TableHead>
                                 
@@ -276,10 +278,22 @@ const defaultEvent: Event[] | (() => Event[]) = []
                                     )}
                                 </TableBody>
                             {/* </Grid> */}
+
+                               
                         </Table>
+                        {/* <TablePagination
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        /> */}
                     </Grid>
             </main>
         </Box>
+        
     </Grid>
     );
 } 

@@ -28,6 +28,7 @@ import {
   } from "@apollo/client";
 
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import { Link } from 'react-router-dom';
 
   
   const client = new ApolloClient({
@@ -222,7 +223,7 @@ export default function SpeFolder(){
                           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3}} >
 
                             <Box>
-                                <span>Dossier {'>'} {dossier[0].code}</span>
+                                <span><Link to={'/dossiers'} className='link'>Dossier</Link> {'>'} {dossier[0].code}</span>
                             </Box>
                           <Grid container spacing={2} sx={StyleBoxContainer}>
 
@@ -253,7 +254,7 @@ export default function SpeFolder(){
                                           {/* <Button variant="contained" onClick={() => {setmodal(!modal)}}>Modifier dossier</Button>
                                            */}
                                            <Form/>
-                                          <Button variant="contained" sx={{height:'35px', marginLeft:'3%'}}>Supprimer</Button>
+                                          <Button variant="contained" sx={{height:'35px', marginLeft:'3%',backgroundColor:'red'}}>Supprimer</Button>
                                       </Grid>
                                       
                                   </Grid>
