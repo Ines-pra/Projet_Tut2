@@ -22,7 +22,12 @@ module.exports = function(sequelize, DataTypes) {
     endedAt: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    code: {
+      type: DataTypes.STRING(50),
+      allowNull: false
     }
+
   }, {
     sequelize,
     tableName: 'case_af',
