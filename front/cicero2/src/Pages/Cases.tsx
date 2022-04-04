@@ -65,13 +65,13 @@ export default function Cases(){
       setCasesList(casesList.filter(c => c.id !== 3));
 
     };
-    // Suppression du fichier case.json //
-    const deleteCaseFile = async () => {
-      await Filesystem.deleteFile({
-        path: 'case.json',
-        directory: Directory.Documents,
-      });
-    };
+    // // Suppression du fichier case.json //
+    // const deleteCaseFile = async () => {
+    //   await Filesystem.deleteFile({
+    //     path: 'case.json',
+    //     directory: Directory.Documents,
+    //   });
+    // };
     // Mise à jour du fichier case.json //
     const updateCaseFile = async () => {
       let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
@@ -115,13 +115,13 @@ export default function Cases(){
         >
             Read cases
         </button>
-        <button
+        {/* <button
             onClick={() => {
                 deleteCaseFile()
             }}
         >
             Delete case file
-        </button>
+        </button> */}
         <button
             onClick={() => {
                 deleteCase()

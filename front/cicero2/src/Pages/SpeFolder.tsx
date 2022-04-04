@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 
 import SideBar from '../Components/SideBar';
-import { Container } from '@mui/material';
+import { Container, ListItem, ListItemText } from '@mui/material';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
@@ -25,7 +25,9 @@ import {
     HttpLink,
     from,
   } from "@apollo/client";
-  import { onError } from "@apollo/client/link/error";
+
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import { Link } from 'react-router-dom';
 
   
   const client = new ApolloClient({
@@ -84,6 +86,8 @@ export default function SpeFolder(){
     }]
 
     const [Clients, setClients] = React.useState([]);
+
+    const [open, setopen] = React.useState(false);
     const [Events, setEvents] = React.useState([]);
 
     const [Client, setClient] = React.useState(clients[0].nom + clients[0].prenom);
@@ -144,7 +148,7 @@ export default function SpeFolder(){
       function addEvent(){
 
         let idEvent = (new Date()).getTime();
-        daoF!.getEventDAO().create(new Event(idEvent, formElement.id, EventElement.Description, EventElement.Date, EventElement.Duree, ))
+        // daoF!.getEventDAO().create(new Event(idEvent, formElement.id, EventElement.Description, EventElement.Date, EventElement.Duree, ))
 
 
         const event = {
@@ -157,6 +161,9 @@ export default function SpeFolder(){
 
         console.log(event);
 
+        setopen(false);
+
+        // elements.push(event);
         // setEvents(
         //   [...Events].concat(event)
         //   )
@@ -201,60 +208,165 @@ export default function SpeFolder(){
       }
     return (
 
-    <Grid>
+      
+        <Grid>
 
-        <Header/>
-        <Box sx={{ display: 'flex' }}>
-            <SideBar />
-            <main className="main">
-                <Container maxWidth="lg">
-                    <ApolloProvider client={client} >
+          <Header/>
+          <Box sx={{ display: 'flex' }}>
+              <SideBar />
+              <main className="main">
+                  <Container maxWidth="lg">
+                      <ApolloProvider client={client} >
 
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3}} >
-
-                        <Grid container spacing={2} sx={StyleBoxContainer}>
+                      
+                          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3}} >
 
                             <Box>
-                                <span>Dossier {'>'} {dossier[0].code}</span>
+                                <span><Link to={'/dossiers'} className='link'>Dossier</Link> {'>'} {dossier[0].code}</span>
                             </Box>
+                          <Grid container spacing={2} sx={StyleBoxContainer}>
+
+                              
 
 
-                            <Grid sx={windowSize >= 650 ? StyleBoxRow : StyleBoxColumn}>
+                              {/* <Grid sx={windowSize >= 650 ? StyleBoxRow : StyleBoxColumn}> */}
 
-                                <Grid  sx={ windowSize >= 650 ? {marginRight:'10%', display:'flex', flexDirection:'row', justifyContent:'space-between'} : {}} >
-                                    
-                                    <Grid sx={{display:'flex', flexDirection:'row'}}>
-                                        <FolderOpenIcon fontSize='large' sx={{marginRight:"3%",fontSize: 75}}/>
+                                  <Grid  sx={ windowSize >= 650 ? { display:'flex', flexDirection:'row', justifyContent:'space-between'} : { display:'flex', flexDirection:'column', justifyContent:'space-between'}} >
+                                      
+                                      <Grid sx={{display:'flex', flexDirection:'row'}}>
+                                          <FolderOpenIcon fontSize='large' sx={{marginRight:"3%",fontSize: 75}}/>
 
-                                        <Box sx={{display:'flex', flexDirection:'column', alignSelf:'center'}}>
-                                            <Box sx={{display:'flex', flexDirection:'row'}}>
-                                                <span className='SpaceFolder'>{dossier[0].code}</span>
-                                                
-                                                { dossier[0].statut ? <div>En cours</div> : <div>Clôturée</div>}
+                                          <Box sx={{display:'flex', flexDirection:'column', alignSelf:'center'}}>
+                                              <Box sx={{display:'flex', flexDirection:'row'}}>
+                                                  <span className='SpaceFolder'><b>{dossier[0].code}</b></span>
+                                                  
+                                                  { dossier[0].statut ? <div>En cours</div> : <div>Clôturée</div>}
 
-                                            
-                                            </Box>
+                                              
+                                              </Box >
 
-                                            <Box sx={{fontStyle: 'italic',fontSize: 10,}}>Affaire ouverte le {dossier[0].date}</Box>
-                                        </Box>
-                                    </Grid>
+                                              <Box sx={{fontStyle: 'italic',fontSize: 10,}}>Affaire ouverte le {dossier[0].date}</Box>
+                                          </Box>
+                                      </Grid>
 
-                                    <Grid>
-                                        <Button variant="contained">Modicier dossier</Button>
-                                        <Button variant="contained" >Supprimer</Button>
-                                    </Grid>
-                                    
+                                      <Grid sx={{display:'flex', flexDirection:'row', alignSelf:'center'}}>
+                                          {/* <Button variant="contained" onClick={() => {setmodal(!modal)}}>Modifier dossier</Button>
+                                           */}
+                                           <Form/>
+                                          <Button variant="contained" sx={{height:'35px', marginLeft:'3%',backgroundColor:'red'}}>Supprimer</Button>
+                                      </Grid>
+                                      
+                                  </Grid>
+                                  
+                                <Grid>
+                                  <h2>Description</h2>
+                                  <Box>
+                                    <span>{dossier[0].description}</span>
+                                  </Box>
                                 </Grid>
+
+
+                                <Grid>
+                                  <h2>Clients concernés</h2>
+                                  <Box>
+                                    <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                                    { dossier[0].clients.map((client)=> {
+                        
+                                        // Client restant :
+                                        //if (!Clients.includes(client) ) {
+                                          return <ListItemText  key={client?.nom + client?.prenom}> {client?.nom} {client?.prenom}</ListItemText >
+                                        //}
+                                        })}
+                                   </ListItem>
+                                  </Box>
+                                </Grid>
+
+                                <Grid>
+                                  <h2>Evènements</h2>
+                                  <Box>
+                                    <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                                      {dossier[0].Event.map((event)=> {
+                                      // Client restant :
+                                      //if (!Clients.includes(client) ) {
+                                        return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {event?.date} ({event?.durée}) - {event?.description} </ListItemText >
+                                      //}
+                                      })}
+                                      </ListItem>
+                                  </Box>
+                                </Grid>
+
+                                {open ? 
+                                (<FormControl sx={{width:'100%', marginBottom: '30px'}}>
+
+                  <Grid sx={windowSize >=650 ? StyleBoxRow : StyleBoxColumn}>
+                    
+                     
+                    <Grid item xs={12} sm={6} sx={windowSize >= 650 ? {marginRight:'10%'} : {}} >
+                      <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            type="Text"
+                            name="description"
+                            placeholder="Description"
+                            onChange={handleChangeEvent}
+                            sx={{width:'100%'}}
+                        />
+                    </Grid>
+                   
+                    <Grid item xs={6} sm={4} sx={{display:'flex', flexDirection:'row', minWidth:'205px',marginRight:'7%'}}>
+                      <div className="labelDate">Date de création</div>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            type="date"
+                            name="Date"
+                            placeholder="Date"
+                            onChange={handleChangeEvent}
+                        />
+                  
+                    </Grid>
+                  
+
+                    <Grid item xs={6} sm={2} >
+                      <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            type="number"
+                            name="Duree"
+                            placeholder="Duree"
+                            onChange={handleChangeEvent}
+                        />
+                    </Grid>
+
+                  </Grid >
+                  <Button 
+                    type="submit"
+                    
+                    onClick={addEvent}
+                    
+                    >
+                      Ajouter un Evenement
+                    </Button>
+                    
+                </FormControl>)
+                : (<Button sx={{width:'40%', marginTop:'10px'}} onClick={()=> setopen(!open)}>Ajouter un évènement</Button>)}
                                 
                             </Grid>
-                        </Grid>
-                    </Box>
+                            
+                      </Box>
 
-                    </ApolloProvider>
                     
-                </Container>
-            </main>
-        </Box>
-    </Grid>
+
+                      </ApolloProvider>
+                      
+                  </Container>
+              </main>
+          </Box>
+      </Grid>
+      
     );
+    
 } 

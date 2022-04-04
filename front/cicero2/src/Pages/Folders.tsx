@@ -1,18 +1,20 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useState, useEffect } from 'react';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
-import Header from '../Components/Header';
-import SearchIcon from '@mui/icons-material/Search';
-import './main.css';
-import DeleteIcon from '@mui/icons-material/Delete';
-import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { Link } from 'react-router-dom';
-import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { Case } from "../Modele/metier/Case";
+import { Button, Container, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Toolbar } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import { Client } from "../Modele/metier/Client";
 import { Filesystem, Directory } from "@capacitor/filesystem";
+// import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import Header from '../Components/Header';
+import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import { height, margin } from '@mui/system';
+import { Link } from 'react-router-dom';
+import DAOFactory from '../Modele/dao/factory/DAOFactory';
+import { Case } from '../Modele/metier/Case';
+import Form from "../Components/form";
 
 const searchContainer = {
     display: "flex",
@@ -49,12 +51,48 @@ const MainStyle = {
     justifyContent : 'flex-end'
 }
 const defaultCase: Case[] | (() => Case[]) = []
+const defaultEvent: Event[] | (() => Event[]) = []
 
 export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
+    const [eventsList, setEventsList] = React.useState(defaultEvent);
+    const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const daoF = DAOFactory.getDAOFactory();
+
+    // const clients1 = [
+    //     {'id':1,'lastname':'Labrio','firstname':'Jacques','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
+       
+    //   ]
+    
+    //   const clients2 = [
+    //     {'id':3,'lastname':'Frosh','firstname':'Frank','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
+        
+    //   ]
+
+    //   const clients = [
+    //     {'id':5,'lastname':'Doni','firstname':'hubert','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
+      
+    //   ]
+
+    // const elements = [
+    //     {'id':10, 'folder':23, 'clients':clients, 'status' : false, 'description':'bbbbbbb', 'date':'17/03/2021',},
+    //     {'id':20, 'folder':123, 'clients':clients1, 'status' : false,'description':'bbbbbbb', 'date':'17/03/2021',},
+    //     {'id':30, 'folder':44, 'clients':clients2,'status' : true,'description':'bbbbbbb', 'date':'17/03/2021',},
+    // ]
+
+
+    React.useEffect(() => {
+     function handleResize() {
+         setWindowSize(window.innerWidth);
+       }
+ 
+       window.addEventListener("resize", handleResize);
+     return () => window.removeEventListener("resize", handleResize);
+     }, []);
+ 
+    // Récupération de la liste des dossiers //
 
     function handleChangeSelect(event:any){
         setSelectChoice(event.target.value)
@@ -154,9 +192,12 @@ export default function Folders(){
             <main className='main'>
 
                 <Box maxWidth="lg" sx={MainStyle}>
-                    <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
-                        <h3>Dossiers</h3>
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+                    <Grid sx={windowSize >= 750 ?{ display: 'flex', justifyContent:'space-between', marginTop:5}:{display: 'flex',marginTop:5}}>
+                        <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
+                            <h3>Dossiers</h3>
+                        </Box>
+                        
+                        <Box sx={ windowSize >= 750 ?{ display: 'flex', justifyContent: 'flex-end'}: {display:'flex', flexDirection:'column'}}>
                             <FormControl fullWidth sx={FormStyle}>
                                 <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
                                 <Select
@@ -181,10 +222,12 @@ export default function Folders(){
                                     onChange={handleSearchChange}
                                     label="Recherche"
                                     variant="standard"
+                                    
                                     />
                                 </Box>
                             </Toolbar>
                         </Box>
+                        <Form />
                     </Grid>
                 </Box>
             
@@ -201,19 +244,15 @@ export default function Folders(){
                             {casesList.map(casee => {
                                 
                                 return casee.clients.map((client: Client) => {
-                                    let status = false ? 'clôturée' : 'En cours'
-                                    if (client.firstname.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                                    let status = casee.status ? 'clôturée' : 'En cours'
+                                    if ((client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || casee.code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
                                         return (
                                             <TableRow key={casee.id}>
                                                 <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
                                                 <TableCell align="center" sx={StyleCell}>{client.firstname} {client.lastname}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
-
-                                                <Link to={'/modify'}>
-
-                                                   <NoteAltIcon />
-                                                </Link>
+                                                    <NoteAltIcon />
                                                     <DeleteIcon onClick={() => { deleteCase(casee.id) }}/>                    
                                                 </TableCell>
                                             </TableRow>
@@ -226,6 +265,7 @@ export default function Folders(){
                     </Table>
             </main>
         </Box>
+        
     </Grid>
     );
 } 
