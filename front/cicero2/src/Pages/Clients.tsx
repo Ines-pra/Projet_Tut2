@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
@@ -14,6 +14,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
 import InfoIcon from '@mui/icons-material/Info';
+import { Link } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 const searchContainer = {
     display: "flex",
@@ -215,7 +217,7 @@ export default function Clients(){
                                                             {getClientCases(client.id)}
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <InfoIcon color="primary"/>
+                                                            <Link to={'/clientsInfo?id='+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
                                                             <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
@@ -225,10 +227,15 @@ export default function Clients(){
                                 </TableBody>   
                             </Table>
                             <ClientModal modalOpen={modalOpen}>  
-                                <Box maxWidth="lg" sx={ModalStyle}>
-                                    <button type="button" className="btn_modalContent" onClick={()=>
-                                        {setModalOpen(false);}}> X </button>
-                                    <p> Test Modal </p>
+                                <Box sx={ModalStyle}>
+                                <Grid sx={{ display: 'flex', justifyContent:'end', marginTop:2, marginRight:2}}>
+                                
+                                    <IconButton onClick={()=> {setModalOpen(false);}}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                    
+                                </Grid>
+                                <p> Modal Client Update </p>
                                 </Box>
                             </ClientModal>
                     </main>
