@@ -1,18 +1,17 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useState, useEffect } from 'react';
+import { Case } from "../Modele/metier/Case";
+import { Client } from "../Modele/metier/Client";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import './main.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { Link } from 'react-router-dom';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { Case } from "../Modele/metier/Case";
-import { Client } from "../Modele/metier/Client";
-import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const searchContainer = {
     display: "flex",
