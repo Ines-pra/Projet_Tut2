@@ -34,7 +34,7 @@ import { Link } from 'react-router-dom';
     cache: new InMemoryCache(),
   });
 
-export default function SpeFolder(){
+export default function SpeFolder({id}:{id:number}){
     const env = useSelector((state: any) => state.env.environnement);
 
     const daoF = DAOFactory.getDAOFactory();
