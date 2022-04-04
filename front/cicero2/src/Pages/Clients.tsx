@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
@@ -14,6 +14,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
 import InfoIcon from '@mui/icons-material/Info';
+import { confirmAlert } from 'react-confirm-alert'; 
+import '../Styles/alert.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Button } from '@mui/material';
 
 const searchContainer = {
     display: "flex",
@@ -31,7 +35,8 @@ const searchInput = {
     margin: "5px",
 };
 const StyleAll = {
-    width : '100%'
+    width : '100%', 
+    height: '100%'
 }
 const styletable = {
     border:'2px solid black',
@@ -58,9 +63,19 @@ const defaultCase: Case[] | (() => Case[]) = []
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
+    const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const [modalOpen, setModalOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
+
+    React.useEffect(() => {
+     function handleResize() {
+         setWindowSize(window.innerWidth);
+       }
+ 
+       window.addEventListener("resize", handleResize);
+     return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect (() => {
         async function fetchData() {
@@ -100,8 +115,40 @@ export default function Clients(){
       };
     // Suppression d'un client //
     const deleteClient = async (id: number) => {
-      daoF!.getClientDAO().delete(id);
-      setClientsList(clientsList.filter(c => c.id !== id));
+        confirmAlert({
+            customUI: ({ onClose }) => {
+              return (
+                <div className='custom-ui'>
+                    <h1>Etes-vous sur ?</h1>
+                    <p>Etes-vous sur de vouloir supprimer ce client ?</p>
+                    <Button     
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#d9534f",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginRight: "5px",
+                        }} 
+                        onClick={onClose}>Annuler</Button>
+                    <Button
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#0275d8",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginLeft: "5px",
+                        }}
+                        onClick={() => {
+                            daoF!.getClientDAO().delete(id);
+                            setClientsList(clientsList.filter(c => c.id !== id));
+                            onClose();
+                        }}>Confirmer</Button>
+                </div>
+              );
+            }
+        });
     };
 
     const handleSearchChange = (e:any) => {
@@ -118,14 +165,16 @@ export default function Clients(){
         
         let concat = "";
         for(let i = 0; i < clientCases.length; i++){
-            if(i + 1 === clientCases.length){
-                if(clientCases[i][0] !== null){
-                    concat += clientCases[i][0]!.code.toString();
-                }
+            for(let y = 0; y < clientCases[i].length; y++){
+                if(i + 1 === clientCases.length){
+                    if(clientCases[i][y] !== null){
+                        concat += clientCases[i][y]!.code.toString();
+                    }
             } else {
-                if(clientCases[i][0] !== null){
-                    concat += clientCases[i][0]!.code.toString() + " - ";
+                if(clientCases[i][y] !== null){
+                    concat += clientCases[i][y]!.code.toString() + " - ";
                 }
+            }
             }
         }
         if(concat === ""){
@@ -135,53 +184,27 @@ export default function Clients(){
         }
     }
 
+    const checkFilter = (code: string, client: Client) => {
+        if(client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) {
+            return true;
+        } 
+        return false;
+    }
+
 
     return (
         <Grid sx={StyleAll}>
                 <Header/>
-                        <button
-            onClick={() => {
-                writeClientFile()
-            }}
-        >
-            Write client
-        </button>
-        <button
-            onClick={() => {
-                readClientFile()
-            }}
-        >
-            Read file
-        </button>
-        <button
-            onClick={() => {
-                deleteClientFile()
-            }}
-        >
-            Delete file
-        </button>
-                <button
-            onClick={() => {
-                deleteClient(2)
-            }}
-        >
-            Delete client
-        </button>
-        <button
-            onClick={() => {
-                updateClientFile()
-            }}
-        >
-            Update client
-        </button>
-                <Box sx={{ display: 'flex', minWidth: 700 }}>
+                <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
                     <SideBar />
                     <main className='main'>
 
                         <Box maxWidth="lg" sx={MainStyle}>
-                            <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
-                                <h3>Clients</h3>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+                            <Grid sx={windowSize >= 750 ? { display: 'flex', justifyContent:'space-between', marginTop:5} : {display:'flex', marginTop:5}}>
+                                <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
+                                    <h3>Clients</h3>
+                                </Box>
+                                <Box sx={windowSize >= 750 ? { display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
                                     <Toolbar>
                                         <Box sx={searchContainer}>
                                             <SearchIcon sx={searchIcon} />
@@ -206,7 +229,7 @@ export default function Clients(){
                                 </TableHead>
                                 <TableBody>
                                     {clientsList.map(client => { 
-                                        if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) {
+                                        if (checkFilter(getClientCases(client.id), client)) {
                                             return <TableRow key={client.id}>
                                                         <TableCell component="th" scope="row" align="center" width={'15%'} >
                                                                 {client.firstname} {client.lastname}
@@ -217,7 +240,7 @@ export default function Clients(){
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
                                                             <InfoIcon color="primary"/>
                                                             <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
-                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+                                                            {getClientCases(client.id) === " / " ? <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/> : <DeleteIcon color="disabled"/> }                   
                                                         </TableCell>
                                                     </TableRow>
                                             }
@@ -231,6 +254,20 @@ export default function Clients(){
                                     <p> Test Modal </p>
                                 </Box>
                             </ClientModal>
+        <button
+            onClick={() => {
+                writeClientFile()
+            }}
+        >
+            Write client
+        </button>
+        <button
+            onClick={() => {
+                deleteClientFile()
+            }}
+        >
+            Delete file
+        </button>
                     </main>
                 </Box>
             </Grid>

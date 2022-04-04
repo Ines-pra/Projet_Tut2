@@ -25,6 +25,7 @@
     "electron-reload": "^2.0.0-alpha.1",
     "graphql": "^16.3.0",
     "react": "^17.0.2",
+    "react-confirm-alert": "^2.8.0",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.2",

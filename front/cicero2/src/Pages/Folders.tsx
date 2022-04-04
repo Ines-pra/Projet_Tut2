@@ -16,6 +16,9 @@ import DAOFactory from '../Modele/dao/factory/DAOFactory';
 import { Case } from '../Modele/metier/Case';
 import Form from "../Components/form";
 import InfoIcon from '@mui/icons-material/Info';
+import { confirmAlert } from 'react-confirm-alert'; 
+import '../Styles/alert.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const searchContainer = {
     display: "flex",
@@ -33,7 +36,8 @@ const searchInput = {
     margin: "5px",
 };
 const StyleAll = {
-    width : '100%'
+    width : '100%',
+    height: '100%'
 }
 const styletable = {
     border:'2px solid black',
@@ -52,37 +56,15 @@ const MainStyle = {
     justifyContent : 'flex-end'
 }
 const defaultCase: Case[] | (() => Case[]) = []
+const defaultClient: Client[] | (() => Client[]) = []
 const defaultEvent: Event[] | (() => Event[]) = []
 
 export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
-    const [eventsList, setEventsList] = React.useState(defaultEvent);
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const daoF = DAOFactory.getDAOFactory();
-
-    // const clients1 = [
-    //     {'id':1,'lastname':'Labrio','firstname':'Jacques','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
-       
-    //   ]
-    
-    //   const clients2 = [
-    //     {'id':3,'lastname':'Frosh','firstname':'Frank','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
-        
-    //   ]
-
-    //   const clients = [
-    //     {'id':5,'lastname':'Doni','firstname':'hubert','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
-      
-    //   ]
-
-    // const elements = [
-    //     {'id':10, 'folder':23, 'clients':clients, 'status' : false, 'description':'bbbbbbb', 'date':'17/03/2021',},
-    //     {'id':20, 'folder':123, 'clients':clients1, 'status' : false,'description':'bbbbbbb', 'date':'17/03/2021',},
-    //     {'id':30, 'folder':44, 'clients':clients2,'status' : true,'description':'bbbbbbb', 'date':'17/03/2021',},
-    // ]
-
 
     React.useEffect(() => {
      function handleResize() {
@@ -131,8 +113,40 @@ export default function Folders(){
     };
     // Suppression d'un dossier //
     const deleteCase = async (id: number) => {
-      daoF!.getCaseDAO().delete(id);
-      setCasesList(casesList.filter(c => c.id !== id));
+        confirmAlert({
+            customUI: ({ onClose }) => {
+              return (
+                <div className='custom-ui'>
+                    <h1>Etes-vous sur ?</h1>
+                    <p>Etes-vous sur de vouloir supprimer ce dossier ?</p>
+                    <Button     
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#d9534f",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginRight: "5px",
+                        }} 
+                        onClick={onClose}>Annuler</Button>
+                    <Button
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#0275d8",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginLeft: "5px",
+                        }}
+                        onClick={() => {
+                            daoF!.getCaseDAO().delete(id);
+                            setCasesList(casesList.filter(c => c.id !== id));
+                            onClose();
+                        }}>Confirmer</Button>
+                </div>
+              );
+            }
+        });
     };
 
     const deleteCaseFile = async () => {
@@ -149,56 +163,42 @@ export default function Folders(){
       daoF!.getCaseDAO().update(cas);
     };
 
+    const checkFilter = (code: string, status: string, clients: Client[]) => {
+        for (let i = 0; i < clients.length; i++) {
+            if((clients[i].firstname.toLowerCase().includes(filter.toLowerCase()) || clients[i].lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                return true;
+            } 
+        }
+        return false;
+    }
+
+    const getClient = (clients: Client[]) => {
+        let client = "";
+        for (let i = 0; i < clients.length; i++) {
+            if (i + 1 === clients.length) {
+                client += clients[i].firstname + " " + clients[i].lastname;
+            } else {
+                client += clients[i].firstname + " " + clients[i].lastname + ", ";
+            }
+        }
+        return client;
+    }
+
     return (
 
     <Grid sx={StyleAll}>
         <Header/>
-                <button
-            onClick={() => {
-                writeCaseFile()
-            }}
-        >
-            Create case
-        </button>
-        <button
-            onClick={() => {
-                readCaseFile()
-            }}
-        >
-            Read cases
-        </button>
-        <button
-            onClick={() => {
-                deleteCaseFile()
-            }}
-        >
-            Delete case file
-        </button>
-                <button
-            onClick={() => {
-                deleteCase(2)
-            }}
-        >
-            Delete case
-        </button>
-        <button
-            onClick={() => {
-                updateCaseFile()
-            }}
-        >
-            Update case
-        </button>
-        <Box sx={{ display: 'flex', minWidth: 700 }}>
+        <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
             <SideBar />
             <main className='main'>
 
                 <Box maxWidth="lg" sx={MainStyle}>
-                    <Grid sx={windowSize >= 750 ?{ display: 'flex', justifyContent:'space-between', marginTop:5}:{display: 'flex',marginTop:5}}>
+                    <Grid sx={windowSize >= 750 ?{ display: 'flex', justifyContent:'space-between', marginTop:5} : {display: 'flex', marginTop:5}}>
                         <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
                             <h3>Dossiers</h3>
                         </Box>
                         
-                        <Box sx={ windowSize >= 750 ?{ display: 'flex', justifyContent: 'flex-end'}: {display:'flex', flexDirection:'column'}}>
+                        <Box sx={ windowSize >= 750 ?{ display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
                             <FormControl fullWidth sx={FormStyle}>
                                 <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
                                 <Select
@@ -243,15 +243,13 @@ export default function Folders(){
                         </TableHead>
                         <TableBody>
                             {casesList.map(casee => {
-                                
-                                return casee.clients.map((client: Client) => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
-                                    if ((client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || casee.code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                                    if (checkFilter(casee.code, status, casee.clients)) {
                                         return (
                                             <TableRow key={casee.id}>
                                                 <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours '}</TableCell>
-                                                <TableCell align="center" sx={StyleCell}>{client.firstname} {client.lastname}</TableCell>
+                                                <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
                                                     <InfoIcon color="primary"/>
                                                     <NoteAltIcon color="success"/>
@@ -260,11 +258,24 @@ export default function Folders(){
                                             </TableRow>
                                         )
                                     }
-                                })
                             })}
                         </TableBody>
 
                     </Table>
+        <button
+            onClick={() => {
+                writeCaseFile()
+            }}
+        >
+            Create case
+        </button>
+        <button
+            onClick={() => {
+                deleteCaseFile()
+            }}
+        >
+            Delete case file
+        </button>
             </main>
         </Box>
         

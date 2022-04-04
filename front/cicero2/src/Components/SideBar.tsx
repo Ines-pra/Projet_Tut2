@@ -11,7 +11,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import '../Styles/sidebar.css';
 
 const styleIcon = {
-    color: 'darkgray',
+    color: '#c6e5b3',
     fontSize: '2rem',
 };
 
@@ -25,10 +25,10 @@ const navigationLinks = [
     position: 'relative',
     whiteSpace: 'nowrap',
     width: 240,
-    height: '91vh',
+    height: '100%',
     paddingTop: '10px',
     paddingBottom: '10px',
-    background: '#535454',
+    background: '#000000',
     color: '#fff',
     alignItems: 'center',
     border: '1px solid black',
@@ -37,8 +37,8 @@ const navigationLinks = [
   const styleSideBar = {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: '13%',
-    height: '90vh',
+    width: '15%',
+    height: '100%',
     paddingTop: '10px',
     paddingBottom: '10px',
     background: '#535454',
@@ -60,20 +60,14 @@ export default function SideBar(){
     const [open, setOpen] = React.useState(false);
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
 
-
    React.useEffect(() => {
     function handleResize() {
         setWindowSize(window.innerWidth);
       }
-    //   console.log(windowSize)
-
       window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-
-
-    // console.log(window.innerWidth)
     return(
         <AppBar sx={windowSize >= 900 ? styleSideBarLarge : styleSideBar}>
             <Container maxWidth="md">
@@ -86,19 +80,14 @@ export default function SideBar(){
                                 <ListItemIcon >
                                     {item.icon}
                                 </ListItemIcon>
-                                <NavLink
-                                    
-                                style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20, color: "white"}
-                                                    : {marginRight: 20,textDecoration: "none", color: "rgb(193, 193, 194)"}}
-                        
-                                
-                                color="textPrimary"
-                                //variant="button"
-                                //underline="none"
-                                to={item.href}
-                                key={item.name}
-                                >
-                                {item.name}
+                                <NavLink  
+                                    style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20, color: "white"}
+                                                        : {marginRight: 20,textDecoration: "none", color: "rgb(193, 193, 194)"}}
+                                    color="textPrimary"
+                                    to={item.href}
+                                    key={item.name}
+                                    >
+                                    {item.name}
                                 </NavLink>
                             </ListItem>
                         ))}
@@ -139,8 +128,6 @@ export default function SideBar(){
                             style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20}
                             : {marginRight: 20,textDecoration: "none",}}
                             color="textPrimary"
-                            //variant="button"
-                            //underline="none"
                             to={item.href}
                         >
                             {item.name}
