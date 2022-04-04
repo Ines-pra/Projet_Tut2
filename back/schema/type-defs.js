@@ -27,34 +27,40 @@ const typeDefs = gql`
     type Case_af {
         id: ID!
         description: String!
-        date_begin: DateTime!
+        startedAt: DateTime!
         status: String!
-        date_end: DateTime!
+        endedAt: DateTime!
         clients: [Client]
         events: [Event]
+        code: String!
     } 
 
     input Case_af_input {
+        id: ID
         description: String!
-        date_begin: DateTime!
+        startedAt: DateTime!
         status: String!
-        date_end: DateTime!
+        endedAt: DateTime!
+        code: String!
     } 
 
     input ClientInput {
+        id:ID
         lastname: String!
         firstname: String!
         address: String!
-        birthday: DateTime!
-        createddate: DateTime!
+        birthDate: DateTime!
+        createdDate: DateTime!
     } 
 
     input EventInput {
+        id:ID
         description: String!
-        datecrea: String!
+        createdDate: DateTime!
         duration: Int!
-        id_case: String!
+        idCase: ID!
     } 
+    
 
     type Query {
     
@@ -73,7 +79,12 @@ const typeDefs = gql`
         createClient( input: ClientInput!): Client!,
         createEvent( input: EventInput!): Event!,
         createCase_af( input: Case_af_input!): Case_af!,
-
+        deleteEvent(id:ID!): String,
+        deleteCase_af(id:ID!): String,
+        deleteClient(id:ID!): String,
+        updateEvent(input: EventInput!): String,
+        updateCase_af(input: Case_af_input!): String,
+        updateClient(input: ClientInput!):String,
     }
 `
 

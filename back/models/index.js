@@ -1,5 +1,6 @@
 // Pour réparer la base de données se besoin
 const {db, connection} = require('../database/database');
+require('dotenv').config()
 
 connection.sync({force:true}).then((result) => {
     console.log(result);
