@@ -28,7 +28,7 @@ const typeDefs = gql`
         id: ID!
         description: String!
         startedAt: DateTime!
-        status: String!
+        status: Boolean!
         endedAt: DateTime!
         clients: [Client]
         events: [Event]
@@ -39,10 +39,15 @@ const typeDefs = gql`
         id: ID
         description: String!
         startedAt: DateTime!
-        status: String!
+        status: Boolean!
         endedAt: DateTime!
         code: String!
     } 
+
+    input Eq_client_caseInput{
+        caseAfId: ID!
+        clientId: ID!
+    }
 
     input ClientInput {
         id:ID
@@ -85,6 +90,7 @@ const typeDefs = gql`
         updateEvent(input: EventInput!): String,
         updateCase_af(input: Case_af_input!): String,
         updateClient(input: ClientInput!):String,
+        linkClientAff(input: Eq_client_caseInput):String,
     }
 `
 

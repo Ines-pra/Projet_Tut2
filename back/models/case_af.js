@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     status: {
-      type: DataTypes.STRING(70),
+      type: DataTypes.BOOLEAN,
       allowNull: false
     },
     endedAt: {

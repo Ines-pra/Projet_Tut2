@@ -14,7 +14,7 @@ import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField
 import { Case } from "../Modele/metier/Case";
 import { Event } from "../Modele/metier/Event";
 import { Label } from "@mui/icons-material";
-import { textAlign, width } from "@mui/system";
+
 import './main.css'
 
 import {

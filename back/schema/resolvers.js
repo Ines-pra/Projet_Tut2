@@ -80,6 +80,10 @@ const resolvers = {
 
                 return "true";
                 // return db.client.findOne({where: {id:id}})
+            },
+            linkClientAff: async(root, args, context) => {
+                const {caseAfId, clientId} = args.input;
+                db.eq_client_case.create({caseAfId, clientId});
             }
 
 
