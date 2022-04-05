@@ -57,10 +57,13 @@ const defaultCase: Case[] | (() => Case[]) = []
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
+
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
     const [id, setId] = React.useState(0);
+
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
 
@@ -78,6 +81,7 @@ export default function Clients(){
     function goToModal(id:number){
         handleOpen();
         setId(id);
+        console.log(open);  
     }
 
     // Lecture du fichier client.json //
@@ -218,7 +222,7 @@ export default function Clients(){
         >
             Update client
         </button>
-        <ClientModal openEdit={open} handleClose={handleClose} id={id}/>
+        <ClientModal openNew={open} handleClose={handleClose} id={id}/>
                 <Box sx={{ display: 'flex', minWidth: 700 }}>
                     <SideBar />
                     <main className='main'>
@@ -264,7 +268,7 @@ export default function Clients(){
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
                                                             <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-                                                            <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
+                                                            <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
                                                     </TableRow>

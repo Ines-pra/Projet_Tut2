@@ -97,7 +97,7 @@ export default function EventModal(openEdit: any) {
                 helperText={validDuration}
             />
 
-           <Button variant="outlined" color="success" onClick= {() => setEvent(description, new Date(date), duree)}>
+          <Button variant="outlined" color="success" onClick= {() => setEvent(description, new Date(date), duree)}>
             Valider
           </Button> 
 

@@ -1,7 +1,7 @@
 import { Case } from '../../metier/Case';
 import CaseDAO from '../CaseDAO';
 import { client } from '../../../index';
-import { CREATE_CASE, DELETE_CASE, LINK_CLI_CASE } from '../../../graphql/Mutations/mutationsCase';
+import { CREATE_CASE, DELETE_CASE, LINK_CLI_CASE, UPDATE_CASE } from '../../../graphql/Mutations/mutationsCase';
 import { GET_ALL_CASE, GET_CASE_ID } from '../../../graphql/Query/queryCase';
 
 
@@ -34,7 +34,18 @@ export class sqlCaseDAO implements CaseDAO {
         return cas.id;
     }
     public async update(object: Case): Promise<boolean> {
-        
+        client
+        .mutate({
+            mutation:UPDATE_CASE,
+            variables:{
+                description: object.description,
+                status: object.status,
+                code: object.code,
+                endedAt: object.endedAt,
+                startedAt: object.startedAt,
+                id: object.id
+            } 
+        })
         return true;
     }
     public async delete(id: number): Promise<boolean> {

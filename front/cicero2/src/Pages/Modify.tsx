@@ -5,7 +5,7 @@ import { Container } from '@mui/material';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
-import Form from "../Components/form";
+import Form from "./Modal/FolderModal";
 import './main.css';
 import React, { useState, useRef, createRef, RefObject } from "react";
 import { useMutation } from "@apollo/client";
@@ -16,20 +16,6 @@ import { Event } from "../Modele/metier/Event";
 import { Label } from "@mui/icons-material";
 
 import './main.css'
-
-import {
-    ApolloClient,
-    InMemoryCache,
-    ApolloProvider,
-    HttpLink,
-    from,
-  } from "@apollo/client";
-  import { onError } from "@apollo/client/link/error";
-
-  
-  const client = new ApolloClient({
-    cache: new InMemoryCache(),
-  });
 
 export default function Modify({isShowing} : {isShowing:boolean}){
     const env = useSelector((state: any) => state.env.environnement);
@@ -189,7 +175,6 @@ export default function Modify({isShowing} : {isShowing:boolean}){
             <SideBar />
             <main className="main">
                 <Container maxWidth="lg">
-                    <ApolloProvider client={client} >
 
                     
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3}} >
@@ -342,7 +327,6 @@ export default function Modify({isShowing} : {isShowing:boolean}){
                         </Grid>
                     </Box>
 
-                    </ApolloProvider>
                     
                 </Container>
             </main>

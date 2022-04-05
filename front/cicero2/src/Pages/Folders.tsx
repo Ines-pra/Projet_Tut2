@@ -14,7 +14,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
-import Form from "../Components/form";
+import FolderModal from "./Modal/FolderModal";
 import InfoIcon from '@mui/icons-material/Info';
 import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -62,7 +62,19 @@ export default function Folders(){
     const [casesList, setCasesList] = React.useState(defaultCase);
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const daoF = DAOFactory.getDAOFactory();
-  
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const [id, setId] = React.useState(0);
+
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);
+        console.log(open);  
+    }
+
     React.useEffect(() => {
      function handleResize() {
          setWindowSize(window.innerWidth);
@@ -186,6 +198,9 @@ export default function Folders(){
     <Grid sx={StyleAll}>
         <Header/>
         <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
+
+            <FolderModal openModal={open} handleClose={handleClose} id={id} />
+
             <SideBar />
             <main className='main'>
                 <Box maxWidth="lg" sx={MainStyle}>
@@ -219,8 +234,14 @@ export default function Folders(){
                                     />
                                 </Box>
                             </Toolbar>
+                        
+                        <Button variant="contained" onClick={() => goToModal(0)}>
+                                Ajouter
+                        </Button>
+                        
                         </Box>
-                        {/* <Form openModal={openModal} id={1}  handleClose={handleClose}/> */}
+
+                 
                         {/* <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
                             Créer 
                         </NavLink> */}
@@ -249,7 +270,7 @@ export default function Folders(){
                                             <NavLink to={`/dossierinfo/`+ casee.id}>
                                                 <InfoIcon color="primary"/>
                                             </NavLink>
-                                            <NoteAltIcon color="success"/>
+                                            <NoteAltIcon onClick={() => { goToModal(casee.id) }} color="success"/>
                                             <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
                                         </TableCell>
                                     </TableRow>
