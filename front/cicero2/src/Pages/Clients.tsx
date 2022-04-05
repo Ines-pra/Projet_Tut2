@@ -5,7 +5,6 @@ import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
-import { Button } from '@mui/material';
 import { confirmAlert } from 'react-confirm-alert';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
@@ -64,15 +63,6 @@ export default function Clients(){
     const [id, setId] = React.useState(0);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
-
-    React.useEffect(() => {
-     function handleResize() {
-         setWindowSize(window.innerWidth);
-       }
- 
-       window.addEventListener("resize", handleResize);
-     return () => window.removeEventListener("resize", handleResize);
-    }, []);
 
     useEffect (() => {
         async function fetchData() {
@@ -228,7 +218,7 @@ export default function Clients(){
         >
             Update client
         </button>
-        <ClientModal openNew={open} handleClose={handleClose} id={id}/>
+        <ClientModal openEdit={open} handleClose={handleClose} id={id}/>
                 <Box sx={{ display: 'flex', minWidth: 700 }}>
                     <SideBar />
                     <main className='main'>
@@ -273,8 +263,8 @@ export default function Clients(){
                                                             {getClientCases(client.id)}
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <Link to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
-                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
+                                                            <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
+                                                            <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
                                                     </TableRow>
