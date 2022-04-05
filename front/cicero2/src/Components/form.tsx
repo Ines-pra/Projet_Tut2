@@ -191,7 +191,7 @@ function Form({openModal,handleClose,id}:{openModal:any,handleClose:any,id:numbe
 
         const value = refSelect.current?.value;
 
-        // ---- Code Flavien ------
+        //---- Code Flavien ------
         // let table = CaseInfo;
         // let newTable = [...table.Events, ContainClient];
         // table.Events = newTable;
@@ -220,36 +220,6 @@ function Form({openModal,handleClose,id}:{openModal:any,handleClose:any,id:numbe
         console.log(ContainClient);
         
       }
-
-      // function handleChangeEvent(evt:any) {
-      //   const value = evt.target.value;
-  
-      //   setEventElement({
-      //     ...EventElement,
-      //     [evt.target.name]: value  
-      //   });
-      // }
-
-      // function addEvent(){
-
-      //   let idEvent = (new Date()).getTime();
-      //   daoF!.getEventDAO().create(new Event(idEvent, formElement.id, EventElement.Description, EventElement.Date, EventElement.Duree, ))
-
-
-      //   const event = {
-      //     id: idEvent,
-      //     idCase:formElement.id,
-      //     Description: EventElement.Description,
-      //     Date: EventElement.Date,
-      //     Duree: EventElement.Duree
-      //   }
-
-      //   console.log(event);
-
-      //   // setEvents(
-      //   //   [...Events].concat(event)
-      //   //   )
-      // }
 
       
       const handleSubmit = (e:any) => {
@@ -533,9 +503,11 @@ function Form({openModal,handleClose,id}:{openModal:any,handleClose:any,id:numbe
                       onChange={handleChangeClient}
                     >
                       
+                      
                       { Clients.map((client:any)=> {
                         
                         // Client restant :
+
                         //if (!Clients.includes(client) ) {
                           return <MenuItem value={client?.nom + client?.prenom}> {client?.nom} {client?.prenom}</MenuItem>
                         //}
