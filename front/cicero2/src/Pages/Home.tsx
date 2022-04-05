@@ -1,13 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import SideBar from '../Components/SideBar';
-import { Container } from '@mui/material';
-import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
-import { height } from '@mui/system';
 
 const styleAll = {
   height: "100%",

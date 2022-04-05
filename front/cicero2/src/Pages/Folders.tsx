@@ -164,7 +164,7 @@ export default function Folders(){
                 <Grid item xs={12} md={2} direction="column">
                     <SideBar />
                 </Grid>
-                <Grid item xs md style={{ margin: "10px" }}>
+                <Grid item xs md style={{ margin: "15px" }}>
                     <Grid container xs={12} md={12} direction="row" alignItems="center"> 
                         <Grid item xs={12} md={4} sx={{ height: '100%' }}>
                             <h2>Dossiers</h2>
@@ -205,7 +205,7 @@ export default function Folders(){
                     </Grid>
                     <Grid item xs={12} md={12}>
                         <Table aria-label="customized table" sx={styletable}>
-                            <TableHead>
+                            <TableHead style={{ backgroundColor:"#c6e5b3" }}>
                             <TableRow>
                                 <TableCell align="center">Code</TableCell>
                                 <TableCell align="center">Statut</TableCell>
