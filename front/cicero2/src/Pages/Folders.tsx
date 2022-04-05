@@ -62,6 +62,10 @@ export default function Folders(){
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const daoF = DAOFactory.getDAOFactory();
 
+    const [openModal, setopenModal] = React.useState(false);
+    const handleOpen = () => setopenModal(true);
+    const handleClose = () => setopenModal(false);
+
     // const clients1 = [
     //     {'id':1,'lastname':'Labrio','firstname':'Jacques','adresse':'boulevard du café','Naissance':new Date(),'date':new Date()},
        
@@ -228,7 +232,10 @@ export default function Folders(){
                                 </Box>
                             </Toolbar>
                         </Box>
-                        <Form />
+                        {/* <Form openModal={openModal} id={1}  handleClose={handleClose}/> */}
+                        {/* <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
+                            Créer 
+                        </NavLink> */}
                     </Grid>
                 </Box>
             

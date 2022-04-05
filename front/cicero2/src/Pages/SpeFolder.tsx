@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
 import Form from "../Components/form";
 import './main.css';
-import React, { useState, useRef, createRef, RefObject } from "react";
+import React, { useState, useRef, createRef, RefObject,useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
@@ -17,6 +17,7 @@ import { Label } from "@mui/icons-material";
 import { textAlign, width } from "@mui/system";
 import './main.css'
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import { Filesystem, Directory } from "@capacitor/filesystem";
 
 import {
     ApolloClient,
@@ -34,9 +35,13 @@ import { Link } from 'react-router-dom';
     cache: new InMemoryCache(),
   });
 
+  const defaultCase: Case[] | (() => Case[]) = []
+  const defaultEvent: Event[] | (() => Event[]) = []
+
 export default function SpeFolder({id}:{id:number}){
     const env = useSelector((state: any) => state.env.environnement);
-
+    const [caseInfo, setCaseInfo] = React.useState({});
+    const [eventsList, setEventsList] = React.useState(defaultEvent);
     const daoF = DAOFactory.getDAOFactory();
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
 
@@ -86,6 +91,10 @@ export default function SpeFolder({id}:{id:number}){
     }]
 
     const [Clients, setClients] = React.useState([]);
+
+    const [openModal, setopenModal] = React.useState(false);
+    const handleOpen = () => setopenModal(true);
+    const handleClose = () => setopenModal(false);
 
     const [open, setopen] = React.useState(false);
     const [Events, setEvents] = React.useState([]);
@@ -206,6 +215,55 @@ export default function SpeFolder({id}:{id:number}){
         flexDirection:'column',
         padding:1
       }
+
+
+      useEffect (() => {
+        async function fetchData() {
+            const response = await daoF!.getCaseDAO().findById(id);
+            console.log(response);
+            setCaseInfo(response);
+            return response;
+            }
+            fetchData();
+        }, []);
+
+        //////\ CASE /\\\\\\
+        // Lecture du fichier case.json //
+        const readCaseFile = async () => {
+            let ca = await daoF!.getCaseDAO().findAll();
+            console.log(ca);
+        };
+        // Ajout d'un dossier //
+        // const writeCaseFile = async () => {
+        //     let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
+        //     let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
+        //     let cas = new Case(1, code, "", new Date(), true, new Date(), [client], []);
+        //     let id = await daoF!.getCaseDAO().create(cas);
+        //     cas.id = id;
+        //     setCasesList([...casesList, cas]);
+        // };
+
+        // Suppression d'un dossier //
+        // const deleteCase = async (id: number) => {
+        //   daoF!.getCaseDAO().delete(id);
+        //   setCasesList(casesList.filter(c => c.id !== id));
+        // };
+
+        const deleteCaseFile = async () => {
+          await Filesystem.deleteFile({
+            path: 'case.json',
+            directory: Directory.Documents,
+          });
+        };
+
+        // // Mise à jour du fichier case.json //
+        // const updateCaseFile = async () => {
+        //   let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
+        //   setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
+        //   daoF!.getCaseDAO().update(cas);
+        // };
+
+        
     return (
 
       
@@ -252,7 +310,9 @@ export default function SpeFolder({id}:{id:number}){
                                       <Grid sx={{display:'flex', flexDirection:'row', alignSelf:'center'}}>
                                           {/* <Button variant="contained" onClick={() => {setmodal(!modal)}}>Modifier dossier</Button>
                                            */}
-                                           <Form/>
+                                           <Button onClick={()=>setopenModal(true)}>Modifier</Button>
+                                           <Form id={3}  openModal={openModal}  handleClose={handleClose}/>
+
                                           <Button variant="contained" sx={{height:'35px', marginLeft:'3%',backgroundColor:'red'}}>Supprimer</Button>
                                       </Grid>
                                       

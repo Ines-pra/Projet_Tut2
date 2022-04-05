@@ -31,7 +31,7 @@ function App() {
           {/* </Route> */}
           <Route path="/create" element={<Create />}>
           </Route> 
-          <Route path="/dossier" element={<SpeFolder id={3}/>}>
+          <Route path="/dossier" element={<SpeFolder id={0}/>}>
           </Route> 
           <Route path="/clientsInfo" element={<ClientsInfo />}>
           </Route> 
