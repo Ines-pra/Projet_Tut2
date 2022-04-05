@@ -1,12 +1,9 @@
-import { Stack } from '@mui/material';
-import { height } from '@mui/system';
+import { Grid } from '@mui/material';
 import logo from '../assets/img/cicero_logo.png';
 
 const styleHeader = {
     background: '#000000',
     color: '#fff',
-    width: '100%',
-    height: '70px',
 };
 
 const styleLogo = {
@@ -20,8 +17,8 @@ const styleLogo = {
 
 export default function Header(){
     return (
-        <Stack sx={styleHeader}>
+        <Grid item xs={12} md={12} style={{ height: '10%'}} sx={styleHeader}>
             <img src={logo} alt="logo" style={styleLogo}/>
-        </Stack>
+        </Grid>
     );
 } 

@@ -24,7 +24,7 @@ const navigationLinks = [
   const styleSideBarLarge = {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: 240,
+    width: '100%',
     height: '100%',
     paddingTop: '10px',
     paddingBottom: '10px',
@@ -37,10 +37,8 @@ const navigationLinks = [
   const styleSideBar = {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: '15%',
-    height: '100%',
-    paddingTop: '10px',
-    paddingBottom: '10px',
+    width: '100%',
+    paddingRight: '50px',
     background: '#535454',
     color: '#fff',
     alignItems: 'center',
@@ -72,7 +70,6 @@ export default function SideBar(){
         <AppBar sx={windowSize >= 900 ? styleSideBarLarge : styleSideBar}>
             <Container maxWidth="md">
                 <Toolbar disableGutters>
-                
                     <Box sx={{ display: { xs: "none", md: "block" } }}>
                         <List sx={styleListMenu}>
                         {navigationLinks.map((item) => (
@@ -93,9 +90,9 @@ export default function SideBar(){
                         ))}
                         </List>
                     </Box>
-                    <Box sx={{ display: { xs: "block", md: "none" } }}>
+                    <Box sx={{ display: { xs: "block", md: "none" }}}>
                         <IconButton onClick={() => setOpen(true)}>
-                        <MenuIcon />
+                            <MenuIcon />
                         </IconButton>
                     </Box>
                 </ Toolbar>
@@ -139,65 +136,3 @@ export default function SideBar(){
         </AppBar>
     );
 }
-
-
-
-
-// const styleSideBar = {
-//     position: 'relative',
-//     whiteSpace: 'nowrap',
-//     width: 240,
-//     height: '85vh',
-//     paddingTop: '10px',
-//     paddingBottom: '10px',
-//     background: '#535454',
-//     color: '#fff',
-//     alignItems: 'center',
-//     border: '1px solid black',
-// };
-
-// const styleIcon = {
-//     color: '#fff',
-//     fontSize: '2rem',
-// };
-
-// const styleListMenu = {
-//     width: '100%',
-// };
-
-// const styleItemMenu = {
-//     width: "240px",
-// };
-
-// export default function SideBar() {
-//     return (
-//         <Box sx={styleSideBar}>
-//             <List disablePadding sx={styleListMenu}>
-//                 <ListItem button sx={styleItemMenu}>
-//                     <ListItemIcon>
-//                         <HomeIcon sx={styleIcon}/>
-//                     </ListItemIcon>
-//                     <NavLink to="/" style={({ isActive }) =>
-//                         isActive ? { textDecoration: "none", fontWeight: "bold",}
-//                           : {}} className="styleLink">Accueil</NavLink>
-//                 </ListItem>
-//                 <ListItem button sx={styleItemMenu}>
-//                     <ListItemIcon>
-//                         <AccountCircleIcon sx={styleIcon}/>
-//                     </ListItemIcon>
-//                     <NavLink to="/clients" style={({ isActive }) =>
-//                         isActive ? { textDecoration: "none", fontWeight: "bold",}
-//                           : {}} className="styleLink">Clients</NavLink>
-//                 </ListItem>
-//                 <ListItem button sx={styleItemMenu}>
-//                     <ListItemIcon>
-//                         <FolderIcon sx={styleIcon}/>
-//                     </ListItemIcon>
-//                     <NavLink to="/dossiers" style={({ isActive }) =>
-//                         isActive ? { textDecoration: "none", fontWeight: "bold",}
-//                           : {}} className="styleLink">Dossiers</NavLink>
-//                 </ListItem>
-//             </List>
-//         </Box>
-//   );
-// }

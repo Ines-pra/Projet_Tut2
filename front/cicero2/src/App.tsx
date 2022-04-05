@@ -13,9 +13,6 @@ import { Create } from '@mui/icons-material';
 import SpeFolder from './Pages/SpeFolder';
 
 function App() {
-  console.log(process.env.REACT_APP_ENV);
-  console.log(process.env.APP_ENV);
-  
   return (
     <Router>
       <Routes>

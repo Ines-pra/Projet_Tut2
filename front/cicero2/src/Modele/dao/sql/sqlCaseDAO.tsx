@@ -17,7 +17,7 @@ export class sqlCaseDAO implements CaseDAO {
                 startedAt:"2022-03-31T22:43:47.000Z",
                 endedAt:"2022-03-31T22:43:47.000Z",
                 code:cas.code,
-                status:cas.status.toString()
+                status:cas.status
             }
         });
         return cas.id;
