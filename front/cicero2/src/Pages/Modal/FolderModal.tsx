@@ -234,16 +234,6 @@ function FolderModal({openModal,handleClose,id}:{openModal:boolean,handleClose:a
                         onChange={handleChange}  
                         
                   /> 
-                  <TextField
-                      variant="outlined"
-                      margin="normal"
-                      required
-                      type="date"
-                      name="DateStart"
-                      placeholder="DateStart"
-                      onChange={handleChange}
-                      value={moment(CaseInfo.DateStart).format('YYYY-MM-DD')}
-                    />
 
                   
                   <FormControl fullWidth>
