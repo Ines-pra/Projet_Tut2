@@ -9,26 +9,26 @@ import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
 import { height } from '@mui/system';
 
-const StyleAll = {
-    width: '100%',
-    height: '100%'
+const styleAll = {
+  height: "100%",
+  width: "auto",
 }
 
 export default function Home(){
     const env = useSelector((state: any) => state.env.environnement);
     return (
 
-    <Grid sx={StyleAll}>
+    <Grid container style={styleAll}>
         <Header/>
-        <Box sx={{ display: 'flex', width: '100%', height: '100%' }}>
-            <SideBar />
-            <main className="content">
-                <Container maxWidth="lg">
+            <Grid container style={{ height: '90%'}}>
+                <Grid item xs={12} md={2} direction="column">
+                    <SideBar />
+                </Grid>
+                <Grid item xs md style={{ margin: "20px"}}>
                     <h2>CONTENU Accueil</h2>
                     <p>{env}</p>
-                </Container>
-            </main>
-        </Box>
+                </Grid>
+            </Grid>
     </Grid>
     );
 } 
