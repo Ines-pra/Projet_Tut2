@@ -18,13 +18,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const searchContainer = {
-    display: "flex",
-    paddingLeft: "20px",
-    paddingRight: "20px",
-    marginTop: "5px",
-    marginBottom: "5px",
-};
+const styleAll = {
+  height: "100%",
+  width: "auto",
+}
 const searchIcon = {
     alignSelf: "flex-end",
     marginBottom: "5px",
@@ -33,22 +30,14 @@ const searchInput = {
     width: "160px",
     margin: "5px",
 };
-const StyleAll = {
-    width : '100%', 
-    height: '100%'
-}
 const styletable = {
     border:'2px solid black',
     margin:'0 auto',
     marginTop:5,
-    maxWidth: '75%',
+    maxWidth: '90%',
 }
 const StyleCell = {
    boder:'1px solid grey',
-   height:40
-}
-const MainStyle = {
-    justifyContent : 'flex-end'
 }
 
 const defaultClient: Client[] | (() => Client[]) = []
@@ -83,12 +72,6 @@ export default function Clients(){
         setId(id);
         console.log(open);  
     }
-
-    // Lecture du fichier client.json //
-    const readClientFile = async () => {
-      let client = await daoF!.getClientDAO().findAll();
-      console.log(client);
-    };
     // Ajout d'un client //
     const writeClientFile = async () => {
       let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
@@ -185,100 +168,139 @@ export default function Clients(){
     }
 
     return (
-        <Grid sx={StyleAll}>
-                <Header/>
-                        <button
-            onClick={() => {
-                writeClientFile()
-            }}
-        >
-            Write client
-        </button>
-        <button
-            onClick={() => {
-                readClientFile()
-            }}
-        >
-            Read file
-        </button>
-        <button
-            onClick={() => {
-                deleteClientFile()
-            }}
-        >
-            Delete file
-        </button>
-                <button
-            onClick={() => {
-                deleteClient(2)
-            }}
-        >
-            Delete client
-        </button>
-        <button
-            onClick={() => {
-                updateClientFile()
-            }}
-        >
-            Update client
-        </button>
-        <ClientModal openNew={open} handleClose={handleClose} id={id}/>
-                <Box sx={{ display: 'flex', minWidth: 700 }}>
+        <Grid container style={styleAll}>
+            <Header/>
+            <ClientModal openNew={open} handleClose={handleClose} id={id}/>
+            <Grid container style={{ height: '90%'}}>
+                <Grid item xs={12} md={2} direction="column">
                     <SideBar />
-                    <main className='main'>
-
-                        <Box maxWidth="lg" sx={MainStyle}>
-                            <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
-                                <h3>Clients</h3>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-                                    <Toolbar>
-                                        <Box sx={searchContainer}>
-                                            <SearchIcon sx={searchIcon} />
-                                            <TextField
-                                            sx={searchInput}
-                                            onChange={handleSearchChange}
-                                            label="Recherche"
-                                            variant="standard"
-                                            />
-                                        </Box>
-                                    </Toolbar>
-                                </Box>
-                                <Button variant="contained" onClick={() => goToModal(0)}>
-                                            Ajouter
-                                </Button>
-                            </Grid>
-                        </Box>
-                            <Table aria-label="customized table" sx={styletable}>
-                                <TableHead>
-                                <TableRow>
-                                    <TableCell align="center">Nom</TableCell>
-                                    <TableCell align="center">Affaires associées</TableCell>
-                                    <TableCell align="center">Actions</TableCell>
-                                </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {clientsList.map(client => { 
-                                        if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) {
-                                            return <TableRow key={client.id}>
-                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >
-                                                                {client.firstname} {client.lastname}
-                                                        </TableCell>
-                                                        <TableCell align="center" sx={StyleCell}>
-                                                            {getClientCases(client.id)}
-                                                        </TableCell>
-                                                        <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                            <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-                                                            <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
-                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
-                                                        </TableCell>
-                                                    </TableRow>
-                                            }
-                                            })}
-                                </TableBody>   
-                            </Table>
-                            
-                    </main>
-                </Box>
+                </Grid>
+                <Grid item xs md style={{ margin: "15px" }}>
+                    <Grid container xs={12} md={12} direction="row" alignItems="center"> 
+                        <Grid item xs={12} md={4} sx={{ height: '100%' }}>
+                            <h2>Clients</h2>
+                        </Grid>
+                        <Grid container xs={12} md={8} direction="row" alignItems="center" sx={{height: '100%'}}>    
+                            <Grid item xs={12} md={10}>
+                                <Toolbar>
+                                    <SearchIcon sx={searchIcon} />
+                                    <TextField
+                                        sx={searchInput}
+                                        onChange={handleSearchChange}
+                                        label="Recherche"
+                                        variant="standard"
+                                        fullWidth
+                                    />
+                                </Toolbar>   
+                            </Grid>  
+                            <Grid item xs={12} md={2}>
+                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(0)}>Nouveau</Button>
+                            </Grid>                     
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <Table aria-label="customized table" sx={styletable}>
+                            <TableHead style={{ backgroundColor:"#c6e5b3" }}>
+                            <TableRow>
+                                <TableCell align="center">Nom</TableCell>
+                                <TableCell align="center">Affaires associées</TableCell>
+                                <TableCell align="center">Actions</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {clientsList.map(client => { 
+                                    if (checkFilter(getClientCases(client.id), client)) {
+                                        return <TableRow key={client.id}>
+                                                    <TableCell component="th" scope="row" align="center" width={'15%'} >
+                                                            {client.firstname} {client.lastname}
+                                                    </TableCell>
+                                                    <TableCell align="center" sx={StyleCell}>
+                                                        {getClientCases(client.id)}
+                                                    </TableCell>
+                                                    <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                                        <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
+                                                        <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
+                                                        <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+                                                    </TableCell>
+                                                </TableRow>
+                                        }
+                                        })}
+                            </TableBody>   
+                        </Table>
+                        <button onClick={() => {
+                                writeClientFile()
+                            }}> Write client
+                        </button>
+                        <button onClick={() => {
+                                deleteClientFile()
+                            }}> Delete file
+                        </button>
+                    </Grid>
+                </Grid>
             </Grid>
+        </Grid>
     );
+
+    // return (
+    //     <Grid sx={StyleAll}>
+    //             <Header/>
+    //     <ClientModal openEdit={open} handleClose={handleClose} id={id}/>
+    //             <Box sx={{ display: 'flex', minWidth: 700 }}>
+    //                 <SideBar />
+    //                 <main className='main'>
+
+    //                     <Box maxWidth="lg" sx={MainStyle}>
+    //                         <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
+    //                             <h3>Clients</h3>
+    //                             <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+    //                                 <Toolbar>
+    //                                     <Box sx={searchContainer}>
+    //                                         <SearchIcon sx={searchIcon} />
+    //                                         <TextField
+    //                                         sx={searchInput}
+    //                                         onChange={handleSearchChange}
+    //                                         label="Recherche"
+    //                                         variant="standard"
+    //                                         />
+    //                                     </Box>
+    //                                 </Toolbar>
+    //                             </Box>
+    //                             <Button variant="contained" onClick={() => goToModal(0)}>
+    //                                         Ajouter
+    //                             </Button>
+    //                         </Grid>
+    //                     </Box>
+    //                         <Table aria-label="customized table" sx={styletable}>
+    //                             <TableHead>
+    //                             <TableRow>
+    //                                 <TableCell align="center">Nom</TableCell>
+    //                                 <TableCell align="center">Affaires associées</TableCell>
+    //                                 <TableCell align="center">Actions</TableCell>
+    //                             </TableRow>
+    //                             </TableHead>
+    //                             <TableBody>
+    //                                 {clientsList.map(client => { 
+    //                                     if (checkFilter(getClientCases(client.id), client)) {
+    //                                         return <TableRow key={client.id}>
+    //                                                     <TableCell component="th" scope="row" align="center" width={'15%'} >
+    //                                                             {client.firstname} {client.lastname}
+    //                                                     </TableCell>
+    //                                                     <TableCell align="center" sx={StyleCell}>
+    //                                                         {getClientCases(client.id)}
+    //                                                     </TableCell>
+    //                                                     <TableCell align="center" width={'15%'} sx={StyleCell}>
+    //                                                         <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
+    //                                                         <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
+    //                                                         <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+    //                                                     </TableCell>
+    //                                                 </TableRow>
+    //                                         }
+    //                                         })}
+    //                             </TableBody>   
+    //                         </Table>
+                            
+    //                 </main>
+    //             </Box>
+    //         </Grid>
+    // );
 } 

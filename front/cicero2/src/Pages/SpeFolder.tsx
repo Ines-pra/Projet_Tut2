@@ -124,14 +124,14 @@ export default function SpeFolder(){
     <Grid container style={styleAll}>
         <Header/>
       <Grid container style={{ height: '90%'}}>
-        <Grid item xs={1} md={2} direction="column">
+        <Grid item xs={12} md={2} direction="column">
           <SideBar />
         </Grid>
         <Grid item xs md style={{ margin: "20px"}}>
           <Grid container xs={12} md={12} direction="row" alignItems="center">
-              <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
-                <span><NavLink to={'/dossiers'} className='link'>Dossier</NavLink> {' > ' + caseInfo.code}</span>
-              </Grid>
+            <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
+              <span><NavLink to={'/dossiers'} className='link'>Dossier</NavLink> {' > ' + caseInfo.code}</span>
+            </Grid>
             <Grid container xs={12} md={12} direction="row" style={StyleContainer} className="shadow" alignItems="center">
               <Grid item xs={4} md={1} sx={{ height: '100%' }}>
                 <FolderOpenIcon fontSize='large' sx={{fontSize: 85}}/>
