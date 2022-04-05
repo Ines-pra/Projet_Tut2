@@ -24,7 +24,9 @@ function App() {
           </Route>
           <Route path="/create" element={<Create />}>
           </Route> 
-          <Route path="/clientsInfo" element={<ClientsInfo />}>
+          <Route path="/dossier" element={<SpeFolder />}>
+          </Route> 
+          <Route path="/clientsInfo/:id" element={<ClientsInfo />}>
           </Route> 
           <Route path="/dossierinfo/:id" element={<SpeFolder />}> 
           </Route>
