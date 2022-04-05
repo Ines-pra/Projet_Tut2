@@ -53,7 +53,7 @@ export class sqlCaseDAO implements CaseDAO {
     }
     public async findById(id: number): Promise<Case> {
         let c1:Case = new Case(1, "", "", new Date, false, new Date, [], []);
-        client
+        await client
             .query({
                 query: GET_CASE_ID,
                 variables:{caseAfId:id}
@@ -61,9 +61,9 @@ export class sqlCaseDAO implements CaseDAO {
             .then(result =>{
                 
                     c1 = new Case(
-                        result.data.id, result.data.code, result.data.description, result.data.startedAt, result.data.status, result.data.endedAt, result.data.clients, result.data.events
+                        result.data.case_af.id, result.data.case_af.code, result.data.case_af.description, result.data.case_af.startedAt, result.data.case_af.status, result.data.case_af.endedAt, result.data.case_af.clients, result.data.case_af.events
                     );
-                    console.log(c1);
+                    console.log(result);
                     
              
             });

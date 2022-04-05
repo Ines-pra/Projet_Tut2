@@ -68,25 +68,26 @@ export class sqlClientDAO implements ClientDAO {
 
     public async findById(id: number): Promise<Client> {
         let c1:Client = new Client(1,"", "", "", new Date(), new Date());
-        client
+        await client
             .query({
                 query: GET_CLIENT_ID,
-                variables:{id:id}
+                variables:{clientId:id}
             })
             .then(result =>{
-                
-                    var c1 = new Client(
-                        result.data.id,
-                        result.data.firstname,
-                        result.data.lastname,
-                        result.data.address,
-                        result.data.birthDate,
-                        result.data.createdDate
+
+                    c1 = new Client(
+                        result.data.client.id,
+                        result.data.client.firstname,
+                        result.data.client.lastname,
+                        result.data.client.address,
+                        result.data.client.birthDate,
+                        result.data.client.createdDate
                     );
-                    console.log(c1);
-             
+                    console.log(result.data.client);
+
+
             });
-        
+
         return c1;
     }
 
