@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
@@ -48,19 +48,20 @@ const StyleCell = {
 const MainStyle = {
     justifyContent : 'flex-end'
 }
-const ModalStyle = {
-    width: 500,
-    height:500,
-    backgroundColor: '#fff',
-    border: '1px solid black'
-};
+
 const defaultClient: Client[] | (() => Client[]) = []
 const defaultCase: Case[] | (() => Case[]) = []
 
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
-    const [modalOpen, setModalOpen] = useState(false);
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const [id, setId] = React.useState(0);
+
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
 
@@ -74,6 +75,11 @@ export default function Clients(){
             }
             fetchData();
     }, []);
+
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);
+    }
 
     // Lecture du fichier client.json //
     const readClientFile = async () => {
@@ -119,17 +125,17 @@ export default function Clients(){
         console.log(clientCases, "clientCases", id);
         
         let concat = "";
-        for(let i = 0; i < clientCases.length; i++){
-            if(i + 1 === clientCases.length){
-                if(clientCases[i][0] !== null){
-                    concat += clientCases[i][0]!.code.toString();
-                }
-            } else {
-                if(clientCases[i][0] !== null){
-                    concat += clientCases[i][0]!.code.toString() + " - ";
-                }
-            }
-        }
+        // for(let i = 0; i < clientCases.length; i++){
+        //     if(i + 1 === clientCases.length){
+        //         if(clientCases[i][0] !== null){
+        //             concat += clientCases[i][0]!.code.toString();
+        //         }
+        //     } else {
+        //         if(clientCases[i][0] !== null){
+        //             concat += clientCases[i][0]!.code.toString() + " - ";
+        //         }
+        //     }
+        // }
         if(concat === ""){
             return " / ";
         } else {
@@ -176,6 +182,7 @@ export default function Clients(){
         >
             Update client
         </button>
+        <ClientModal openNew={open} handleClose={handleClose} id={id}/>
                 <Box sx={{ display: 'flex', minWidth: 700 }}>
                     <SideBar />
                     <main className='main'>
@@ -196,6 +203,9 @@ export default function Clients(){
                                         </Box>
                                     </Toolbar>
                                 </Box>
+                                <Button variant="contained" onClick={() => goToModal(0)}>
+                                            Ajouter
+                                </Button>
                             </Grid>
                         </Box>
                             <Table aria-label="customized table" sx={styletable}>
@@ -218,7 +228,7 @@ export default function Clients(){
                                                         </TableCell>
                                                         <TableCell align="center" width={'15%'} sx={StyleCell}>
                                                             <Link to={'/clientsInfo?id='+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
-                                                            <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
+                                                            <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
                                                             <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                         </TableCell>
                                                     </TableRow>
@@ -226,18 +236,7 @@ export default function Clients(){
                                             })}
                                 </TableBody>   
                             </Table>
-                            <ClientModal modalOpen={modalOpen}>  
-                                <Box sx={ModalStyle}>
-                                <Grid sx={{ display: 'flex', justifyContent:'end', marginTop:2, marginRight:2}}>
-                                
-                                    <IconButton onClick={()=> {setModalOpen(false);}}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                    
-                                </Grid>
-                                <p> Modal Client Update </p>
-                                </Box>
-                            </ClientModal>
+                            
                     </main>
                 </Box>
             </Grid>

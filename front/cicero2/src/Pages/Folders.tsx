@@ -10,7 +10,7 @@ import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import { height, margin } from '@mui/system';
+
 import { Link } from 'react-router-dom';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
 import { Case } from '../Modele/metier/Case';

@@ -24,7 +24,7 @@ const navigationLinks = [
   const styleSideBarLarge = {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: 240,
+    width: 200,
     height: '91vh',
     paddingTop: '10px',
     paddingBottom: '10px',
@@ -92,7 +92,7 @@ export default function SideBar(){
                                                     : {marginRight: 20,textDecoration: "none", color: "rgb(193, 193, 194)"}}
                         
                                 
-                                color="textPrimary"
+                                color="textSuccess"
                                 //variant="button"
                                 //underline="none"
                                 to={item.href}
