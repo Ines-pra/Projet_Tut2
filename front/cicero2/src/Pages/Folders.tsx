@@ -20,7 +20,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 const styleAll = {
   height: "100%",
   width: "auto",
-}
+};
 const searchIcon = {
     alignSelf: "flex-end",
     marginBottom: "5px",
@@ -34,14 +34,14 @@ const styletable = {
     margin:'0 auto',
     marginTop:5,
     maxWidth: '90%',
-}
+};
 const StyleCell = {
    boder:'1px solid grey',
-}
+};
 const FormStyle = {
     minWidth:200
-}
-const defaultCase: Case[] | (() => Case[]) = []
+};
+const defaultCase: Case[] | (() => Case[]) = [];
 
 export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
@@ -49,15 +49,7 @@ export default function Folders(){
     const [casesList, setCasesList] = React.useState(defaultCase);
     const daoF = DAOFactory.getDAOFactory();
  
-    function handleChangeSelect(event:any){
-        setSelectChoice(event.target.value)
-    }
-
-    const handleSearchChange = (e:any) => {
-        setFilter(e.target.value);
-      };
-
-     // Récupération de la liste des dossiers //
+    // Récupération de la liste des dossiers //
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getCaseDAO().findAll();
@@ -67,6 +59,13 @@ export default function Folders(){
             }
             fetchData();
     }, []);
+    // Filtre //
+    function handleChangeSelect(event:any){
+        setSelectChoice(event.target.value)
+    };
+    const handleSearchChange = (e:any) => {
+        setFilter(e.target.value);
+    };
     
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
@@ -122,14 +121,13 @@ export default function Folders(){
         directory: Directory.Documents,
       });
     };
-
     // Mise à jour du fichier case.json //
     const updateCaseFile = async () => {
       let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
       setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
       daoF!.getCaseDAO().update(cas);
     };
-
+    // Fonction de filtre du tableau //
     const checkFilter = (code: string, status: string, clients: Client[]) => {
         if(clients.length === 0) {
             if(code.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
@@ -143,8 +141,8 @@ export default function Folders(){
             }
         }
         return false;
-    }
-
+    };
+    // Récupération des clients //
     const getClient = (clients: Client[]) => {
         let client = "";
         for (let i = 0; i < clients.length; i++) {
@@ -155,7 +153,7 @@ export default function Folders(){
             }
         }
         return client;
-    }
+    };
 
     return (
         <Grid container style={styleAll}>
