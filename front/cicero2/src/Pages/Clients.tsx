@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
