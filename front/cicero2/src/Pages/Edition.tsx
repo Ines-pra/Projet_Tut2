@@ -7,14 +7,24 @@ import { Container } from '@mui/material';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
+import Form from "../Components/form";
+import './main.css';
 
-const styleHeader = {
-    background: '#535454',
-    color: '#fff',
-    width: '100%',
-};
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    HttpLink,
+    from,
+  } from "@apollo/client";
+  import { onError } from "@apollo/client/link/error";
 
-export default function Home(){
+  
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+  });
+
+export default function Edition(){
     const env = useSelector((state: any) => state.env.environnement);
     return (
 
@@ -22,10 +32,12 @@ export default function Home(){
         <Header/>
         <Box sx={{ display: 'flex' }}>
             <SideBar />
-            <main className="content">
+            <main className="main">
                 <Container maxWidth="lg">
-                    <h2>CONTENU Accueil</h2>
-                    <p>{env}</p>
+                    <ApolloProvider client={client} >
+                        <Form/>
+                    </ApolloProvider>
+                    
                 </Container>
             </main>
         </Box>

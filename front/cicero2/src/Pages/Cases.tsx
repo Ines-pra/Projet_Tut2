@@ -8,6 +8,8 @@ import { Stack } from '@mui/material';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Case } from "../Modele/metier/Case";
 import { Event } from "../Modele/metier/Event";
+import { Client } from "../Modele/metier/Client";
+import InfoIcon from '@mui/icons-material/Info';
 
 const styleHeader = {
     background: '#535454',
@@ -33,6 +35,17 @@ export default function Cases(){
             fetchData();
     }, []);
 
+    // Récupération de la liste des dossiers //
+    useEffect (() => {
+        async function fetchData() {
+            const response = await daoF!.getCaseDAO().findAll();
+            console.log(response);
+            setCasesList(response);
+            return response;
+            }
+            fetchData();
+    }, []);
+
     //////\ CASE /\\\\\\
     // Lecture du fichier case.json //
     const readCaseFile = async () => {
@@ -41,22 +54,17 @@ export default function Cases(){
     };
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
-      let cas = new Case(1, "electron", "", new Date(), true, new Date(), [], []);
-      setCasesList([...casesList, cas]);
-      daoF!.getCaseDAO().create(cas);
+        let client = new Client(2, "electron", "", "", new Date(), new Date());
+        let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
+        let cas = new Case(1, code, "Vole à main armée", new Date(), false, new Date(), [client], []);
+        setCasesList([...casesList, cas]);
+        daoF!.getCaseDAO().create(cas);
     };
     // Suppression d'un dossier //
     const deleteCase = async () => {
       daoF!.getCaseDAO().delete(3);
       setCasesList(casesList.filter(c => c.id !== 3));
 
-    };
-    // Suppression du fichier case.json //
-    const deleteCaseFile = async () => {
-      await Filesystem.deleteFile({
-        path: 'case.json',
-        directory: Directory.Documents,
-      });
     };
     // Mise à jour du fichier case.json //
     const updateCaseFile = async () => {
@@ -101,13 +109,13 @@ export default function Cases(){
         >
             Read cases
         </button>
-        <button
+        {/* <button
             onClick={() => {
                 deleteCaseFile()
             }}
         >
             Delete case file
-        </button>
+        </button> */}
         <button
             onClick={() => {
                 deleteCase()
