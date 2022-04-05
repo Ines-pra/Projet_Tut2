@@ -1,12 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
+import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
 import { confirmAlert } from 'react-confirm-alert';
-import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import Header from '../Components/Header';
@@ -21,7 +20,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 const styleAll = {
   height: "100%",
   width: "auto",
-}
+};
 const searchIcon = {
     alignSelf: "flex-end",
     marginBottom: "5px",
@@ -35,24 +34,25 @@ const styletable = {
     margin:'0 auto',
     marginTop:5,
     maxWidth: '90%',
-}
+};
 const StyleCell = {
    boder:'1px solid grey',
-}
+};
 
-const defaultClient: Client[] | (() => Client[]) = []
-const defaultCase: Case[] | (() => Case[]) = []
+const defaultClient: Client[] | (() => Client[]) = [];
+const defaultCase: Case[] | (() => Case[]) = [];
 
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
     const [id, setId] = React.useState(0);
     const [filter, setFilter] = useState("");
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const daoF = DAOFactory.getDAOFactory();
 
+    // Récupération des clients et des dossiers //
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getClientDAO().findAll();
@@ -63,11 +63,10 @@ export default function Clients(){
             }
             fetchData();
     }, []);
-
-    function goToModal(id:number){
-        handleOpen();
-        setId(id);
-    }
+    // Filtre //
+    const handleSearchChange = (e:any) => {
+        setFilter(e.target.value);
+    };
     // Ajout d'un client //
     const writeClientFile = async () => {
       let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
@@ -125,11 +124,12 @@ export default function Clients(){
             }
         });
     };
-
-    const handleSearchChange = (e:any) => {
-        setFilter(e.target.value);
-      };
-
+    // Affichage du modal //
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);
+    };
+    // Récupération des clients dans les dossiers //
     const getClientCases = (id: number) => {
         if (casesList.length === 0) {
             return " / ";
@@ -154,14 +154,14 @@ export default function Clients(){
         } else {
             return concat;
         }
-    }
-
+    };
+    // Fonction de filtre du tableau //
     const checkFilter = (code: string, client: Client) => {
         if(client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) {
             return true;
         } 
         return false;
-    }
+    };
 
     return (
         <Grid container style={styleAll}>
@@ -236,67 +236,4 @@ export default function Clients(){
             </Grid>
         </Grid>
     );
-
-    // return (
-    //     <Grid sx={StyleAll}>
-    //             <Header/>
-    //     <ClientModal openEdit={open} handleClose={handleClose} id={id}/>
-    //             <Box sx={{ display: 'flex', minWidth: 700 }}>
-    //                 <SideBar />
-    //                 <main className='main'>
-
-    //                     <Box maxWidth="lg" sx={MainStyle}>
-    //                         <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
-    //                             <h3>Clients</h3>
-    //                             <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-    //                                 <Toolbar>
-    //                                     <Box sx={searchContainer}>
-    //                                         <SearchIcon sx={searchIcon} />
-    //                                         <TextField
-    //                                         sx={searchInput}
-    //                                         onChange={handleSearchChange}
-    //                                         label="Recherche"
-    //                                         variant="standard"
-    //                                         />
-    //                                     </Box>
-    //                                 </Toolbar>
-    //                             </Box>
-    //                             <Button variant="contained" onClick={() => goToModal(0)}>
-    //                                         Ajouter
-    //                             </Button>
-    //                         </Grid>
-    //                     </Box>
-    //                         <Table aria-label="customized table" sx={styletable}>
-    //                             <TableHead>
-    //                             <TableRow>
-    //                                 <TableCell align="center">Nom</TableCell>
-    //                                 <TableCell align="center">Affaires associées</TableCell>
-    //                                 <TableCell align="center">Actions</TableCell>
-    //                             </TableRow>
-    //                             </TableHead>
-    //                             <TableBody>
-    //                                 {clientsList.map(client => { 
-    //                                     if (checkFilter(getClientCases(client.id), client)) {
-    //                                         return <TableRow key={client.id}>
-    //                                                     <TableCell component="th" scope="row" align="center" width={'15%'} >
-    //                                                             {client.firstname} {client.lastname}
-    //                                                     </TableCell>
-    //                                                     <TableCell align="center" sx={StyleCell}>
-    //                                                         {getClientCases(client.id)}
-    //                                                     </TableCell>
-    //                                                     <TableCell align="center" width={'15%'} sx={StyleCell}>
-    //                                                         <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-    //                                                         <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
-    //                                                         <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
-    //                                                     </TableCell>
-    //                                                 </TableRow>
-    //                                         }
-    //                                         })}
-    //                             </TableBody>   
-    //                         </Table>
-                            
-    //                 </main>
-    //             </Box>
-    //         </Grid>
-    // );
 } 

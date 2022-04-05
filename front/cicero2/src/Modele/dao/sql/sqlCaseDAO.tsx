@@ -22,8 +22,8 @@ export class sqlCaseDAO implements CaseDAO {
         });
 
         cas.clients.forEach(element => {
-            client.
-            mutate({
+            client
+            .mutate({
                 mutation: LINK_CLI_CASE,
                 variables: {
                     caseAfId: cas.id,
@@ -34,7 +34,7 @@ export class sqlCaseDAO implements CaseDAO {
         return cas.id;
     }
     public async update(object: Case): Promise<boolean> {
-        
+            
         return true;
     }
     public async delete(id: number): Promise<boolean> {
