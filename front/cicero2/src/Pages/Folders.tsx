@@ -62,7 +62,7 @@ export default function Folders(){
     const [casesList, setCasesList] = React.useState(defaultCase);
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const daoF = DAOFactory.getDAOFactory();
-
+  
     React.useEffect(() => {
      function handleResize() {
          setWindowSize(window.innerWidth);
@@ -220,7 +220,10 @@ export default function Folders(){
                                 </Box>
                             </Toolbar>
                         </Box>
-                        <Form />
+                        {/* <Form openModal={openModal} id={1}  handleClose={handleClose}/> */}
+                        {/* <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
+                            Créer 
+                        </NavLink> */}
                     </Grid>
                 </Box>
                 <Table aria-label="customized table" sx={styletable}>
