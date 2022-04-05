@@ -9,15 +9,15 @@ import { GET_ALL_CASE, GET_CASE_ID } from '../../../graphql/Query/queryCase';
 
 export class sqlCaseDAO implements CaseDAO {
     public async create(cas: Case): Promise<number> {
-        client.
-        mutate({
+        client
+        .mutate({
             mutation: CREATE_CASE,
             variables: {
                 description: cas.description,
                 startedAt:"2022-03-31T22:43:47.000Z",
                 endedAt:"2022-03-31T22:43:47.000Z",
                 code:cas.code,
-                status:cas.status.toString()
+                status:cas.status
             }
         });
 
@@ -38,8 +38,8 @@ export class sqlCaseDAO implements CaseDAO {
         return true;
     }
     public async delete(id: number): Promise<boolean> {
-        client.
-        mutate({
+        client
+        .mutate({
             mutation: DELETE_CASE,
             variables: {deleteCaseAfId:id}
         });
@@ -63,7 +63,7 @@ export class sqlCaseDAO implements CaseDAO {
         return obj;
     }
     public async findById(id: number): Promise<Case> {
-        let c1:Case = new Case(1, "", "", new Date, false, new Date, [], []);
+        let c1:Case = new Case(1, "", "", new Date(), false, new Date(), [], []);
         await client
             .query({
                 query: GET_CASE_ID,

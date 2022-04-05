@@ -11,7 +11,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import '../Styles/sidebar.css';
 
 const styleIcon = {
-    color: 'darkgray',
+    color: '#c6e5b3',
     fontSize: '2rem',
 };
 
@@ -24,11 +24,11 @@ const navigationLinks = [
   const styleSideBarLarge = {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: 200,
-    height: '91vh',
+    width: '100%',
+    height: '100%',
     paddingTop: '10px',
     paddingBottom: '10px',
-    background: '#535454',
+    background: '#000000',
     color: '#fff',
     alignItems: 'center',
     border: '1px solid black',
@@ -37,10 +37,8 @@ const navigationLinks = [
   const styleSideBar = {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: '13%',
-    height: '90vh',
-    paddingTop: '10px',
-    paddingBottom: '10px',
+    width: '100%',
+    paddingRight: '50px',
     background: '#535454',
     color: '#fff',
     alignItems: 'center',
@@ -60,25 +58,18 @@ export default function SideBar(){
     const [open, setOpen] = React.useState(false);
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
 
-
    React.useEffect(() => {
     function handleResize() {
         setWindowSize(window.innerWidth);
       }
-    //   console.log(windowSize)
-
       window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-
-
-    // console.log(window.innerWidth)
     return(
         <AppBar sx={windowSize >= 900 ? styleSideBarLarge : styleSideBar}>
             <Container maxWidth="md">
                 <Toolbar disableGutters>
-                
                     <Box sx={{ display: { xs: "none", md: "block" } }}>
                         <List sx={styleListMenu}>
                         {navigationLinks.map((item) => (
@@ -86,27 +77,22 @@ export default function SideBar(){
                                 <ListItemIcon >
                                     {item.icon}
                                 </ListItemIcon>
-                                <NavLink
-                                    
-                                style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20, color: "white"}
-                                                    : {marginRight: 20,textDecoration: "none", color: "rgb(193, 193, 194)"}}
-                        
-                                
-                                color="textSuccess"
-                                //variant="button"
-                                //underline="none"
-                                to={item.href}
-                                key={item.name}
-                                >
-                                {item.name}
+                                <NavLink  
+                                    style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20, color: "white"}
+                                                        : {marginRight: 20,textDecoration: "none", color: "rgb(193, 193, 194)"}}
+                                    color="textPrimary"
+                                    to={item.href}
+                                    key={item.name}
+                                    >
+                                    {item.name}
                                 </NavLink>
                             </ListItem>
                         ))}
                         </List>
                     </Box>
-                    <Box sx={{ display: { xs: "block", md: "none" } }}>
+                    <Box sx={{ display: { xs: "block", md: "none" }}}>
                         <IconButton onClick={() => setOpen(true)}>
-                        <MenuIcon />
+                            <MenuIcon />
                         </IconButton>
                     </Box>
                 </ Toolbar>
@@ -139,8 +125,6 @@ export default function SideBar(){
                             style={({ isActive }) => isActive ? { textDecoration: "none", fontWeight: "bold", marginRight: 20}
                             : {marginRight: 20,textDecoration: "none",}}
                             color="textPrimary"
-                            //variant="button"
-                            //underline="none"
                             to={item.href}
                         >
                             {item.name}
@@ -152,65 +136,3 @@ export default function SideBar(){
         </AppBar>
     );
 }
-
-
-
-
-// const styleSideBar = {
-//     position: 'relative',
-//     whiteSpace: 'nowrap',
-//     width: 240,
-//     height: '85vh',
-//     paddingTop: '10px',
-//     paddingBottom: '10px',
-//     background: '#535454',
-//     color: '#fff',
-//     alignItems: 'center',
-//     border: '1px solid black',
-// };
-
-// const styleIcon = {
-//     color: '#fff',
-//     fontSize: '2rem',
-// };
-
-// const styleListMenu = {
-//     width: '100%',
-// };
-
-// const styleItemMenu = {
-//     width: "240px",
-// };
-
-// export default function SideBar() {
-//     return (
-//         <Box sx={styleSideBar}>
-//             <List disablePadding sx={styleListMenu}>
-//                 <ListItem button sx={styleItemMenu}>
-//                     <ListItemIcon>
-//                         <HomeIcon sx={styleIcon}/>
-//                     </ListItemIcon>
-//                     <NavLink to="/" style={({ isActive }) =>
-//                         isActive ? { textDecoration: "none", fontWeight: "bold",}
-//                           : {}} className="styleLink">Accueil</NavLink>
-//                 </ListItem>
-//                 <ListItem button sx={styleItemMenu}>
-//                     <ListItemIcon>
-//                         <AccountCircleIcon sx={styleIcon}/>
-//                     </ListItemIcon>
-//                     <NavLink to="/clients" style={({ isActive }) =>
-//                         isActive ? { textDecoration: "none", fontWeight: "bold",}
-//                           : {}} className="styleLink">Clients</NavLink>
-//                 </ListItem>
-//                 <ListItem button sx={styleItemMenu}>
-//                     <ListItemIcon>
-//                         <FolderIcon sx={styleIcon}/>
-//                     </ListItemIcon>
-//                     <NavLink to="/dossiers" style={({ isActive }) =>
-//                         isActive ? { textDecoration: "none", fontWeight: "bold",}
-//                           : {}} className="styleLink">Dossiers</NavLink>
-//                 </ListItem>
-//             </List>
-//         </Box>
-//   );
-// }
