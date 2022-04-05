@@ -7,25 +7,20 @@ import { Client } from "../Modele/metier/Client";
 import { Event } from "../Modele/metier/Event";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { NavLink } from 'react-router-dom';
-import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
-import Form from "../Components/form";
 import InfoIcon from '@mui/icons-material/Info';
 import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const searchContainer = {
-    display: "flex",
-    paddingLeft: "20px",
-    paddingRight: "20px",
-    marginTop: "5px",
-    marginBottom: "5px",
-};
+const styleAll = {
+  height: "100%",
+  width: "auto",
+}
 const searchIcon = {
     alignSelf: "flex-end",
     marginBottom: "5px",
@@ -34,25 +29,17 @@ const searchInput = {
     width: "160px",
     margin: "5px",
 };
-const StyleAll = {
-    width : '100%',
-    height: '100%'
-}
 const styletable = {
     border:'2px solid black',
     margin:'0 auto',
     marginTop:5,
-    maxWidth: '75%',
+    maxWidth: '90%',
 }
 const StyleCell = {
    boder:'1px solid grey',
-   height:40
 }
 const FormStyle = {
     minWidth:200
-}
-const MainStyle = {
-    justifyContent : 'flex-end'
 }
 const defaultCase: Case[] | (() => Case[]) = []
 
@@ -60,17 +47,7 @@ export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
-    const [windowSize, setWindowSize] = React.useState(window.innerWidth);
     const daoF = DAOFactory.getDAOFactory();
-  
-    React.useEffect(() => {
-     function handleResize() {
-         setWindowSize(window.innerWidth);
-       }
- 
-    window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
  
     function handleChangeSelect(event:any){
         setSelectChoice(event.target.value)
@@ -90,8 +67,7 @@ export default function Folders(){
             }
             fetchData();
     }, []);
-
-    //////\ CASE /\\\\\\
+    
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
         let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
@@ -182,99 +158,95 @@ export default function Folders(){
     }
 
     return (
-
-    <Grid sx={StyleAll}>
-        <Header/>
-        <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
-            <SideBar />
-            <main className='main'>
-                <Box maxWidth="lg" sx={MainStyle}>
-                    <Grid sx={windowSize >= 750 ?{ display: 'flex', justifyContent:'space-between', marginTop:5} : {display: 'flex', marginTop:5}}>
-                        <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
-                            <h3>Dossiers</h3>
-                        </Box>
-                        <Box sx={ windowSize >= 750 ?{ display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
-                            <FormControl fullWidth sx={FormStyle}>
-                                <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={SelectChoice}
-                                    label="Trier par"
-                                    onChange={handleChangeSelect}
-                                >
-                                    <MenuItem value={'Afficher affaires en cours et clôturées'}>Afficher affaires en cours et clôturées</MenuItem>
-                                    <MenuItem value={'En cours'}>En cours</MenuItem>
-                                    <MenuItem value={'Clôturées'}>Clôturées</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <Toolbar>
-                                <Box sx={searchContainer}>
+        <Grid container style={styleAll}>
+            <Header/>
+            <Grid container style={{ height: '90%'}}>
+                <Grid item xs={12} md={2} direction="column">
+                    <SideBar />
+                </Grid>
+                <Grid item xs md style={{ margin: "15px" }}>
+                    <Grid container xs={12} md={12} direction="row" alignItems="center"> 
+                        <Grid item xs={12} md={4} sx={{ height: '100%' }}>
+                            <h2>Dossiers</h2>
+                        </Grid>
+                        <Grid container xs={12} md={8} direction="row" alignItems="center" sx={{height: '100%'}}>   
+                            <Grid item xs={12} md={5}>
+                                <FormControl fullWidth sx={FormStyle}>
+                                    <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
+                                   <Select
+                                       labelId="demo-simple-select-label"
+                                       id="demo-simple-select"
+                                       value={SelectChoice}
+                                       label="Trier par"
+                                       onChange={handleChangeSelect}
+                                   >
+                                       <MenuItem value={'Afficher affaires en cours et clôturées'}>Afficher affaires en cours et clôturées</MenuItem>
+                                       <MenuItem value={'En cours'}>En cours</MenuItem>
+                                       <MenuItem value={'Clôturées'}>Clôturées</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>   
+                            <Grid item xs={12} md={5}>
+                                <Toolbar>
                                     <SearchIcon sx={searchIcon} />
                                     <TextField
-                                    sx={searchInput}
-                                    onChange={handleSearchChange}
-                                    label="Recherche"
-                                    variant="standard"
+                                        sx={searchInput}
+                                        onChange={handleSearchChange}
+                                        label="Recherche"
+                                        variant="standard"
+                                        fullWidth
                                     />
-                                </Box>
-                            </Toolbar>
-                        </Box>
-                        {/* <Form openModal={openModal} id={1}  handleClose={handleClose}/> */}
-                        {/* <NavLink to={{ pathname: '/clientsInfo', search: "?id=" + client.id }}>
-                            Créer 
-                        </NavLink> */}
+                                </Toolbar>   
+                            </Grid>  
+                            <Grid item xs={12} md={2}>
+                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Nouveau</Button>
+                            </Grid>                     
+                        </Grid>
                     </Grid>
-                </Box>
-                <Table aria-label="customized table" sx={styletable}>
-                    <TableHead>
-                    <TableRow>
-                        <TableCell align="center">Code</TableCell>
-                        <TableCell align="center">Statut</TableCell>
-                        <TableCell align="center">Clients</TableCell>
-                        <TableCell align="center">Actions</TableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {casesList.map(casee => {
-                            let status = casee.status ? 'clôturée' : 'En cours'
-                            console.log(casee);
-                            if (checkFilter(casee.code, status, casee.clients)) {
-                                return (
-                                    <TableRow key={casee.id}>
-                                        <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
-                                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
-                                        <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
-                                        <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                            <NavLink to={`/dossierinfo/`+ casee.id}>
-                                                <InfoIcon color="primary"/>
-                                            </NavLink>
-                                            <NoteAltIcon color="success"/>
-                                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            }
-                        })}
-                    </TableBody>
-                </Table>
-        <button
-            onClick={() => {
-                writeCaseFile()
-            }}
-        >
-            Create case
-        </button>
-        <button
-            onClick={() => {
-                deleteCaseFile()
-            }}
-        >
-            Delete case file
-        </button>
-            </main>
-        </Box>
-        
-    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <Table aria-label="customized table" sx={styletable}>
+                            <TableHead style={{ backgroundColor:"#c6e5b3" }}>
+                            <TableRow>
+                                <TableCell align="center">Code</TableCell>
+                                <TableCell align="center">Statut</TableCell>
+                                <TableCell align="center">Clients</TableCell>
+                                <TableCell align="center">Actions</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {casesList.map(casee => {
+                                    let status = casee.status ? 'clôturée' : 'En cours'
+                                    console.log(casee);
+                                    if (checkFilter(casee.code, status, casee.clients)) {
+                                        return (
+                                            <TableRow key={casee.id}>
+                                                <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
+                                                <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
+                                                <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
+                                                <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                                    <NavLink to={`/dossierinfo/`+ casee.id}>
+                                                        <InfoIcon color="primary"/>
+                                                    </NavLink>
+                                                    <NoteAltIcon color="success"/>
+                                                    <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    }
+                                })}
+                            </TableBody>
+                        </Table>
+                        <button onClick={() => {
+                                writeCaseFile()
+                            }}> Create case
+                        </button>
+                        <button onClick={() => {
+                                deleteCaseFile()
+                            }}> Delete case file
+                        </button>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
     );
 } 
