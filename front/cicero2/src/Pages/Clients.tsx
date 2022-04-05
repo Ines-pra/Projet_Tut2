@@ -14,7 +14,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
 import InfoIcon from '@mui/icons-material/Info'; 
+import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
+import '../Styles/clients.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const styleAll = {
@@ -48,9 +50,14 @@ export default function Clients(){
     const [open, setOpen] = React.useState(false);
     const [id, setId] = React.useState(0);
     const [filter, setFilter] = useState("");
+    const [pageNumber, setPageNumber] = React.useState(0);
+
+    const daoF = DAOFactory.getDAOFactory();
+    const clientsPerPage = 5;
+    const pagesVisited = pageNumber * clientsPerPage;
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const daoF = DAOFactory.getDAOFactory();
 
     // Récupération des clients et des dossiers //
     useEffect (() => {
@@ -129,6 +136,15 @@ export default function Clients(){
         handleOpen();
         setId(id);
     };
+    const addClientTable = (cli: Client) => {
+        let table = clientsList
+        table = [...table, cli];
+        setClientsList(table);
+    };
+    const updateClientTable = (cli: Client) => {
+        let table = clientsList.map(c => c.id === cli.id ? cli : c);
+        setClientsList(table);
+    };
     // Récupération des clients dans les dossiers //
     const getClientCases = (id: number) => {
         if (casesList.length === 0) {
@@ -163,10 +179,34 @@ export default function Clients(){
         return false;
     };
 
+    const displayClients = clientsList
+        .slice(pagesVisited, pagesVisited + clientsPerPage)
+        .map((client) => {
+            if (checkFilter(getClientCases(client.id), client)) {
+                return <TableRow key={client.id}>
+                            <TableCell component="th" scope="row" align="center" width={'15%'} >
+                                    {client.firstname} {client.lastname}
+                            </TableCell>
+                            <TableCell align="center" sx={StyleCell}>
+                                {getClientCases(client.id)}
+                            </TableCell>
+                            <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
+                                <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
+                                <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+                            </TableCell>
+                        </TableRow>
+            }
+        });
+
+    const handlePageClick = ({ selected }: any) => {
+        setPageNumber(selected);
+    };
+
     return (
         <Grid container style={styleAll}>
             <Header/>
-            <ClientModal openNew={open} handleClose={handleClose} id={id}/>
+            <ClientModal openNew={open} handleClose={handleClose} addFunction={addClientTable} updateFunction={updateClientTable} id={id}/>
             <Grid container style={{ height: '90%'}}>
                 <Grid item xs={12} md={2} direction="column">
                     <SideBar />
@@ -204,7 +244,8 @@ export default function Clients(){
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                                {clientsList.map(client => { 
+                                {displayClients}
+                                {/* {clientsList.map(client => { 
                                     if (checkFilter(getClientCases(client.id), client)) {
                                         return <TableRow key={client.id}>
                                                     <TableCell component="th" scope="row" align="center" width={'15%'} >
@@ -220,7 +261,7 @@ export default function Clients(){
                                                     </TableCell>
                                                 </TableRow>
                                         }
-                                        })}
+                                        })} */}
                             </TableBody>   
                         </Table>
                         <button onClick={() => {
@@ -231,6 +272,17 @@ export default function Clients(){
                                 deleteClientFile()
                             }}> Delete file
                         </button>
+                        <ReactPaginate 
+                            previousLabel={'Précédent'}
+                            nextLabel={'Suivant'}
+                            pageCount={Math.ceil(clientsList.length / clientsPerPage)}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            previousLinkClassName={'previousPage'}
+                            nextLinkClassName={'nextPage'}
+                            disabledClassName={'disabledPage'}
+                            activeClassName={'activePage'}
+                        />
                     </Grid>
                 </Grid>
             </Grid>
