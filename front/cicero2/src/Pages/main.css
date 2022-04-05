@@ -1,19 +1,15 @@
 .main {
     width: 100%;
-
-
 }
 
 .labelDate{
     text-align: center;
 }
 
-.SpaceFolder{
-    margin-right: 3%;
-}
-
-
 .link{
     text-decoration: none;
-    color: black;
+}
+
+.shadow {
+    box-shadow: 7px 6px 14px 1px rgba(0,0,0,0.7);
 }

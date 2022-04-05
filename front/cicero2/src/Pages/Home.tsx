@@ -7,20 +7,20 @@ import { Container } from '@mui/material';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../Components/Header';
+import { height } from '@mui/system';
 
-const styleHeader = {
-    background: '#535454',
-    color: '#fff',
+const StyleAll = {
     width: '100%',
-};
+    height: '100%'
+}
 
 export default function Home(){
     const env = useSelector((state: any) => state.env.environnement);
     return (
 
-    <Grid>
+    <Grid sx={StyleAll}>
         <Header/>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', width: '100%', height: '100%' }}>
             <SideBar />
             <main className="content">
                 <Container maxWidth="lg">

@@ -1,10 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
+import { Button } from '@mui/material';
+import { confirmAlert } from 'react-confirm-alert';
 import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
@@ -13,9 +15,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import ClientModal from './Modal/ClientModal';
-import InfoIcon from '@mui/icons-material/Info';
-import { Link } from 'react-router-dom';
-import CloseIcon from '@mui/icons-material/Close';
+import InfoIcon from '@mui/icons-material/Info'; 
+import '../Styles/alert.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const searchContainer = {
     display: "flex",
@@ -33,7 +35,8 @@ const searchInput = {
     margin: "5px",
 };
 const StyleAll = {
-    width : '100%'
+    width : '100%', 
+    height: '100%'
 }
 const styletable = {
     border:'2px solid black',
@@ -48,21 +51,28 @@ const StyleCell = {
 const MainStyle = {
     justifyContent : 'flex-end'
 }
-const ModalStyle = {
-    width: 500,
-    height:500,
-    backgroundColor: '#fff',
-    border: '1px solid black'
-};
+
 const defaultClient: Client[] | (() => Client[]) = []
 const defaultCase: Case[] | (() => Case[]) = []
 
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [id, setId] = React.useState(0);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
+
+    React.useEffect(() => {
+     function handleResize() {
+         setWindowSize(window.innerWidth);
+       }
+ 
+       window.addEventListener("resize", handleResize);
+     return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect (() => {
         async function fetchData() {
@@ -74,6 +84,11 @@ export default function Clients(){
             }
             fetchData();
     }, []);
+
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);
+    }
 
     // Lecture du fichier client.json //
     const readClientFile = async () => {
@@ -102,8 +117,40 @@ export default function Clients(){
       };
     // Suppression d'un client //
     const deleteClient = async (id: number) => {
-      daoF!.getClientDAO().delete(id);
-      setClientsList(clientsList.filter(c => c.id !== id));
+        confirmAlert({
+            customUI: ({ onClose }) => {
+              return (
+                <div className='custom-ui'>
+                    <h1>Etes-vous sur ?</h1>
+                    <p>Etes-vous sur de vouloir supprimer ce client ?</p>
+                    <Button     
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#d9534f",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginRight: "5px",
+                        }} 
+                        onClick={onClose}>Annuler</Button>
+                    <Button
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#0275d8",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginLeft: "5px",
+                        }}
+                        onClick={() => {
+                            daoF!.getClientDAO().delete(id);
+                            setClientsList(clientsList.filter(c => c.id !== id));
+                            onClose();
+                        }}>Confirmer</Button>
+                </div>
+              );
+            }
+        });
     };
 
     const handleSearchChange = (e:any) => {
@@ -111,22 +158,21 @@ export default function Clients(){
       };
 
     const getClientCases = (id: number) => {
-        console.log(casesList);
         if (casesList.length === 0) {
             return " / ";
         }
         let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
-        console.log(clientCases, "clientCases", id);
-        
         let concat = "";
         for(let i = 0; i < clientCases.length; i++){
-            if(i + 1 === clientCases.length){
-                if(clientCases[i][0] !== null){
-                    concat += clientCases[i][0]!.code.toString();
-                }
-            } else {
-                if(clientCases[i][0] !== null){
-                    concat += clientCases[i][0]!.code.toString() + " - ";
+            for(let y = 0; y < clientCases[i].length; y++){
+                if(i + 1 === clientCases.length){
+                    if(clientCases[i][y] !== null){
+                        concat += clientCases[i][y]!.code.toString();
+                    }
+                } else {
+                    if(clientCases[i][y] !== null){
+                        concat += clientCases[i][y]!.code.toString() + " - ";
+                    }
                 }
             }
         }
@@ -137,6 +183,12 @@ export default function Clients(){
         }
     }
 
+    const checkFilter = (code: string, client: Client) => {
+        if(client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) {
+            return true;
+        } 
+        return false;
+    }
 
     return (
         <Grid sx={StyleAll}>
@@ -176,6 +228,7 @@ export default function Clients(){
         >
             Update client
         </button>
+        <ClientModal openNew={open} handleClose={handleClose} id={id}/>
                 <Box sx={{ display: 'flex', minWidth: 700 }}>
                     <SideBar />
                     <main className='main'>
@@ -196,6 +249,9 @@ export default function Clients(){
                                         </Box>
                                     </Toolbar>
                                 </Box>
+                                <Button variant="contained" onClick={() => goToModal(0)}>
+                                            Ajouter
+                                </Button>
                             </Grid>
                         </Box>
                             <Table aria-label="customized table" sx={styletable}>
@@ -226,18 +282,7 @@ export default function Clients(){
                                             })}
                                 </TableBody>   
                             </Table>
-                            <ClientModal modalOpen={modalOpen}>  
-                                <Box sx={ModalStyle}>
-                                <Grid sx={{ display: 'flex', justifyContent:'end', marginTop:2, marginRight:2}}>
-                                
-                                    <IconButton onClick={()=> {setModalOpen(false);}}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                    
-                                </Grid>
-                                <p> Modal Client Update </p>
-                                </Box>
-                            </ClientModal>
+                            
                     </main>
                 </Box>
             </Grid>
