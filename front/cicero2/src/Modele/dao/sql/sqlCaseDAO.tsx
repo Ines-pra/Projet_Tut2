@@ -1,7 +1,7 @@
 import { Case } from '../../metier/Case';
 import CaseDAO from '../CaseDAO';
 import { client } from '../../../index';
-import { CREATE_CASE, DELETE_CASE } from '../../../graphql/Mutations/mutationsCase';
+import { CREATE_CASE, DELETE_CASE, LINK_CLI_CASE } from '../../../graphql/Mutations/mutationsCase';
 import { GET_ALL_CASE, GET_CASE_ID } from '../../../graphql/Query/queryCase';
 
 
@@ -19,6 +19,17 @@ export class sqlCaseDAO implements CaseDAO {
                 code:cas.code,
                 status:cas.status
             }
+        });
+
+        cas.clients.forEach(element => {
+            client.
+            mutate({
+                mutation: LINK_CLI_CASE,
+                variables: {
+                    caseAfId: cas.id,
+                    clientId: element.id
+                }
+            });
         });
         return cas.id;
     }

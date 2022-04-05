@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
@@ -51,20 +51,17 @@ const StyleCell = {
 const MainStyle = {
     justifyContent : 'flex-end'
 }
-const ModalStyle = {
-    width: 500,
-    height:500,
-    backgroundColor: '#fff',
-    border: '1px solid black'
-};
+
 const defaultClient: Client[] | (() => Client[]) = []
 const defaultCase: Case[] | (() => Case[]) = []
 
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
-    const [windowSize, setWindowSize] = React.useState(window.innerWidth);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [id, setId] = React.useState(0);
     const [filter, setFilter] = useState("");
     const daoF = DAOFactory.getDAOFactory();
 
@@ -87,6 +84,11 @@ export default function Clients(){
             }
             fetchData();
     }, []);
+
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);
+    }
 
     // Lecture du fichier client.json //
     const readClientFile = async () => {
@@ -190,81 +192,99 @@ export default function Clients(){
 
     return (
         <Grid sx={StyleAll}>
-            <Header/>
-            <Box sx={{ display: 'flex', minWidth: 700, height: '100%' }}>
-                <SideBar />
-                <main className='main'>
-                    <Box maxWidth="lg" sx={MainStyle}>
-                        <Grid sx={windowSize >= 750 ? { display: 'flex', justifyContent:'space-between', marginTop:5} : {display:'flex', marginTop:5}}>
-                            <Box sx={{marginLeft:'2%',marginRight:'2%'}}>
+                <Header/>
+                        <button
+            onClick={() => {
+                writeClientFile()
+            }}
+        >
+            Write client
+        </button>
+        <button
+            onClick={() => {
+                readClientFile()
+            }}
+        >
+            Read file
+        </button>
+        <button
+            onClick={() => {
+                deleteClientFile()
+            }}
+        >
+            Delete file
+        </button>
+                <button
+            onClick={() => {
+                deleteClient(2)
+            }}
+        >
+            Delete client
+        </button>
+        <button
+            onClick={() => {
+                updateClientFile()
+            }}
+        >
+            Update client
+        </button>
+        <ClientModal openNew={open} handleClose={handleClose} id={id}/>
+                <Box sx={{ display: 'flex', minWidth: 700 }}>
+                    <SideBar />
+                    <main className='main'>
+
+                        <Box maxWidth="lg" sx={MainStyle}>
+                            <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
                                 <h3>Clients</h3>
-                            </Box>
-                            <Box sx={windowSize >= 750 ? { display: 'flex', justifyContent: 'flex-end'} : {display:'flex', flexDirection:'column'}}>
-                                <Toolbar>
-                                    <Box sx={searchContainer}>
-                                        <SearchIcon sx={searchIcon} />
-                                        <TextField
-                                        sx={searchInput}
-                                        onChange={handleSearchChange}
-                                        label="Recherche"
-                                        variant="standard"
-                                        />
-                                    </Box>
-                                </Toolbar>
-                            </Box>
-                        </Grid>
-                    </Box>
-                    <Table aria-label="customized table" sx={styletable}>
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Nom</TableCell>
-                            <TableCell align="center">Affaires associées</TableCell>
-                            <TableCell align="center">Actions</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {clientsList.map(client => { 
-                                if (checkFilter(getClientCases(client.id), client)) {
-                                    return <TableRow key={client.id}>
-                                                <TableCell component="th" scope="row" align="center" width={'15%'} >
-                                                        {client.firstname} {client.lastname}
-                                                </TableCell>
-                                                <TableCell align="center" sx={StyleCell}>
-                                                    {getClientCases(client.id)}
-                                                </TableCell>
-                                                <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                    <InfoIcon color="primary"/>
-                                                    <NoteAltIcon onClick={()=>{ setModalOpen(true) }} color="success"/>
-                                                    {getClientCases(client.id) === " / " ? <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/> : <DeleteIcon color="disabled"/> }                   
-                                                </TableCell>
-                                            </TableRow>
-                                }
-                            })}
-                        </TableBody>   
-                    </Table>
-                    <ClientModal modalOpen={modalOpen}>  
-                        <Box maxWidth="lg" sx={ModalStyle}>
-                            <button type="button" className="btn_modalContent" onClick={()=>
-                                {setModalOpen(false);}}> X </button>
-                            <p> Test Modal </p>
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+                                    <Toolbar>
+                                        <Box sx={searchContainer}>
+                                            <SearchIcon sx={searchIcon} />
+                                            <TextField
+                                            sx={searchInput}
+                                            onChange={handleSearchChange}
+                                            label="Recherche"
+                                            variant="standard"
+                                            />
+                                        </Box>
+                                    </Toolbar>
+                                </Box>
+                                <Button variant="contained" onClick={() => goToModal(0)}>
+                                            Ajouter
+                                </Button>
+                            </Grid>
                         </Box>
-                    </ClientModal>
-                    <button
-                        onClick={() => {
-                            writeClientFile()
-                        }}
-                    >
-                    Write client
-                    </button>
-                    <button
-                        onClick={() => {
-                            deleteClientFile()
-                        }}
-                    >
-                        Delete file
-                    </button>
-                </main>
-            </Box>
-        </Grid>
+                            <Table aria-label="customized table" sx={styletable}>
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell align="center">Nom</TableCell>
+                                    <TableCell align="center">Affaires associées</TableCell>
+                                    <TableCell align="center">Actions</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {clientsList.map(client => { 
+                                        if (client.firstname.toLowerCase().includes(filter.toLowerCase()) || client.lastname.toLowerCase().includes(filter.toLowerCase())) {
+                                            return <TableRow key={client.id}>
+                                                        <TableCell component="th" scope="row" align="center" width={'15%'} >
+                                                                {client.firstname} {client.lastname}
+                                                        </TableCell>
+                                                        <TableCell align="center" sx={StyleCell}>
+                                                            {getClientCases(client.id)}
+                                                        </TableCell>
+                                                        <TableCell align="center" width={'15%'} sx={StyleCell}>
+                                                            <Link to={'/clientsInfo?id='+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
+                                                            <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
+                                                            <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+                                                        </TableCell>
+                                                    </TableRow>
+                                            }
+                                            })}
+                                </TableBody>   
+                            </Table>
+                            
+                    </main>
+                </Box>
+            </Grid>
     );
 } 

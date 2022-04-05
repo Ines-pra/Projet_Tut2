@@ -20,3 +20,9 @@ export const UPDATE_CASE = gql`
     }) 
     }
 `
+
+export const LINK_CLI_CASE = gql`
+    mutation LinkClientAff($caseAfId: ID!, $clientId:ID!) {
+       linkClientAff(input: {caseAfId:$caseAfId, clientId:$clientId})
+    }
+`
