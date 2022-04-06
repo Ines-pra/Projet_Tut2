@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_CASE = gql`
-    mutation Mutation($description:String!,$status:String!, $startedAt:DateTime!, $endedAt:DateTime!, $code:String!) {
+    mutation Mutation($description:String!,$status:Boolean!, $startedAt:DateTime!, $endedAt:DateTime!, $code:String!) {
     createCase_af(input: {status:$status description:$description, startedAt:$startedAt, endedAt:$endedAt, code:$code}) {
         id
     }}

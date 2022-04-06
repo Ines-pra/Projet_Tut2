@@ -13,6 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
+import FolderModal from "./Modal/FolderModal";
 import InfoIcon from '@mui/icons-material/Info';
 import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
@@ -49,9 +50,30 @@ export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
+    const daoF = DAOFactory.getDAOFactory();
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const [id, setId] = React.useState(0);
+
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);  
+    }
+    
+    function handleChangeSelect(event:any){
+        setSelectChoice(event.target.value)
+    }
+
+    const handleSearchChange = (e:any) => {
+        setFilter(e.target.value);
+      };
+
+     // Récupération de la liste des dossiers //
     const [pageNumber, setPageNumber] = React.useState(0);
 
-    const daoF = DAOFactory.getDAOFactory();
     const casesPerPage = 5;
     const pagesVisited = pageNumber * casesPerPage;
  
@@ -59,19 +81,12 @@ export default function Folders(){
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getCaseDAO().findAll();
-            console.log(response);
+            // console.log(response);
             setCasesList(response);
             return response;
             }
             fetchData();
     }, []);
-    // Filtre //
-    function handleChangeSelect(event:any){
-        setSelectChoice(event.target.value)
-    };
-    const handleSearchChange = (e:any) => {
-        setFilter(e.target.value);
-    };
     
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
@@ -172,11 +187,11 @@ export default function Folders(){
                         <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
                         <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
                         <TableCell align="center" width={'15%'} sx={StyleCell}>
-                            <Link to={`/dossierinfo/`+ casee.id}>
+                            <NavLink to={`/dossierinfo/`+ casee.id}>
                                 <InfoIcon color="primary"/>
-                            </Link>
-                            <NoteAltIcon color="success" className="cursor"/>
-                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error" className="cursor"/>                    
+                            </NavLink>
+                            <NoteAltIcon onClick={()=>goToModal(casee.id)} color="success"/>
+                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
                         </TableCell>
                     </TableRow>
                 )
@@ -193,6 +208,7 @@ export default function Folders(){
             <Grid container style={{ height: '90%'}}>
                 <Grid item xs={12} md={2} direction="column">
                     <SideBar />
+                    <FolderModal id={id} openModal={open} handleClose={handleClose}/>
                 </Grid>
                 <Grid item xs md style={{ margin: "15px" }}>
                     <Grid container xs={12} md={12} direction="row" alignItems="center"> 
@@ -229,7 +245,7 @@ export default function Folders(){
                                 </Toolbar>   
                             </Grid>  
                             <Grid item xs={12} md={2}>
-                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Nouveau</Button>
+                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
                             </Grid>                     
                         </Grid>
                     </Grid>

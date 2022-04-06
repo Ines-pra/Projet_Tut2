@@ -48,8 +48,10 @@ const defaultCase: Case[] | (() => Case[]) = [];
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
+
     const [open, setOpen] = React.useState(false);
     const [id, setId] = React.useState(0);
+
     const [filter, setFilter] = useState("");
     const [pageNumber, setPageNumber] = React.useState(0);
 
@@ -271,4 +273,67 @@ export default function Clients(){
             </Grid>
         </Grid>
     );
+
+    // return (
+    //     <Grid sx={StyleAll}>
+    //             <Header/>
+    //     <ClientModal openEdit={open} handleClose={handleClose} id={id}/>
+    //             <Box sx={{ display: 'flex', minWidth: 700 }}>
+    //                 <SideBar />
+    //                 <main className='main'>
+
+    //                     <Box maxWidth="lg" sx={MainStyle}>
+    //                         <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
+    //                             <h3>Clients</h3>
+    //                             <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+    //                                 <Toolbar>
+    //                                     <Box sx={searchContainer}>
+    //                                         <SearchIcon sx={searchIcon} />
+    //                                         <TextField
+    //                                         sx={searchInput}
+    //                                         onChange={handleSearchChange}
+    //                                         label="Recherche"
+    //                                         variant="standard"
+    //                                         />
+    //                                     </Box>
+    //                                 </Toolbar>
+    //                             </Box>
+    //                             <Button variant="contained" onClick={() => goToModal(0)}>
+    //                                         Ajouter
+    //                             </Button>
+    //                         </Grid>
+    //                     </Box>
+    //                         <Table aria-label="customized table" sx={styletable}>
+    //                             <TableHead>
+    //                             <TableRow>
+    //                                 <TableCell align="center">Nom</TableCell>
+    //                                 <TableCell align="center">Affaires associées</TableCell>
+    //                                 <TableCell align="center">Actions</TableCell>
+    //                             </TableRow>
+    //                             </TableHead>
+    //                             <TableBody>
+    //                                 {clientsList.map(client => { 
+    //                                     if (checkFilter(getClientCases(client.id), client)) {
+    //                                         return <TableRow key={client.id}>
+    //                                                     <TableCell component="th" scope="row" align="center" width={'15%'} >
+    //                                                             {client.firstname} {client.lastname}
+    //                                                     </TableCell>
+    //                                                     <TableCell align="center" sx={StyleCell}>
+    //                                                         {getClientCases(client.id)}
+    //                                                     </TableCell>
+    //                                                     <TableCell align="center" width={'15%'} sx={StyleCell}>
+    //                                                         <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
+    //                                                         <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
+    //                                                         <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+    //                                                     </TableCell>
+    //                                                 </TableRow>
+    //                                         }
+    //                                         })}
+    //                             </TableBody>   
+    //                         </Table>
+                            
+    //                 </main>
+    //             </Box>
+    //         </Grid>
+    // );
 } 

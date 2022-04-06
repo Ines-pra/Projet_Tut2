@@ -83,7 +83,7 @@ export class sqlClientDAO implements ClientDAO {
                         result.data.client.birthDate,
                         result.data.client.createdDate
                     );
-                    console.log(result.data.client);
+                    // console.log(result.data.client);
             });
 
         return c1;
