@@ -58,8 +58,7 @@ export default function Folders(){
 
     function goToModal(id:number){
         handleOpen();
-        setId(id);
-        console.log(open);  
+        setId(id);  
     }
     
     function handleChangeSelect(event:any){
@@ -74,7 +73,7 @@ export default function Folders(){
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getCaseDAO().findAll();
-            console.log(response);
+            // console.log(response);
             setCasesList(response);
             return response;
             }
@@ -230,7 +229,7 @@ export default function Folders(){
                             <TableBody>
                                 {casesList.map(casee => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
-                                    console.log(casee);
+                                    // console.log(casee);
                                     if (checkFilter(casee.code, status, casee.clients)) {
                                         return (
                                             <TableRow key={casee.id}>

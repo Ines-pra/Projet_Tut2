@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { TextField, InputLabel, Alert } from "@mui/material";
+import { TextField, InputLabel, Stack } from "@mui/material";
 import { Client } from "../../Modele/metier/Client";
 import DAOFactory from "../../Modele/dao/factory/DAOFactory";
 import { ThemeProvider } from '@emotion/react';
@@ -19,12 +19,11 @@ const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
-  height:'auto',
   overflowY: 'scroll',
   transform: "translate(-50%, -50%)",
-  width: 'auto',
+  width: '50%',
   borderRadius: 3,
-  bgcolor: "#202121",
+  bgcolor: "#000",
   border: "2px solid #FFF",
   boxShadow: 24,
   p: 4,
@@ -72,7 +71,6 @@ function ClientModal(openEdit:any) {
         let element = [{k:"lastname", v:lastname}, {k:"firstname", v:firstname}, {k:"address", v:address}, {k:"birthDate", v:birthDate}];
         element.forEach(element => {
             if(element.v === ''){
-                console.log('casser');
                 vld = false;
                 message.push(element.k + ' is empty');
             }
@@ -155,15 +153,15 @@ function ClientModal(openEdit:any) {
           <Box height={'5vh'}/>
        
         
+          <Stack direction='row' spacing={2}>
+            <Button fullWidth variant="outlined" sx={{marginRight:1}} color="success" onClick= {()=>setClient(lastname, firstname, address, birth)}>
+              Valider
+            </Button>
 
-          <Button variant="outlined" sx={{marginRight:1}} color="success" onClick= {()=>setClient(lastname, firstname, address, birth)}>
-            Valider
-          </Button>
-
-          <Button variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
-            Annuler
-          </Button>
-          
+            <Button fullWidth variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
+              Annuler
+            </Button>
+          </Stack>
          
 
           </Box>

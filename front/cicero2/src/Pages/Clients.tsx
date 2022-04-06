@@ -219,7 +219,7 @@ export default function Clients(){
                                                     </TableCell>
                                                     <TableCell align="center" width={'15%'} sx={StyleCell}>
                                                         <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-                                                        <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
+                                                        <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
                                                         <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
                                                     </TableCell>
                                                 </TableRow>
