@@ -21,7 +21,7 @@ import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const StyleContainer = {
-  marginTop: "12px",
+  margin: "15px",
   backgroundColor: "#c6e5b3",
   borderRadius: "5px",
   padding: "15px",
@@ -151,8 +151,8 @@ export default function SpeFolder(){
                 </Grid>                       
               </Grid>
             <Grid item xs={12} md={3}>
-              <Button variant="contained" color="primary" sx={{height:'45px', marginLeft:'3%', fontSize:'13px', marginBottom:'10px'}} fullWidth>Modifier dossier</Button>
-              <Button variant="contained" color="error" sx={{height:'45px', marginLeft:'3%', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
+              <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Modifier dossier</Button>
+              <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
             </Grid>
             </Grid>
             <Grid container direction="row" xs={12} md={12} style={StyleContainer} className="shadow" alignItems="center">
