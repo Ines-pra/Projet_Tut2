@@ -1,16 +1,16 @@
 import React from 'react';
-import './App.css';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
 } from "react-router-dom";
+import { Create } from '@mui/icons-material';
 import Home from './Pages/Home';
 import Clients from './Pages/Clients';
-import Folders from './Pages/Folders';
+import Cases from './Pages/Cases';
 import ClientsInfo from './Pages/ClientsInfo';
-import { Create } from '@mui/icons-material';
-import SpeFolder from './Pages/SpeFolder';
+import CasesInfo from './Pages/CasesInfo';
+import './App.css';
 
 function App() {
   return (
@@ -18,10 +18,10 @@ function App() {
       <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/clients" element={<Clients />}/>  
-          <Route path="/dossiers" element={<Folders />}/>
+          <Route path="/dossiers" element={<Cases />}/>
           <Route path="/create" element={<Create />}/> 
           <Route path="/clientinfo/:id" element={<ClientsInfo />}/> 
-          <Route path="/dossierinfo/:id" element={<SpeFolder />}/>
+          <Route path="/dossierinfo/:id" element={<CasesInfo />}/>
       </Routes>
     </Router>
   );
