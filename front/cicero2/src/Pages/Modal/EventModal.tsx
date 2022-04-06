@@ -81,7 +81,7 @@ export default function EventModal(openEdit: any) {
             <InputLabel id="modal-modal-titleCard">Durée :</InputLabel>
             <TextField
                 id="filled-basic"
-                label="Durée"
+                label="Duration"
                 type="number"
                 variant="filled"
                 value={duree}

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
 import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
@@ -17,6 +17,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
 import '../Styles/clients.css';
+import '../Styles/pagination.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const styleAll = {
@@ -147,27 +148,28 @@ export default function Clients(){
     };
     // Récupération des clients dans les dossiers //
     const getClientCases = (id: number) => {
-        if (casesList.length === 0) {
-            return " / ";
-        }
-        let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
-        let concat = "";
-        for(let i = 0; i < clientCases.length; i++){
-            for(let y = 0; y < clientCases[i].length; y++){
-                if(i + 1 === clientCases.length){
-                    if(clientCases[i][y] !== null){
-                        concat += clientCases[i][y]!.code.toString();
+        let listCaseClient: Case[] = [];
+        let concat = '';
+        
+        if (casesList.length !== 0) {
+            casesList.forEach(cases => {
+                cases.clients.forEach(client => {                   
+                    if (client.id === id) {
+                        listCaseClient.push(cases);
                     }
-                } else {
-                    if(clientCases[i][y] !== null){
-                        concat += clientCases[i][y]!.code.toString() + " - ";
-                    }
-                }
-            }
+                });
+            });
         }
-        if(concat === ""){
+        if(listCaseClient.length === 0){
             return " / ";
         } else {
+            for (let i = 0; i < listCaseClient.length; i++) {
+                if (i === listCaseClient.length - 1) {
+                    concat += listCaseClient[i].code;
+                } else {
+                    concat += listCaseClient[i].code + " - ";
+                }
+            }
             return concat;
         }
     };
@@ -191,9 +193,9 @@ export default function Clients(){
                                 {getClientCases(client.id)}
                             </TableCell>
                             <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-                                <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success"/>
-                                <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
+                                <Link to={'/clientinfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
+                                <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success" className="cursor"/>
+                                <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error" className="cursor"/>                    
                             </TableCell>
                         </TableRow>
             }
@@ -245,44 +247,25 @@ export default function Clients(){
                             </TableHead>
                             <TableBody>
                                 {displayClients}
-                                {/* {clientsList.map(client => { 
-                                    if (checkFilter(getClientCases(client.id), client)) {
-                                        return <TableRow key={client.id}>
-                                                    <TableCell component="th" scope="row" align="center" width={'15%'} >
-                                                            {client.firstname} {client.lastname}
-                                                    </TableCell>
-                                                    <TableCell align="center" sx={StyleCell}>
-                                                        {getClientCases(client.id)}
-                                                    </TableCell>
-                                                    <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                        <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-                                                        <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
-                                                        <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
-                                                    </TableCell>
-                                                </TableRow>
-                                        }
-                                        })} */}
                             </TableBody>   
                         </Table>
-                        <button onClick={() => {
-                                writeClientFile()
-                            }}> Write client
-                        </button>
                         <button onClick={() => {
                                 deleteClientFile()
                             }}> Delete file
                         </button>
-                        <ReactPaginate 
-                            previousLabel={'Précédent'}
-                            nextLabel={'Suivant'}
-                            pageCount={Math.ceil(clientsList.length / clientsPerPage)}
-                            onPageChange={handlePageClick}
-                            containerClassName={'pagination'}
-                            previousLinkClassName={'previousPage'}
-                            nextLinkClassName={'nextPage'}
-                            disabledClassName={'disabledPage'}
-                            activeClassName={'activePage'}
-                        />
+                        <Grid item xs={12} md={12}>
+                            <ReactPaginate 
+                                previousLabel={'<<'}
+                                nextLabel={'>>'}
+                                pageCount={Math.ceil(clientsList.length / clientsPerPage)}
+                                onPageChange={handlePageClick}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'previousPage'}
+                                nextLinkClassName={'nextPage'}
+                                disabledClassName={'disabledPage'}
+                                activeClassName={'activePage'}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
