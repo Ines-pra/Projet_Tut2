@@ -1,7 +1,6 @@
 import { Case } from '../../metier/Case';
-import { Client } from '../../metier/Client';
-import CaseDAO from '../CaseDAO';
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
+import CaseDAO from '../CaseDAO';
 
 // Lecture du fichier case.json //
 const readOnFile = async () => {

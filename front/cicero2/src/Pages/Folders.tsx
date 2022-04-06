@@ -6,21 +6,24 @@ import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBo
 import { Client } from "../Modele/metier/Client";
 import { Event } from "../Modele/metier/Event";
 import { Filesystem, Directory } from "@capacitor/filesystem";
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
+import FolderModal from "./Modal/FolderModal";
 import InfoIcon from '@mui/icons-material/Info';
+import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
+import '../Styles/pagination.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const styleAll = {
   height: "100%",
   width: "auto",
-}
+};
 const searchIcon = {
     alignSelf: "flex-end",
     marginBottom: "5px",
@@ -34,21 +37,32 @@ const styletable = {
     margin:'0 auto',
     marginTop:5,
     maxWidth: '90%',
-}
+};
 const StyleCell = {
    boder:'1px solid grey',
-}
+};
 const FormStyle = {
     minWidth:200
-}
-const defaultCase: Case[] | (() => Case[]) = []
+};
+const defaultCase: Case[] | (() => Case[]) = [];
 
 export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
     const daoF = DAOFactory.getDAOFactory();
- 
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const [id, setId] = React.useState(0);
+
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);  
+    }
+    
     function handleChangeSelect(event:any){
         setSelectChoice(event.target.value)
     }
@@ -58,10 +72,16 @@ export default function Folders(){
       };
 
      // Récupération de la liste des dossiers //
+    const [pageNumber, setPageNumber] = React.useState(0);
+
+    const casesPerPage = 5;
+    const pagesVisited = pageNumber * casesPerPage;
+ 
+    // Récupération de la liste des dossiers //
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getCaseDAO().findAll();
-            console.log(response);
+            // console.log(response);
             setCasesList(response);
             return response;
             }
@@ -70,7 +90,7 @@ export default function Folders(){
     
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
-        let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
+        let client = new Client(3, "John", "Doe", "3 rue des potiers", new Date(), new Date());
         let event = new Event(1, 1, "Description", new Date(), 10);
         let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
         let cas = new Case(1, code, "Affaire de corruption", new Date(), true, new Date(), [client], [event]);
@@ -122,14 +142,13 @@ export default function Folders(){
         directory: Directory.Documents,
       });
     };
-
     // Mise à jour du fichier case.json //
     const updateCaseFile = async () => {
       let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
       setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
       daoF!.getCaseDAO().update(cas);
     };
-
+    // Fonction de filtre du tableau //
     const checkFilter = (code: string, status: string, clients: Client[]) => {
         if(clients.length === 0) {
             if(code.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
@@ -143,8 +162,8 @@ export default function Folders(){
             }
         }
         return false;
-    }
-
+    };
+    // Récupération des clients //
     const getClient = (clients: Client[]) => {
         let client = "";
         for (let i = 0; i < clients.length; i++) {
@@ -155,7 +174,33 @@ export default function Folders(){
             }
         }
         return client;
-    }
+    };
+
+    const displayCases = casesList
+    .slice(pagesVisited, pagesVisited + casesPerPage)
+    .map((casee) => {
+        let status = casee.status ? 'clôturée' : 'En cours'
+            if (checkFilter(casee.code, status, casee.clients)) {
+                return (
+                    <TableRow key={casee.id}>
+                        <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
+                        <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>
+                            <NavLink to={`/dossierinfo/`+ casee.id}>
+                                <InfoIcon color="primary"/>
+                            </NavLink>
+                            <NoteAltIcon onClick={()=>goToModal(casee.id)} color="success"/>
+                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
+                        </TableCell>
+                    </TableRow>
+                )
+            }
+    });
+
+    const handlePageClick = ({ selected }: any) => {
+        setPageNumber(selected);
+    };
 
     return (
         <Grid container style={styleAll}>
@@ -163,6 +208,7 @@ export default function Folders(){
             <Grid container style={{ height: '90%'}}>
                 <Grid item xs={12} md={2} direction="column">
                     <SideBar />
+                    <FolderModal id={id} openModal={open} handleClose={handleClose}/>
                 </Grid>
                 <Grid item xs md style={{ margin: "15px" }}>
                     <Grid container xs={12} md={12} direction="row" alignItems="center"> 
@@ -199,7 +245,7 @@ export default function Folders(){
                                 </Toolbar>   
                             </Grid>  
                             <Grid item xs={12} md={2}>
-                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Nouveau</Button>
+                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
                             </Grid>                     
                         </Grid>
                     </Grid>
@@ -214,9 +260,9 @@ export default function Folders(){
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                                {casesList.map(casee => {
+                                {displayCases}
+                                {/* {casesList.map(casee => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
-                                    console.log(casee);
                                     if (checkFilter(casee.code, status, casee.clients)) {
                                         return (
                                             <TableRow key={casee.id}>
@@ -224,16 +270,16 @@ export default function Folders(){
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
                                                 <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                    <NavLink to={`/dossierinfo/`+ casee.id}>
+                                                    <Link to={`/dossierinfo/`+ casee.id}>
                                                         <InfoIcon color="primary"/>
-                                                    </NavLink>
+                                                    </Link>
                                                     <NoteAltIcon color="success"/>
                                                     <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
                                                 </TableCell>
                                             </TableRow>
                                         )
                                     }
-                                })}
+                                })} */}
                             </TableBody>
                         </Table>
                         <button onClick={() => {
@@ -244,6 +290,19 @@ export default function Folders(){
                                 deleteCaseFile()
                             }}> Delete case file
                         </button>
+                        <Grid item xs={12} md={12}>
+                            <ReactPaginate 
+                                previousLabel={'<<'}
+                                nextLabel={'>>'}
+                                pageCount={Math.ceil(casesList.length / casesPerPage)}
+                                onPageChange={handlePageClick}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'previousPage'}
+                                nextLinkClassName={'nextPage'}
+                                disabledClassName={'disabledPage'}
+                                activeClassName={'activePage'}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

@@ -1,12 +1,13 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect } from "react";
-import { Button, Grid} from "@mui/material";
+import { Button, Grid, Checkbox, FormGroup, FormControlLabel } from "@mui/material";
 import { Case } from "../Modele/metier/Case";
 import { Event } from "../Modele/metier/Event";
-import { useParams, NavLink, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert'; 
 import { Client } from '../Modele/metier/Client';
 import { ListItem, ListItemText } from '@mui/material';
+import { useSelector } from 'react-redux';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
@@ -29,7 +30,7 @@ const StyleContainer = {
 const styleAll = {
   height: "100%",
   width: "auto",
-}
+};
 const defaultCase: Case = {
   id: 0,
   code: "",
@@ -42,16 +43,17 @@ const defaultCase: Case = {
 };
 
 export default function SpeFolder(){
-  const [windowSize, setWindowSize] = React.useState(window.innerWidth);
   const [caseInfo, setCaseInfo] = React.useState(defaultCase);
   const [open, setOpen] = React.useState(false);
-  const daoF = DAOFactory.getDAOFactory();
   const { id } = useParams<{ id: string }>();
   const handleClose = () => setOpen(false);
+  const daoF = DAOFactory.getDAOFactory();
+  const env = useSelector((state: any) => state.env.environnement);
   let caseId = parseInt(id!);
   let total = 0;
   let navigate = useNavigate();
 
+  // Récupération du dossier //
   useEffect (() => {
     async function fetchData() { 
       console.log("fetchData");
@@ -61,26 +63,20 @@ export default function SpeFolder(){
         }
         fetchData();
   }, []);
-
-  const createEvent = (event: Event) => {
+  // Création d'un évènement //
+  const createEvent = async (event: Event) => {
     let table = caseInfo;
     let newTable = [...table.events, event];
     table.events = newTable;
     setCaseInfo(table);
-    daoF!.getEventDAO().create(event);
-    daoF!.getCaseDAO().update(table);
-    window.location.reload();
-  }
-
-  useEffect(() => {
-   function handleResize() {
-       setWindowSize(window.innerWidth);
-     }
-     window.addEventListener("resize", handleResize);
-   return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-      // Suppression d'un dossier //
+    if(env === "web"){
+          daoF!.getEventDAO().create(event);
+          window.location.reload();
+    } else {
+          daoF!.getCaseDAO().update(table);
+    }
+  };
+  // Suppression d'un dossier //
   const deleteCase = async (id: number) => {
       confirmAlert({
           customUI: ({ onClose }) => {
@@ -119,6 +115,16 @@ export default function SpeFolder(){
       });
   };
 
+  // Modification d'un dossier //
+  const endCase = async () => {
+    let table = caseInfo;
+    table.status = true;
+    table.endedAt = new Date();
+    console.log(table);
+    setCaseInfo(table);
+    daoF!.getCaseDAO().update(table);
+    window.location.reload();
+  };
 
   return (
     <Grid container style={styleAll}>
@@ -130,7 +136,7 @@ export default function SpeFolder(){
         <Grid item xs md style={{ margin: "20px"}}>
           <Grid container xs={12} md={12} direction="row" alignItems="center">
             <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
-              <span><NavLink to={'/dossiers'} className='link'>Dossier</NavLink> {' > ' + caseInfo.code}</span>
+              <span><Link to={'/dossiers'} className='link'>Dossier</Link> {' > ' + caseInfo.code}</span>
             </Grid>
             <Grid container xs={12} md={12} direction="row" style={StyleContainer} className="shadow" alignItems="center">
               <Grid item xs={4} md={1} sx={{ height: '100%' }}>
@@ -149,33 +155,42 @@ export default function SpeFolder(){
               <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
             </Grid>
             </Grid>
-            <Grid item xs={12} md={12} style={StyleContainer} className="shadow">
-              <h3>Description</h3>
-              <p>{caseInfo.description}</p>
+            <Grid container direction="row" xs={12} md={12} style={StyleContainer} className="shadow" alignItems="center">
+              <Grid item xs={10} md={10}>
+                <h3>Description</h3>
+                <p>{caseInfo.description}</p>
+              </Grid>
+              <Grid item xs={2} md={2}>
+                <FormGroup>
+                  {caseInfo.status ? <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturée le dossier" />  : <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturée le dossier" />}
+                </FormGroup>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={12} style={StyleContainer} className="shadow">
-              <h3>Clients concernés</h3>
-                <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
-                  {caseInfo.clients.map((client : Client)=> {
-                    return <ListItemText  key={client?.firstname + client?.lastname}> {client?.firstname} {client?.lastname}</ListItemText >
-                  })}
-                </ListItem>
-            </Grid>
-            <Grid item xs={12} md={12} style={StyleContainer} className="shadow">
-              <h2>Evènements</h2>
-                <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
-                  {caseInfo.events.map((event: Event)=> {
-                    total += event?.duration;
-                    return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {moment(event?.createdDate).format('YYYY/MM/DD') + " (" + event?.duration + ") " + event?.description} </ListItemText >
-                  })}
-                </ListItem>
-                <Grid item xs={12} md={2}>
-                  <Button variant="contained" color="success" sx={{width:'100%', fontSize: '10px', paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
-                </Grid>
-                <Grid item xs={12} md={12}>
-                  <p><b>Total: {total}h</b></p>  
-                </Grid>
-                <ModalEvent open={open} handleClose={handleClose} eventFunction={createEvent} caseId={caseId}/>
+            <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
+              <Grid item xs={12} md={6} style={StyleContainer} className="shadow">
+                <h2>Evènements</h2>
+                  <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                    {caseInfo.events.map((event: Event)=> {
+                      total += event?.duration;
+                      return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {moment(event?.createdDate).format('YYYY/MM/DD') + " (" + event?.duration + "h) " + event?.description} </ListItemText >
+                    })}
+                  </ListItem>
+                  <Grid item xs={12} md={6}>
+                    <Button variant="contained" color="success" sx={{width:'100%', fontSize: '10px', paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <p><b>Total: {total}h</b></p>  
+                  </Grid>
+                  <ModalEvent open={open} handleClose={handleClose} eventFunction={createEvent} caseId={caseId}/>
+              </Grid>
+              <Grid item xs={12} md={5} style={StyleContainer} className="shadow">
+                <h3>Clients concernés</h3>
+                  <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                    {caseInfo.clients.map((client : Client)=> {
+                      return <ListItemText  key={client?.firstname + client?.lastname}><Link to={'/clientinfo/' + client.id} className='innerLink'>{client?.firstname} {client?.lastname}</Link></ListItemText >
+                    })}
+                  </ListItem>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

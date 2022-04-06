@@ -20,7 +20,7 @@ function App() {
           <Route path="/clients" element={<Clients />}/>  
           <Route path="/dossiers" element={<Folders />}/>
           <Route path="/create" element={<Create />}/> 
-          <Route path="/clientsInfo/:id" element={<ClientsInfo />}/> 
+          <Route path="/clientinfo/:id" element={<ClientsInfo />}/> 
           <Route path="/dossierinfo/:id" element={<SpeFolder />}/>
       </Routes>
     </Router>

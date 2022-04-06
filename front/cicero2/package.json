@@ -32,6 +32,7 @@
     "react": "^17.0.2",
     "react-confirm-alert": "^2.8.0",
     "react-dom": "^17.0.2",
+    "react-paginate": "^8.1.2",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
@@ -45,8 +46,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "npx cap open electron",
-    "ionic": "npx cap open android",
+    "electron": "cross-env REACT_APP_ENV=ionic npx cap open electron",
+    "ionic": "cross-env REACT_APP_ENV=ionic npx cap open android",
     "sync": "npm run build && npx cap sync android && npx cap sync electron"
   },
   "eslintConfig": {

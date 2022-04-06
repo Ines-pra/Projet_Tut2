@@ -1,7 +1,7 @@
 import { Case } from '../../metier/Case';
 import CaseDAO from '../CaseDAO';
 import { client } from '../../../index';
-import { CREATE_CASE, DELETE_CASE, LINK_CLI_CASE } from '../../../graphql/Mutations/mutationsCase';
+import { CREATE_CASE, DELETE_CASE, LINK_CLI_CASE, UPDATE_CASE } from '../../../graphql/Mutations/mutationsCase';
 import { GET_ALL_CASE, GET_CASE_ID } from '../../../graphql/Query/queryCase';
 
 
@@ -9,7 +9,8 @@ import { GET_ALL_CASE, GET_CASE_ID } from '../../../graphql/Query/queryCase';
 
 export class sqlCaseDAO implements CaseDAO {
     public async create(cas: Case): Promise<number> {
-        client
+        let idC:Number;
+        await client
         .mutate({
             mutation: CREATE_CASE,
             variables: {
@@ -19,14 +20,17 @@ export class sqlCaseDAO implements CaseDAO {
                 code:cas.code,
                 status:cas.status
             }
+        }).then(result =>{
+            idC = result.data.createCase_af.id;
         });
 
+        
         cas.clients.forEach(element => {
-            client.
-            mutate({
+            client
+            .mutate({
                 mutation: LINK_CLI_CASE,
                 variables: {
-                    caseAfId: cas.id,
+                    caseAfId: idC,
                     clientId: element.id
                 }
             });
@@ -34,7 +38,33 @@ export class sqlCaseDAO implements CaseDAO {
         return cas.id;
     }
     public async update(object: Case): Promise<boolean> {
-        
+    
+        object.clients.forEach(element => {
+            console.log(element.id);
+            console.log(object.id)
+            
+            client.
+            mutate({
+                mutation: LINK_CLI_CASE,
+                variables: {
+                    caseAfId: object.id,
+                    clientId: element.id
+                }
+            });
+        });
+
+        client
+        .mutate({
+            mutation:UPDATE_CASE,
+            variables:{
+                description: object.description,
+                status: object.status,
+                code: object.code,
+                endedAt: object.endedAt,
+                startedAt: object.startedAt,
+                id: object.id
+            } 
+        })
         return true;
     }
     public async delete(id: number): Promise<boolean> {
@@ -74,7 +104,7 @@ export class sqlCaseDAO implements CaseDAO {
                     c1 = new Case(
                         result.data.case_af.id, result.data.case_af.code, result.data.case_af.description, result.data.case_af.startedAt, result.data.case_af.status, result.data.case_af.endedAt, result.data.case_af.clients, result.data.case_af.events
                     );
-                    console.log(result);
+                    // console.log(result);
                     
              
             });

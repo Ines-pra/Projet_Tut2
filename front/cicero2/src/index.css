@@ -24,4 +24,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+.innerLink {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  background-color: #3e721c;
+  border-radius: 5px;
+  padding: 4px;
+}
+.innerLink:hover {
+  text-decoration: none;
+  background-color: #4f8f24;
+  padding: 5px;
+}
+.cursor {
+  cursor: pointer;
+}

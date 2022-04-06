@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { TextField, InputLabel, Input } from "@mui/material";
+import { TextField, InputLabel, Stack } from "@mui/material";
 import { Event } from "../../Modele/metier/Event";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 
 const style = {
   position: "absolute",
@@ -13,7 +22,7 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: '50%',
   borderRadius: 3,
-  bgcolor: "#fff",
+  bgcolor: "#000",
   border: "2px solid #FFF",
   boxShadow: 24,
   p: 4,
@@ -23,33 +32,29 @@ export default function EventModal(openEdit: any) {
     const [description, setDescription] = useState('');
     const [date, setDate] = useState(''); 
     const [duree, setDuree] = useState(''); 
-    const [validDuration, setValidDuration] = useState('');
-    const [validDescription, setValidDescription] = useState('');
-    const [validDate, setValidDate] = useState('');
 
     function setEvent(description: string, date: Date, duree: string){
+        let message:Array<string> = [];
         let valid = true;
-        if (description.length === 0){
-            setValidDescription('Saisir une description');
+        let element = [{k:"description", v:description}, {k:"date", v:date}, {k:"duree", v:duree}];
+        element.forEach(element => {
+        if(element.v === ''){
             valid = false;
-        }
-        if(duree.length === 0) {
-            setValidDuration("Saisir une durée");
-            valid = false;
-        } 
-        if(date.toString().length === 0) {
-            setValidDate("Saisir une date");
-            valid = false;
-        }
+            message.push(element.k + ' is empty \n');
+          }
+        }); 
         if(valid) {
             let event = new Event(1, openEdit.caseId, description, date, parseInt(duree));
             openEdit.eventFunction(event);
             openEdit.handleClose();
+        } else {
+            alert(message);
         }
     }
 
   return (
     <div>
+      <ThemeProvider theme={theme}>
       <Modal
         open={openEdit.open}
         onClose={openEdit.handleClose}
@@ -57,7 +62,7 @@ export default function EventModal(openEdit: any) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2" style={{color:'black'}}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" style={{color:'white'}}>
                 Ajouter un évènement
             </Typography>
 
@@ -69,43 +74,48 @@ export default function EventModal(openEdit: any) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 fullWidth
-                helperText={validDescription}
             /> 
             <InputLabel id="modal-modal-titleCard">Date :</InputLabel>
             <TextField
                 id="date"
                 label="Date"
                 type="date"
+                variant="filled"
                 defaultValue={date}
-                sx={{ width: 220 }}
                 InputLabelProps={{
                 shrink: true,
                 }}
                 fullWidth
                 onChange={(e) => setDate(e.target.value)}
-                helperText={validDate}
             />
             <InputLabel id="modal-modal-titleCard">Durée :</InputLabel>
             <TextField
                 id="filled-basic"
-                label="Durée"
+                label="Duration"
                 type="number"
                 variant="filled"
                 value={duree}
                 onChange={(e) => setDuree(e.target.value)}
                 fullWidth
-                helperText={validDuration}
             />
 
-           <Button variant="outlined" color="success" onClick= {() => setEvent(description, new Date(date), duree)}>
-            Valider
-          </Button> 
+          <Box height={'5vh'}/>
 
-          <Button variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
-            Annuler
-          </Button>
+        
+          <Stack direction='row' spacing={2}>
+            <Button fullWidth variant="outlined" color="success" onClick= {() => setEvent(description, new Date(date), duree)}>
+              Valider
+            </Button> 
+
+            <Button fullWidth variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
+              Annuler
+            </Button>
+          </Stack>
+
+
         </Box>
       </Modal>
+      </ThemeProvider>
     </div>
   );
 }

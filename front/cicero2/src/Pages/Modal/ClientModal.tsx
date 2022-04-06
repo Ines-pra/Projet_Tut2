@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { TextField, InputLabel, Alert } from "@mui/material";
+import { TextField, InputLabel, Stack } from "@mui/material";
 import { Client } from "../../Modele/metier/Client";
 import DAOFactory from "../../Modele/dao/factory/DAOFactory";
 import { ThemeProvider } from '@emotion/react';
@@ -19,21 +19,16 @@ const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
-  height:'auto',
   overflowY: 'scroll',
   transform: "translate(-50%, -50%)",
-  width: 'auto',
+  width: '50%',
   borderRadius: 3,
-  bgcolor: "#202121",
+  bgcolor: "#000",
   border: "2px solid #FFF",
   boxShadow: 24,
   p: 4,
   color:"white"
 };
-
-
-
-
 
 function ClientModal(openEdit:any) {
 
@@ -46,7 +41,7 @@ function ClientModal(openEdit:any) {
 
   useEffect (() => {
     async function fetchData() {
-        if(openEdit.id!=0){
+        if(openEdit.id !== 0){
             let c1:Client = await daoF!.getClientDAO().findById(openEdit.id);
             // setClientId(c1);
             setFirstname(c1.firstname);
@@ -72,9 +67,8 @@ function ClientModal(openEdit:any) {
         let element = [{k:"lastname", v:lastname}, {k:"firstname", v:firstname}, {k:"address", v:address}, {k:"birthDate", v:birthDate}];
         element.forEach(element => {
             if(element.v === ''){
-                console.log('casser');
                 vld = false;
-                message.push(element.k + ' is empty');
+                message.push(element.k + ' is empty \n');
             }
         }); 
         
@@ -83,8 +77,10 @@ function ClientModal(openEdit:any) {
         if(vld){
             if (openEdit.id === 0 ){
                  await daoF!.getClientDAO().create(cli);
+                 openEdit.addFunction(cli);
             }else{
                  await daoF!.getClientDAO().update(cli);
+                 openEdit.updateFunction(cli);
             }
             openEdit.handleClose();
         }else{
@@ -103,10 +99,10 @@ function ClientModal(openEdit:any) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-           {openEdit.id == 0 ? 'Ajouter un client'  :  'Edité client'}
+           {openEdit.id === 0 ? 'Ajouter un client'  :  'Edité client'}
           </Typography>
 
-          <InputLabel sx={{marginTop:1}} id="modal-modal-titleCard">Firstname :</InputLabel>
+          <InputLabel sx={{marginTop:1}} id="modal-modal-titleCard">Prénom :</InputLabel>
           <TextField
             id="filled-basic"
             label="Firstname"
@@ -116,7 +112,7 @@ function ClientModal(openEdit:any) {
             fullWidth
           />
 
-          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Lastname :</InputLabel>
+          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Nom :</InputLabel>
           <TextField
             id="filled-basic"
             label="Lastname"
@@ -127,7 +123,7 @@ function ClientModal(openEdit:any) {
           />
 
 
-          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Address :</InputLabel>
+          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Adresse :</InputLabel>
           <TextField
             id="filled-basic"
             label="Address"
@@ -136,7 +132,7 @@ function ClientModal(openEdit:any) {
             onChange={(e) => setAddress(e.target.value)}
             fullWidth
           />
-            <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Birth Date :</InputLabel>
+            <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Date de naissance :</InputLabel>
             <TextField
                     id="date"
                     label="Birth Date"
@@ -155,15 +151,15 @@ function ClientModal(openEdit:any) {
           <Box height={'5vh'}/>
        
         
+          <Stack direction='row' spacing={2}>
+            <Button fullWidth variant="outlined" sx={{marginRight:1}} color="success" onClick= {()=>setClient(lastname, firstname, address, birth)}>
+              Valider
+            </Button>
 
-          <Button variant="outlined" sx={{marginRight:1}} color="success" onClick= {()=>setClient(lastname, firstname, address, birth)}>
-            Valider
-          </Button>
-
-          <Button variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
-            Annuler
-          </Button>
-          
+            <Button fullWidth variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
+              Annuler
+            </Button>
+          </Stack>
          
 
           </Box>
