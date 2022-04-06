@@ -9,8 +9,8 @@ import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import moment from 'moment';
-import ClientModal from './Modal/ClientModal';
-import './main.css';
+import ClientModal from '../Components/Modal/ClientModal';
+import '../Styles/main.css';
 
 const styleAll = {
     height: "100%",
@@ -46,6 +46,7 @@ export default function ClientsInfo(){
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    // Récupération des données //
     useEffect (() => {
         async function fetchData() {
             const response2 = await daoF!.getCaseDAO().findAll();
@@ -56,7 +57,7 @@ export default function ClientsInfo(){
             }
             fetchData();
     }, []);
-
+    // Récupération des dossiers pour le client //
     const getClientCases = (id: number) => {
         let listCaseClient: Case[] = [];
         
@@ -71,7 +72,7 @@ export default function ClientsInfo(){
         }
         return listCaseClient;
     }
-
+    // Suppression d'un client //
     const deleteClient = async (id: number) => {
         confirmAlert({
             customUI: ({ onClose }) => {
@@ -109,11 +110,11 @@ export default function ClientsInfo(){
             }
         });
     };
-
+    // Ouverture du modal //
     function goToModal(id:number){
         handleOpen();
     };
-
+    // Mise a jour du client //
     const updateClient = (cli: Client) => {
         setClient(cli);
     };
