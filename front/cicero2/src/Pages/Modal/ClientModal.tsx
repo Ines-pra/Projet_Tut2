@@ -30,10 +30,6 @@ const style = {
   color:"white"
 };
 
-
-
-
-
 function ClientModal(openEdit:any) {
 
   const [firstname,setFirstname] = useState('');
@@ -45,7 +41,7 @@ function ClientModal(openEdit:any) {
 
   useEffect (() => {
     async function fetchData() {
-        if(openEdit.id!=0){
+        if(openEdit.id !== 0){
             let c1:Client = await daoF!.getClientDAO().findById(openEdit.id);
             // setClientId(c1);
             setFirstname(c1.firstname);
@@ -72,7 +68,7 @@ function ClientModal(openEdit:any) {
         element.forEach(element => {
             if(element.v === ''){
                 vld = false;
-                message.push(element.k + ' is empty');
+                message.push(element.k + ' is empty \n');
             }
         }); 
         
@@ -81,8 +77,10 @@ function ClientModal(openEdit:any) {
         if(vld){
             if (openEdit.id === 0 ){
                  await daoF!.getClientDAO().create(cli);
+                 openEdit.addFunction(cli);
             }else{
                  await daoF!.getClientDAO().update(cli);
+                 openEdit.updateFunction(cli);
             }
             openEdit.handleClose();
         }else{
@@ -101,7 +99,7 @@ function ClientModal(openEdit:any) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-           {openEdit.id == 0 ? 'Ajouter un client'  :  'Edité client'}
+           {openEdit.id === 0 ? 'Ajouter un client'  :  'Edité client'}
           </Typography>
 
           <InputLabel sx={{marginTop:1}} id="modal-modal-titleCard">Firstname :</InputLabel>

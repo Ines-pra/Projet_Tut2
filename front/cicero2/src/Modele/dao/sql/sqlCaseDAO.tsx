@@ -26,8 +26,8 @@ export class sqlCaseDAO implements CaseDAO {
 
         
         cas.clients.forEach(element => {
-            client.
-            mutate({
+            client
+            .mutate({
                 mutation: LINK_CLI_CASE,
                 variables: {
                     caseAfId: idC,

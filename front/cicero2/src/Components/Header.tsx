@@ -5,7 +5,6 @@ const styleHeader = {
     background: '#000000',
     color: '#fff',
 };
-
 const styleLogo = {
     width: '10%',
     fit: 'contain',

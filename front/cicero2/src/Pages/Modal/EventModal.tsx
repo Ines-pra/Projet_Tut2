@@ -32,28 +32,23 @@ export default function EventModal(openEdit: any) {
     const [description, setDescription] = useState('');
     const [date, setDate] = useState(''); 
     const [duree, setDuree] = useState(''); 
-    const [validDuration, setValidDuration] = useState('');
-    const [validDescription, setValidDescription] = useState('');
-    const [validDate, setValidDate] = useState('');
 
     function setEvent(description: string, date: Date, duree: string){
+        let message:Array<string> = [];
         let valid = true;
-        if (description.length === 0){
-            setValidDescription('Saisir une description');
+        let element = [{k:"description", v:description}, {k:"date", v:date}, {k:"duree", v:duree}];
+        element.forEach(element => {
+        if(element.v === ''){
             valid = false;
-        }
-        if(duree.length === 0) {
-            setValidDuration("Saisir une durée");
-            valid = false;
-        } 
-        if(date.toString().length === 0) {
-            setValidDate("Saisir une date");
-            valid = false;
-        }
+            message.push(element.k + ' is empty \n');
+          }
+        }); 
         if(valid) {
             let event = new Event(1, openEdit.caseId, description, date, parseInt(duree));
             openEdit.eventFunction(event);
             openEdit.handleClose();
+        } else {
+            alert(message);
         }
     }
 
@@ -79,7 +74,6 @@ export default function EventModal(openEdit: any) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 fullWidth
-                helperText={validDescription}
             /> 
             <InputLabel id="modal-modal-titleCard">Date :</InputLabel>
             <TextField
@@ -93,7 +87,6 @@ export default function EventModal(openEdit: any) {
                 }}
                 fullWidth
                 onChange={(e) => setDate(e.target.value)}
-                helperText={validDate}
             />
             <InputLabel id="modal-modal-titleCard">Durée :</InputLabel>
             <TextField
@@ -104,7 +97,6 @@ export default function EventModal(openEdit: any) {
                 value={duree}
                 onChange={(e) => setDuree(e.target.value)}
                 fullWidth
-                helperText={validDuration}
             />
 
           <Box height={'5vh'}/>

@@ -1,143 +1,194 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useState, useEffect } from 'react';
-import Box from "@mui/material/Box";
 import SideBar from '../Components/SideBar';
-import { Container, Grid, Button, IconButton, InputLabel, ListItem, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import Header from '../Components/Header';
 import { Client } from "../Modele/metier/Client";
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { useParams, useSearchParams  } from 'react-router-dom';
-import ClientModal from './Modal/ClientModal';
-import CloseIcon from '@mui/icons-material/Close';
-import { sqlClientDAO } from '../Modele/dao/sql/sqlClientDAO';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Case } from '../Modele/metier/Case';
+import { confirmAlert } from 'react-confirm-alert';
+import moment from 'moment';
 
 
 const defaultClient: Client[] | (() => Client[]) = []
+
+// let defaultClient1: Client | (() => Client) 
+const defaultClient1: Client = {
+    id: 0,
+    lastname: "",
+    firstname: "",
+    birthDate: new Date(),
+    address: "",
+    createdDate: new Date(),
+  };
 const defaultCase: Case[] | (() => Case[]) = []
 
 export default function ClientsInfo(){
 
-    const [modalOpen, setModalOpen] = useState(false);
-    const [clientsList, setClientsList] = React.useState(defaultClient);
-    const [casesList, setCasesList] = React.useState(defaultCase);
+    const [client, setClient] = useState(defaultClient1);
+    const [casesList, setCasesList] = useState(defaultCase);
     const daoF = DAOFactory.getDAOFactory();
     const { id } = useParams<{id:string}>();
+    let navigate = useNavigate();
 
     useEffect (() => {
         async function fetchData() {
-            const response = await daoF!.getClientDAO().findAll();
-            setClientsList(response);
             const response2 = await daoF!.getCaseDAO().findAll();
             setCasesList(response2);
-            return response;
+            console.log(response2);
+            const response3 = await daoF!.getClientDAO().findById(parseInt(id!));
+            setClient(response3);
+            return response2;
             }
             fetchData();
     }, []);
 
-    // const elements = [
-    //     {'id':11, 'nom': 'PAS', 'adresse':23, 'prenom':'Tèque', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
-    //     {'id':2, 'nom': 'KI', 'adresse':123, 'prenom':'Wi', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
-    //     {'id':3, 'nom': 'BA', 'adresse':44, 'prenom':'Nane', 'dateNaissance' : 'en cours','createdAt' : 'en cours', 'dossier':123},
-    //     {'id':4, 'nom': 'AVO', 'adresse':11, 'prenom':'Cat', 'dateNaissance' : 'clôturée','createdAt' : 'en cours', 'dossier':123},
-    // ];
 
+    const styleAll = {
+        height: "100%",
+        width: "auto",
+      }
 
-    const StyleAll = {
-        width : '100%'
-    }
-    const ModalStyle = {
-        width: 1000,
-        height: 750,
-        backgroundColor: '#fff',
-        border: '1px solid black'
-    };
-
-    const Style = {
-        padding:'40px',
-    }
-
-    const cases = casesList.map((cases) =>
-    // {if (cases.clients === id)
+    const StyleContainer = {
+        margin: "15px",
+        backgroundColor: "#c6e5b3",
+        borderRadius: "5px",
+        padding: "15px",
+        color: "#000000",
+      };
     
-        <p key={cases.id}>
-            {cases.code} - {cases.status}
-        </p>
-        // }
-    );
+    // casesList.map((cases) =>
+    // // {if (cases.clients === id)
+    
+    //     <p key={cases.id}>
+    //         {cases.code} - {cases.status}
+    //     </p>
+    //     // }
+    // );
+
+    const getClientCases = (id: number) => {
+        console.log(id);
+        
+        if (casesList.length === 0) {
+            return " / ";
+        }
+        let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
+        let concat = "";
+        for(let i = 0; i < clientCases.length; i++){
+            for(let y = 0; y < clientCases[i].length; y++){
+                if(i + 1 === clientCases.length){
+                    if(clientCases[i][y] !== null){
+                        concat += clientCases[i][y]!.code.toString();
+                    }
+                } else {
+                    if(clientCases[i][y] !== null){
+                        concat += clientCases[i][y]!.code.toString() + " - ";
+                    }
+                }
+            }
+        }
+        // console.log(clientCases);
+        if(concat === ""){
+            return " / ";
+        } else {
+            return concat;
+        }
+    }
+
+    const deleteCase = async (id: number) => {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+              return (
+                <div className='custom-ui'>
+                    <h1>Etes-vous sur ?</h1>
+                    <p>Etes-vous sur de vouloir supprimer ce client ?</p>
+                    <Button     
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#d9534f",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginRight: "5px",
+                        }} 
+                        onClick={onClose}>Annuler</Button>
+                    <Button
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#0275d8",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginLeft: "5px",
+                        }}
+                        onClick={() => {
+                            daoF!.getClientDAO().delete(id);
+                            navigate("/clients");
+                            window.location.reload();
+                            onClose();
+                        }}>Confirmer</Button>
+                </div>
+              );
+            }
+        });
+    };
+  
 
 
     return (            
-        <Grid sx={StyleAll}>
+    <Grid container style={styleAll}>
         <Header/>
-        <Box sx={{ display: 'flex', minWidth: 700 }}>
+        <Grid container style={{ height: '90%'}}>
+            <Grid item xs={12} md={2} direction="column">
             <SideBar />
-            <main className='main'>
-                    <Box sx={{ display:"flex"}}>
-                        {/* <Container> */}
-                            {clientsList.map((client) => {
-                                 if ((client.id).toString() === (id!.toString()))
-                                 return (
-                                    <Box >
-                                        <Grid>
-                                            <h3> Clients {'>'} {client.lastname} {client.firstname} </h3>
-                                        </Grid>
-                                        <Grid container sx={{ padding: "30px"}}>
-                                            <Grid container sx={{display:"flex"}}>
-                                                <Grid item xs={12} md={4}>
-                                                    <img src="/profil.png" alt="profil"/>
-                                                </Grid>
-                                                <Grid item xs={12} md={6}>
-                                                    <h1> {client.lastname} {client.firstname}</h1>
-                                                    <p> client depuis le {client.createdDate}</p>
-                                                </Grid>  
-                                                <Grid item xs={12} md={2}>
-                                                <Button onClick={()=>{setModalOpen(true)}} sx={{ backgroundColor:"#008000", color:"white", 
-                                                "&:hover": { backgroundColor: "#00800080" }}}> Modifier </Button>
-                                                <Button sx={{ backgroundColor:"#ff0000", color: "white", marginTop:"10px",
-                                            "&:hover": { backgroundColor: "#FF000080" }}}> Supprimer </Button>
-                                                </Grid>
-                                            </Grid> 
-                                            <Grid item sx={{ padding:"30px"}}>
-                                                <h3> Adresse </h3>
-                                                <p> {client.address} </p>
-                                                <h3> Date de naissance </h3>
-                                                <p> {client.birthDate} </p>
-                                                <h3> Dossiers associés </h3>
-                                                {cases}
-
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                
-                                 )
-                            }
-                                )}
-
-                            {/* </Container> */}
-                        {/* <Container> */}
-                            {/* <Button onClick={()=>{setModalOpen(true)}}> Modifier </Button> */}
-                            {/* <button onClick={()=>{setModalOpen(true);console.log('ok')}}> Modifier </button> */}
-                        {/* </Container> */}
-
-                    </Box>
-
-                    
-                <ClientModal modalOpen={modalOpen}>  
-                    <Box sx={ModalStyle}>
-                    <Grid sx={{ display: 'flex', justifyContent:'end', marginTop:2, marginRight:2}}>
-                    
-                        <IconButton onClick={()=> {setModalOpen(false);}}>
-                            <CloseIcon />
-                        </IconButton>
-                        
+            </Grid>
+            <Grid item xs md style={{ margin: "20px"}}>
+                <Grid container xs={12} md={12} direction="row" alignItems="center">
+                    <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
+                        <Link to={'/clients'} className='link'>Clients </Link> {' > ' + client.lastname + ' ' + client.firstname}
                     </Grid>
-                    <p> Modal Client Update </p>
-                    </Box>
-                </ClientModal>
-            </main>
-        </Box>
+
+                    <Grid container xs={12} md={10} direction="row" style={StyleContainer} className="shadow" alignItems="center">
+                        <Grid item xs={0} md={2} sx={{ height: '100%' }}>
+                            <img src="/profil.png" alt="profil"/>
+                        </Grid>
+                        <Grid item xs={12} md={7} sx={{fontSize: 14, height: '100%'}}>
+                            <Grid item xs={12} md={12}>
+                            <h1> {client.lastname} {client.firstname}</h1>
+                            </Grid>   
+                            <Grid item xs={12} md={12} sx={{fontStyle: 'italic',fontSize: 11,}}>
+                            <p> client depuis le {moment(client.createdDate).format('YYYY/MM/DD')} </p>
+                            </Grid>                       
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Modifier dossier</Button>
+                            <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(parseInt(id!))}>Supprimer</Button>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
+                        <Grid item xs={12} md={4} direction="row" style={StyleContainer} className="shadow" alignItems="center">
+                            <h2> Informations générales </h2>
+                            <h3> Adresse </h3>
+                            <p> {client.address} </p>
+                            <h3> Date de naissance </h3>
+                            <p> {moment(client.birthDate).format('YYYY/MM/DD')} </p>
+                        </Grid>
+                        <Grid item xs={12} md={5} direction="row" style={StyleContainer} className="shadow" alignItems="center">
+                            <h3> Dossiers associés </h3>
+                           
+                            {getClientCases(parseInt(id!))}
+
+
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+    
         </Grid>
+    </Grid>
     )
         
   } 
