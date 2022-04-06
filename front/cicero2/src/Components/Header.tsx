@@ -1,7 +1,6 @@
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import React from 'react';
 import logo from '../assets/img/cicero_logo.png';
-import { Box } from '@mui/material';
 
 const styleHeader = {
     background: '#000000',
@@ -23,6 +22,7 @@ const styleSideBar = {
 export default function Header(){
     const [windowSize, setWindowSize] = React.useState(window.innerWidth);
 
+    // Récupération de la taille de la fenêtre //
     React.useEffect(() => {
      function handleResize() {
          setWindowSize(window.innerWidth);

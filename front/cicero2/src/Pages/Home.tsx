@@ -1,10 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
-import { Box, Button, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+
 
 const styleAll = {
   height: "100%",
@@ -95,6 +96,6 @@ export default function Home(){
                     </Grid>
                 </Grid>
         </Grid>
-        </Grid>
+    </Grid>
     );
 } 
