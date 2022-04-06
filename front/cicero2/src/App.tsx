@@ -16,18 +16,12 @@ function App() {
   return (
     <Router>
       <Routes>
-          <Route path="/" element={<Home />}>
-          </Route>
-          <Route path="/clients" element={<Clients />}>
-          </Route>  
-          <Route path="/dossiers" element={<Folders />}>
-          </Route>
-          <Route path="/create" element={<Create />}>
-          </Route> 
-          <Route path="/clientinfo/:id" element={<ClientsInfo />}>
-          </Route> 
-          <Route path="/dossierinfo/:id" element={<SpeFolder />}> 
-          </Route>
+          <Route path="/" element={<Home />}/>
+          <Route path="/clients" element={<Clients />}/>  
+          <Route path="/dossiers" element={<Folders />}/>
+          <Route path="/create" element={<Create />}/> 
+          <Route path="/clientinfo/:id" element={<ClientsInfo />}/> 
+          <Route path="/dossierinfo/:id" element={<SpeFolder />}/>
       </Routes>
     </Router>
   );
