@@ -143,12 +143,16 @@ function FolderModal({openModal,handleClose,id}:{openModal:boolean,handleClose:a
       
     const handleSubmit = (e:any) => {
         e.preventDefault();
+        if(CaseInfo.Code != '' || CaseInfo.Description != '' ){
         if(id==0){
           daoF!.getCaseDAO().create(new Case(0, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
         }else{
           daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
         }
         handleClose();
+        }else{
+          alert('veuillez remplir tout les champs');
+        }
       }
 
   return (      
