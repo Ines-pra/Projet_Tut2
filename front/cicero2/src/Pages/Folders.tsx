@@ -6,7 +6,7 @@ import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBo
 import { Client } from "../Modele/metier/Client";
 import { Event } from "../Modele/metier/Event";
 import { Filesystem, Directory } from "@capacitor/filesystem";
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,7 +17,7 @@ import FolderModal from "./Modal/FolderModal";
 import InfoIcon from '@mui/icons-material/Info';
 import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
-import '../Styles/clients.css';
+import '../Styles/pagination.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const styleAll = {
@@ -270,9 +270,9 @@ export default function Folders(){
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
                                                 <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
                                                 <TableCell align="center" width={'15%'} sx={StyleCell}>
-                                                    <NavLink to={`/dossierinfo/`+ casee.id}>
+                                                    <Link to={`/dossierinfo/`+ casee.id}>
                                                         <InfoIcon color="primary"/>
-                                                    </NavLink>
+                                                    </Link>
                                                     <NoteAltIcon color="success"/>
                                                     <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
                                                 </TableCell>
@@ -290,17 +290,19 @@ export default function Folders(){
                                 deleteCaseFile()
                             }}> Delete case file
                         </button>
-                        <ReactPaginate 
-                            previousLabel={'Précédent'}
-                            nextLabel={'Suivant'}
-                            pageCount={Math.ceil(casesList.length / casesPerPage)}
-                            onPageChange={handlePageClick}
-                            containerClassName={'pagination'}
-                            previousLinkClassName={'previousPage'}
-                            nextLinkClassName={'nextPage'}
-                            disabledClassName={'disabledPage'}
-                            activeClassName={'activePage'}
-                        />
+                        <Grid item xs={12} md={12}>
+                            <ReactPaginate 
+                                previousLabel={'<<'}
+                                nextLabel={'>>'}
+                                pageCount={Math.ceil(casesList.length / casesPerPage)}
+                                onPageChange={handlePageClick}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'previousPage'}
+                                nextLinkClassName={'nextPage'}
+                                disabledClassName={'disabledPage'}
+                                activeClassName={'activePage'}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

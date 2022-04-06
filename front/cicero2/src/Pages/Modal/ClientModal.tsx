@@ -102,7 +102,7 @@ function ClientModal(openEdit:any) {
            {openEdit.id === 0 ? 'Ajouter un client'  :  'Edité client'}
           </Typography>
 
-          <InputLabel sx={{marginTop:1}} id="modal-modal-titleCard">Firstname :</InputLabel>
+          <InputLabel sx={{marginTop:1}} id="modal-modal-titleCard">Prénom :</InputLabel>
           <TextField
             id="filled-basic"
             label="Firstname"
@@ -112,7 +112,7 @@ function ClientModal(openEdit:any) {
             fullWidth
           />
 
-          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Lastname :</InputLabel>
+          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Nom :</InputLabel>
           <TextField
             id="filled-basic"
             label="Lastname"
@@ -123,7 +123,7 @@ function ClientModal(openEdit:any) {
           />
 
 
-          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Address :</InputLabel>
+          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Adresse :</InputLabel>
           <TextField
             id="filled-basic"
             label="Address"
@@ -132,7 +132,7 @@ function ClientModal(openEdit:any) {
             onChange={(e) => setAddress(e.target.value)}
             fullWidth
           />
-            <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Birth Date :</InputLabel>
+            <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Date de naissance :</InputLabel>
             <TextField
                     id="date"
                     label="Birth Date"

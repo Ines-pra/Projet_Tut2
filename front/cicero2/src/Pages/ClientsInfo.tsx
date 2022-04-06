@@ -1,19 +1,29 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useState, useEffect } from 'react';
-import SideBar from '../Components/SideBar';
-import { Grid, Button } from '@mui/material';
-import Header from '../Components/Header';
-import { Client } from "../Modele/metier/Client";
-import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Case } from '../Modele/metier/Case';
 import { confirmAlert } from 'react-confirm-alert';
+import { Grid, Button } from '@mui/material';
+import { Client } from "../Modele/metier/Client";
+import SideBar from '../Components/SideBar';
+import Header from '../Components/Header';
+import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import moment from 'moment';
+import ClientModal from './Modal/ClientModal';
+import './main.css';
 
+const styleAll = {
+    height: "100%",
+    width: "auto",
+};
+const StyleContainer = {
+    margin: "15px",
+    backgroundColor: "#c6e5b3",
+    borderRadius: "5px",
+    padding: "15px",
+    color: "#000000",
+};
 
-const defaultClient: Client[] | (() => Client[]) = []
-
-// let defaultClient1: Client | (() => Client) 
 const defaultClient1: Client = {
     id: 0,
     lastname: "",
@@ -21,82 +31,48 @@ const defaultClient1: Client = {
     birthDate: new Date(),
     address: "",
     createdDate: new Date(),
-  };
-const defaultCase: Case[] | (() => Case[]) = []
+};
+const defaultCase: Case[] | (() => Case[]) = [];
 
 export default function ClientsInfo(){
-
     const [client, setClient] = useState(defaultClient1);
     const [casesList, setCasesList] = useState(defaultCase);
+    const [open, setOpen] = React.useState(false);
+
     const daoF = DAOFactory.getDAOFactory();
     const { id } = useParams<{id:string}>();
     let navigate = useNavigate();
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     useEffect (() => {
         async function fetchData() {
             const response2 = await daoF!.getCaseDAO().findAll();
             setCasesList(response2);
-            console.log(response2);
-            const response3 = await daoF!.getClientDAO().findById(parseInt(id!));
-            setClient(response3);
-            return response2;
+            const response = await daoF!.getClientDAO().findById(parseInt(id!));
+            setClient(response);
+            return response;
             }
             fetchData();
     }, []);
 
-
-    const styleAll = {
-        height: "100%",
-        width: "auto",
-      }
-
-    const StyleContainer = {
-        margin: "15px",
-        backgroundColor: "#c6e5b3",
-        borderRadius: "5px",
-        padding: "15px",
-        color: "#000000",
-      };
-    
-    // casesList.map((cases) =>
-    // // {if (cases.clients === id)
-    
-    //     <p key={cases.id}>
-    //         {cases.code} - {cases.status}
-    //     </p>
-    //     // }
-    // );
-
     const getClientCases = (id: number) => {
-        console.log(id);
+        let listCaseClient: Case[] = [];
         
-        if (casesList.length === 0) {
-            return " / ";
-        }
-        let clientCases = casesList.map(c => c.clients.map(cl => cl.id === id ? c : null));
-        let concat = "";
-        for(let i = 0; i < clientCases.length; i++){
-            for(let y = 0; y < clientCases[i].length; y++){
-                if(i + 1 === clientCases.length){
-                    if(clientCases[i][y] !== null){
-                        concat += clientCases[i][y]!.code.toString();
+        if (casesList.length !== 0) {
+            casesList.forEach(cases => {
+                cases.clients.forEach(client => {                   
+                    if (client.id === id) {
+                        listCaseClient.push(cases);
                     }
-                } else {
-                    if(clientCases[i][y] !== null){
-                        concat += clientCases[i][y]!.code.toString() + " - ";
-                    }
-                }
-            }
+                });
+            });
         }
-        // console.log(clientCases);
-        if(concat === ""){
-            return " / ";
-        } else {
-            return concat;
-        }
+        return listCaseClient;
     }
 
-    const deleteCase = async (id: number) => {
+    const deleteClient = async (id: number) => {
         confirmAlert({
             customUI: ({ onClose }) => {
               return (
@@ -133,12 +109,19 @@ export default function ClientsInfo(){
             }
         });
     };
+
+    function goToModal(id:number){
+        handleOpen();
+    };
+
+    const updateClient = (cli: Client) => {
+        setClient(cli);
+    };
   
-
-
     return (            
     <Grid container style={styleAll}>
         <Header/>
+        <ClientModal openNew={open} handleClose={handleClose} updateFunction={updateClient} id={parseInt(id!)}/>
         <Grid container style={{ height: '90%'}}>
             <Grid item xs={12} md={2} direction="column">
             <SideBar />
@@ -148,7 +131,6 @@ export default function ClientsInfo(){
                     <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
                         <Link to={'/clients'} className='link'>Clients </Link> {' > ' + client.lastname + ' ' + client.firstname}
                     </Grid>
-
                     <Grid container xs={12} md={10} direction="row" style={StyleContainer} className="shadow" alignItems="center">
                         <Grid item xs={0} md={2} sx={{ height: '100%' }}>
                             <img src="/profil.png" alt="profil"/>
@@ -162,13 +144,12 @@ export default function ClientsInfo(){
                             </Grid>                       
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Modifier dossier</Button>
-                            <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(parseInt(id!))}>Supprimer</Button>
+                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
+                            <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteClient(parseInt(id!))}>Supprimer</Button>
                         </Grid>
                     </Grid>
-
                     <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
-                        <Grid item xs={12} md={4} direction="row" style={StyleContainer} className="shadow" alignItems="center">
+                        <Grid item xs={12} md={4} direction="row" style={StyleContainer} className="shadow overflow" alignItems="center">
                             <h2> Informations générales </h2>
                             <h3> Adresse </h3>
                             <p> {client.address} </p>
@@ -177,18 +158,14 @@ export default function ClientsInfo(){
                         </Grid>
                         <Grid item xs={12} md={5} direction="row" style={StyleContainer} className="shadow" alignItems="center">
                             <h3> Dossiers associés </h3>
-                           
-                            {getClientCases(parseInt(id!))}
-
-
+                            {getClientCases(client.id).map(cases => (
+                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturée" : "En cours"}</p>
+                            ))}
                         </Grid>
                     </Grid>
-
                 </Grid>
             </Grid>
-    
         </Grid>
     </Grid>
-    )
-        
+    )     
   } 
