@@ -9,6 +9,7 @@ import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import moment from 'moment';
+import ClientModal from './Modal/ClientModal';
 import './main.css';
 
 const styleAll = {
@@ -36,10 +37,14 @@ const defaultCase: Case[] | (() => Case[]) = [];
 export default function ClientsInfo(){
     const [client, setClient] = useState(defaultClient1);
     const [casesList, setCasesList] = useState(defaultCase);
+    const [open, setOpen] = React.useState(false);
 
     const daoF = DAOFactory.getDAOFactory();
     const { id } = useParams<{id:string}>();
     let navigate = useNavigate();
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     useEffect (() => {
         async function fetchData() {
@@ -104,10 +109,19 @@ export default function ClientsInfo(){
             }
         });
     };
+
+    function goToModal(id:number){
+        handleOpen();
+    };
+
+    const updateClient = (cli: Client) => {
+        setClient(cli);
+    };
   
     return (            
     <Grid container style={styleAll}>
         <Header/>
+        <ClientModal openNew={open} handleClose={handleClose} updateFunction={updateClient} id={id}/>
         <Grid container style={{ height: '90%'}}>
             <Grid item xs={12} md={2} direction="column">
             <SideBar />
@@ -130,7 +144,7 @@ export default function ClientsInfo(){
                             </Grid>                       
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Modifier dossier</Button>
+                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(client.id)}>Modifier Client</Button>
                             <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteClient(parseInt(id!))}>Supprimer</Button>
                         </Grid>
                     </Grid>
