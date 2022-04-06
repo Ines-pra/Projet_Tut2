@@ -121,7 +121,7 @@ export default function ClientsInfo(){
     return (            
     <Grid container style={styleAll}>
         <Header/>
-        <ClientModal openNew={open} handleClose={handleClose} updateFunction={updateClient} id={id}/>
+        <ClientModal openNew={open} handleClose={handleClose} updateFunction={updateClient} id={parseInt(id!)}/>
         <Grid container style={{ height: '90%'}}>
             <Grid item xs={12} md={2} direction="column">
             <SideBar />
@@ -144,7 +144,7 @@ export default function ClientsInfo(){
                             </Grid>                       
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(client.id)}>Modifier Client</Button>
+                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
                             <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteClient(parseInt(id!))}>Supprimer</Button>
                         </Grid>
                     </Grid>
