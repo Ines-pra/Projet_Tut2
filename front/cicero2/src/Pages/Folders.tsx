@@ -6,7 +6,7 @@ import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBo
 import { Client } from "../Modele/metier/Client";
 import { Event } from "../Modele/metier/Event";
 import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';

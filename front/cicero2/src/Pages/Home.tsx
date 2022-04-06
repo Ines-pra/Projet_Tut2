@@ -1,10 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Grid from "@mui/material/Grid";
 import SideBar from '../Components/SideBar';
-import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import Header from '../Components/Header';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -97,6 +94,7 @@ export default function Home(){
                            </Grid>
                     </Grid>
                 </Grid>
+        </Grid>
         </Grid>
     );
 } 
