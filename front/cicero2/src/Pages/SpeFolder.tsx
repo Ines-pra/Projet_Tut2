@@ -162,7 +162,7 @@ export default function SpeFolder(){
               </Grid>
               <Grid item xs={2} md={2}>
                 <FormGroup>
-                  {caseInfo.status ? <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturée" />  : <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturée" />}
+                  {caseInfo.status ? <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturée le dossier" />  : <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturée le dossier" />}
                 </FormGroup>
               </Grid>
             </Grid>
@@ -179,7 +179,7 @@ export default function SpeFolder(){
                 <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
                   {caseInfo.events.map((event: Event)=> {
                     total += event?.duration;
-                    return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {moment(event?.createdDate).format('YYYY/MM/DD') + " (" + event?.duration + ") " + event?.description} </ListItemText >
+                    return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {moment(event?.createdDate).format('YYYY/MM/DD') + " (" + event?.duration + "h) " + event?.description} </ListItemText >
                   })}
                 </ListItem>
                 <Grid item xs={12} md={2}>

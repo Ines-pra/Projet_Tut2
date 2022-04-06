@@ -14,7 +14,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import DAOFactory from '../Modele/dao/factory/DAOFactory';
 import InfoIcon from '@mui/icons-material/Info';
+import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
+import '../Styles/clients.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const styleAll = {
@@ -47,7 +49,11 @@ export default function Folders(){
     const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
     const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
+    const [pageNumber, setPageNumber] = React.useState(0);
+
     const daoF = DAOFactory.getDAOFactory();
+    const casesPerPage = 5;
+    const pagesVisited = pageNumber * casesPerPage;
  
     // Récupération de la liste des dossiers //
     useEffect (() => {
@@ -69,7 +75,7 @@ export default function Folders(){
     
     // Ajout d'un dossier //
     const writeCaseFile = async () => {
-        let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
+        let client = new Client(3, "John", "Doe", "3 rue des potiers", new Date(), new Date());
         let event = new Event(1, 1, "Description", new Date(), 10);
         let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
         let cas = new Case(1, code, "Affaire de corruption", new Date(), true, new Date(), [client], [event]);
@@ -155,6 +161,32 @@ export default function Folders(){
         return client;
     };
 
+    const displayCases = casesList
+    .slice(pagesVisited, pagesVisited + casesPerPage)
+    .map((casee) => {
+        let status = casee.status ? 'clôturée' : 'En cours'
+            if (checkFilter(casee.code, status, casee.clients)) {
+                return (
+                    <TableRow key={casee.id}>
+                        <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
+                        <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>
+                            <NavLink to={`/dossierinfo/`+ casee.id}>
+                                <InfoIcon color="primary"/>
+                            </NavLink>
+                            <NoteAltIcon color="success"/>
+                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error"/>                    
+                        </TableCell>
+                    </TableRow>
+                )
+            }
+    });
+
+    const handlePageClick = ({ selected }: any) => {
+        setPageNumber(selected);
+    };
+
     return (
         <Grid container style={styleAll}>
             <Header/>
@@ -212,9 +244,9 @@ export default function Folders(){
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                                {casesList.map(casee => {
+                                {displayCases}
+                                {/* {casesList.map(casee => {
                                     let status = casee.status ? 'clôturée' : 'En cours'
-                                    console.log(casee);
                                     if (checkFilter(casee.code, status, casee.clients)) {
                                         return (
                                             <TableRow key={casee.id}>
@@ -231,7 +263,7 @@ export default function Folders(){
                                             </TableRow>
                                         )
                                     }
-                                })}
+                                })} */}
                             </TableBody>
                         </Table>
                         <button onClick={() => {
@@ -242,6 +274,17 @@ export default function Folders(){
                                 deleteCaseFile()
                             }}> Delete case file
                         </button>
+                        <ReactPaginate 
+                            previousLabel={'Précédent'}
+                            nextLabel={'Suivant'}
+                            pageCount={Math.ceil(casesList.length / casesPerPage)}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            previousLinkClassName={'previousPage'}
+                            nextLinkClassName={'nextPage'}
+                            disabledClassName={'disabledPage'}
+                            activeClassName={'activePage'}
+                        />
                     </Grid>
                 </Grid>
             </Grid>

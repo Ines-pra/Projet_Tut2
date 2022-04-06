@@ -14,7 +14,7 @@ export const DELETE_CASE = gql`
 `
 
 export const UPDATE_CASE = gql`
-    mutation UpdateCase_af($id: ID!, $description:String!, $code:String!,$endedAt:DateTime!,$startedAt:DateTime!, $status:String!) {
+    mutation UpdateCase_af($id: ID!, $description:String!, $code:String!,$endedAt:DateTime!,$startedAt:DateTime!, $status:Boolean!) {
     updateCase_af(input: {
         id:$id, description:$description, code:$code, endedAt: $endedAt, startedAt:$startedAt, status:$status
     }) 
