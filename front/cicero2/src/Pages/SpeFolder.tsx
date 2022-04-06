@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Button, Grid, Checkbox, FormGroup, FormControlLabel } from "@mui/material";
 import { Case } from "../Modele/metier/Case";
 import { Event } from "../Modele/metier/Event";
-import { useParams, NavLink, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert'; 
 import { Client } from '../Modele/metier/Client';
 import { ListItem, ListItemText } from '@mui/material';
@@ -136,7 +136,7 @@ export default function SpeFolder(){
         <Grid item xs md style={{ margin: "20px"}}>
           <Grid container xs={12} md={12} direction="row" alignItems="center">
             <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
-              <span><NavLink to={'/dossiers'} className='link'>Dossier</NavLink> {' > ' + caseInfo.code}</span>
+              <span><Link to={'/dossiers'} className='link'>Dossier</Link> {' > ' + caseInfo.code}</span>
             </Grid>
             <Grid container xs={12} md={12} direction="row" style={StyleContainer} className="shadow" alignItems="center">
               <Grid item xs={4} md={1} sx={{ height: '100%' }}>
@@ -166,29 +166,31 @@ export default function SpeFolder(){
                 </FormGroup>
               </Grid>
             </Grid>
-            <Grid item xs={12} md={12} style={StyleContainer} className="shadow">
-              <h3>Clients concernés</h3>
-                <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
-                  {caseInfo.clients.map((client : Client)=> {
-                    return <ListItemText  key={client?.firstname + client?.lastname}> {client?.firstname} {client?.lastname}</ListItemText >
-                  })}
-                </ListItem>
-            </Grid>
-            <Grid item xs={12} md={12} style={StyleContainer} className="shadow">
-              <h2>Evènements</h2>
-                <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
-                  {caseInfo.events.map((event: Event)=> {
-                    total += event?.duration;
-                    return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {moment(event?.createdDate).format('YYYY/MM/DD') + " (" + event?.duration + "h) " + event?.description} </ListItemText >
-                  })}
-                </ListItem>
-                <Grid item xs={12} md={2}>
-                  <Button variant="contained" color="success" sx={{width:'100%', fontSize: '10px', paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
-                </Grid>
-                <Grid item xs={12} md={12}>
-                  <p><b>Total: {total}h</b></p>  
-                </Grid>
-                <ModalEvent open={open} handleClose={handleClose} eventFunction={createEvent} caseId={caseId}/>
+            <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
+              <Grid item xs={12} md={6} style={StyleContainer} className="shadow">
+                <h2>Evènements</h2>
+                  <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                    {caseInfo.events.map((event: Event)=> {
+                      total += event?.duration;
+                      return <ListItemText key={event?.id} sx={{display:'flex'}}><RadioButtonCheckedIcon sx={{fontSize: 12,}} /> {moment(event?.createdDate).format('YYYY/MM/DD') + " (" + event?.duration + "h) " + event?.description} </ListItemText >
+                    })}
+                  </ListItem>
+                  <Grid item xs={12} md={6}>
+                    <Button variant="contained" color="success" sx={{width:'100%', fontSize: '10px', paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <p><b>Total: {total}h</b></p>  
+                  </Grid>
+                  <ModalEvent open={open} handleClose={handleClose} eventFunction={createEvent} caseId={caseId}/>
+              </Grid>
+              <Grid item xs={12} md={5} style={StyleContainer} className="shadow">
+                <h3>Clients concernés</h3>
+                  <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
+                    {caseInfo.clients.map((client : Client)=> {
+                      return <ListItemText  key={client?.firstname + client?.lastname}><Link to={'/clientinfo/' + client.id} className='innerLink'>{client?.firstname} {client?.lastname}</Link></ListItemText >
+                    })}
+                  </ListItem>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

@@ -1,48 +1,44 @@
 import { AppBar, Container, Divider, IconButton, List, ListItem, ListItemIcon, SwipeableDrawer, Toolbar } from '@mui/material';
 import * as React from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FolderIcon from '@mui/icons-material/Folder';
 import Box from "@mui/material/Box";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
 import '../Styles/sidebar.css';
 
 const styleIcon = {
     color: '#c6e5b3',
     fontSize: '2rem',
 };
-
 const navigationLinks = [
     { name: "Accueil", href: "/" , icon :<HomeIcon sx={styleIcon}/>},
     { name: "Clients", href: "/clients" , icon:<AccountCircleIcon sx={styleIcon}/>},
     { name: "Dossiers", href: "/dossiers" , icon:<FolderIcon sx={styleIcon}/>},
-  ];
-
-  const styleSideBarLarge = {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: '100%',
-    height: '100%',
-    paddingTop: '10px',
-    paddingBottom: '10px',
-    background: '#000000',
-    color: '#fff',
-    alignItems: 'center',
-    border: '1px solid black',
-  }
-
-  const styleSideBar = {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: '100%',
-    paddingRight: '50px',
-    background: '#535454',
-    color: '#fff',
-    alignItems: 'center',
-    border: '1px solid black',
+];
+const styleSideBarLarge = {
+  position: 'relative',
+  whiteSpace: 'nowrap',
+  width: '100%',
+  height: '100%',
+  paddingTop: '10px',
+  paddingBottom: '10px',
+  background: '#000000',
+  color: '#fff',
+  alignItems: 'center',
+  border: '1px solid black',
+};
+const styleSideBar = {
+  position: 'relative',
+  whiteSpace: 'nowrap',
+  width: '100%',
+  paddingRight: '50px',
+  background: '#535454',
+  color: '#fff',
+  alignItems: 'center',
+  border: '1px solid black',
 };
 
 const styleListMenu = {
