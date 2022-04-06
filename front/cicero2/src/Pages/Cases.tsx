@@ -4,7 +4,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import { Case } from '../Modele/metier/Case';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { Client } from "../Modele/metier/Client";
-import { Event } from "../Modele/metier/Event";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { NavLink } from 'react-router-dom';
 import SideBar from '../Components/SideBar';

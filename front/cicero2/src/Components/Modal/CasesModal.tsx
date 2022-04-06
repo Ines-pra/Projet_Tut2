@@ -135,11 +135,11 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
         e.preventDefault();
         if(CaseInfo.Code != '' || CaseInfo.Description != '' ){
         if(id == 0){
-          daoF!.getCaseDAO().create(new Case(0, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
+          daoF!.getCaseDAO().create(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
           addFunction(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
         }else{
           daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
-          updateFunction(new Case(id, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+          updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
 
         }
         handleClose();
