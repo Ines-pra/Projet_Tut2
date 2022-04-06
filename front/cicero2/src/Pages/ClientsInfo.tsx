@@ -11,9 +11,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import moment from 'moment';
 
 
-const defaultClient: Client[] | (() => Client[]) = []
-
-// let defaultClient1: Client | (() => Client) 
 const defaultClient1: Client = {
     id: 0,
     lastname: "",
@@ -69,7 +66,7 @@ export default function ClientsInfo(){
 
     const getClientCases = (id: number) => {
         console.log(id);
-        
+
         if (casesList.length === 0) {
             return " / ";
         }
