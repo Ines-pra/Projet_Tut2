@@ -167,7 +167,7 @@ export default function CasesInfo(){
               </Grid>
               <Grid item xs={8} md={8} sx={{fontSize: 14, height: '100%'}}>
                 <Grid item xs={12} md={12}>
-                  <p><b>{caseInfo.code}</b>{ caseInfo.status ? <span> <Brightness1Icon style={{ color: "red", fontSize: "13px"}}/> Clôturée </span> : <span> <Brightness1Icon style={{ color: "green", fontSize: "13px"}}/> En cours </span>}</p>   
+                  <p><b>{caseInfo.code}</b>{ caseInfo.status ? <span> <Brightness1Icon style={{ color: "red", fontSize: "13px"}}/> Clôturé </span> : <span> <Brightness1Icon style={{ color: "green", fontSize: "13px"}}/> En cours </span>}</p>   
                 </Grid>   
                 <Grid item xs={12} md={12} sx={{fontStyle: 'italic',fontSize: 11,}}>
                   Affaire ouverte le {moment(caseInfo.startedAt).format('YYYY/MM/DD')}   
@@ -185,7 +185,10 @@ export default function CasesInfo(){
               </Grid>
               <Grid item xs={2} md={2}>
                 <FormGroup>
-                  {caseInfo.status ? <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturée le dossier" />  : <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturée le dossier" />}
+                  {caseInfo.status ? 
+                    <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturé le dossier" />  
+                    : 
+                    <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturé le dossier" />}
                 </FormGroup>
               </Grid>
             </Grid>

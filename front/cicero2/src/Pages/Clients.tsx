@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
 import { confirmAlert } from 'react-confirm-alert';
@@ -32,9 +31,8 @@ const searchInput = {
     margin: "5px",
 };
 const styletable = {
-    border:'2px solid black',
     margin:'0 auto',
-    marginTop:5,
+    marginTop: 5,
     maxWidth: '90%',
 };
 const StyleCell = {
@@ -217,7 +215,7 @@ export default function Clients(){
                                 </Toolbar>   
                             </Grid>  
                             <Grid item xs={12} md={2}>
-                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(0)}>Nouveau</Button>
+                                <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(0)}>Nouveau</Button>
                             </Grid>                     
                         </Grid>
                     </Grid>

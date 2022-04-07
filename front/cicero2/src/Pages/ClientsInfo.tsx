@@ -180,7 +180,7 @@ export default function ClientsInfo(){
                         <Grid item xs={12} md={5} direction="row" style={StyleContainer} className="shadow" alignItems="center">
                             <h3> Dossiers associés </h3>
                             {getClientCases(client.id).map(cases => (
-                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturée" : "En cours"}</p>
+                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturé" : "En cours"}</p>
                             ))}
                         </Grid>
                     </Grid>

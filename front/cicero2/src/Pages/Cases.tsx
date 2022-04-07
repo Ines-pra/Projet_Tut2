@@ -31,7 +31,6 @@ const searchInput = {
     margin: "5px",
 };
 const styletable = {
-    border:'2px solid black',
     margin:'0 auto',
     marginTop:5,
     maxWidth: '90%',
@@ -170,7 +169,7 @@ export default function Folders(){
     const displayCases = casesList
     .slice(pagesVisited, pagesVisited + casesPerPage)
     .map((casee) => {
-        let status = casee.status ? 'clôturée' : 'En cours'
+        let status = casee.status ? 'Clôturé' : 'En cours'
             if (checkFilter(casee.code, status, casee.clients)) {
                 return (
                     <TableRow key={casee.id}>
@@ -213,9 +212,9 @@ export default function Folders(){
                                        label="Trier par"
                                        onChange={handleChangeSelect}
                                    >
-                                       <MenuItem value={'Afficher affaires en cours et clôturées'}>Afficher affaires en cours et clôturées</MenuItem>
+                                       <MenuItem value={'Afficher dossiers en cours et clôturés'}>Afficher dossiers en cours et clôturés</MenuItem>
                                        <MenuItem value={'En cours'}>En cours</MenuItem>
-                                       <MenuItem value={'Clôturées'}>Clôturées</MenuItem>
+                                       <MenuItem value={'Clôturés'}>Clôturés</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>   
@@ -232,7 +231,7 @@ export default function Folders(){
                                 </Toolbar>   
                             </Grid>  
                             <Grid item xs={12} md={2}>
-                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
+                                <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
                             </Grid>                     
                         </Grid>
                     </Grid>

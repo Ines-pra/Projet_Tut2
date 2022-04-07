@@ -88,7 +88,8 @@ function ClientModal(openEdit:any) {
     //  Test de la validité 
      if(vld){
          if (openEdit.id === 0 ){
-              await daoF!.getClientDAO().create(cli);
+              let idCli = await daoF!.getClientDAO().create(cli);
+              cli.id = idCli;
               openEdit.addFunction(cli);
          }else{
               await daoF!.getClientDAO().update(cli);
