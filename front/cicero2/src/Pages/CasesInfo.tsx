@@ -109,10 +109,12 @@ export default function CasesInfo(){
                       color: "white",
                       marginLeft: "5px",
                       }}
-                      onClick={() => {
-                          daoF!.getCaseDAO().delete(id);
+                      onClick={ async () => {
+                          await daoF!.getCaseDAO().delete(id);
                           navigate("/dossiers");
-                          window.location.reload();
+                          if(process.env.REACT_APP_ENV === "web"){
+                              window.location.reload();
+                          }
                           onClose();
                       }}>Confirmer</Button>
               </div>

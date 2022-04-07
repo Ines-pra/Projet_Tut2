@@ -74,13 +74,6 @@ export default function Clients(){
     const handleSearchChange = (e:any) => {
         setFilter(e.target.value);
     };
-    // Suppression du fichier client.json //
-    const deleteClientFile = async () => {
-        await Filesystem.deleteFile({
-          path: 'client.json',
-          directory: Directory.Documents,
-        });
-      };
     // Suppression d'un client //
     const deleteClient = async (id: number) => {
         confirmAlert({
@@ -188,9 +181,9 @@ export default function Clients(){
                                 <Link to={'/clientinfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
                                 <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success" className="cursor"/>
                                 {getClientCases(client.id) === " / "? 
-                                    <DeleteIcon color="disabled" className="cursor"/> 
-                                    : 
                                     <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error" className="cursor"/>
+                                    : 
+                                    <DeleteIcon color="disabled"/> 
                                 }           
                             </TableCell>
                         </TableRow>
@@ -241,10 +234,6 @@ export default function Clients(){
                                 {displayClients}
                             </TableBody>   
                         </Table>
-                        <button onClick={() => {
-                                deleteClientFile()
-                            }}> Delete file
-                        </button>
                         <Grid item xs={12} md={12}>
                             <ReactPaginate 
                                 previousLabel={'<<'}

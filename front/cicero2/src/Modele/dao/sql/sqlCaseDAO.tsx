@@ -9,7 +9,7 @@ import { GET_ALL_CASE, GET_CASE_ID } from '../../../graphql/Query/queryCase';
 
 export class sqlCaseDAO implements CaseDAO {
     public async create(cas: Case): Promise<number> {
-        let idC: number;
+        let idC: number = 0;
         await client
         .mutate({
             mutation: CREATE_CASE,
@@ -35,7 +35,7 @@ export class sqlCaseDAO implements CaseDAO {
                 }
             });
         });
-        return cas.id;
+        return idC;
     }
     public async update(object: Case): Promise<boolean> {
     

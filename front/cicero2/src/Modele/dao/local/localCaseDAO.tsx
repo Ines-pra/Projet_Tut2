@@ -64,6 +64,8 @@ export class localCaseDAO implements CaseDAO {
     }
 
     public async update(object: Case): Promise<boolean> {
+        console.log(object);
+        
         let casesListText = await readOnFile();
         let caseList = await JSON.parse(casesListText);
         let cas = caseList.find((cas: Case) => cas.id === object.id);

@@ -140,13 +140,18 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
 
       // Seulement pour récupérer valeur de la selectbox //
     function handleChangeClient(evt:any) {
-      const value = evt.target.value;   
+      const value = evt.target.value;
+      console.log(value);
+         
       setIdCliL(value);        
     }
 
     // Fonction et logique de l'ajout d'un client //
     async function addClient(id:number) {
         const res = await daoF!.getClientDAO().findById(id);
+        console.log(res);
+        console.log(id);
+        
         let tabAll;
         let exist:boolean = false;
         // on vérifie que le client n'est pas déjà présent dans la liste
@@ -188,17 +193,22 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
     }
 
     // Fonction de validation //
-    const handleSubmit = (e:any) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
         // Test si les champs sont pas vide
         if(CaseInfo.Code != '' || CaseInfo.Description != '' ){
           // Verifie si c'est une mise à jour ou une insertion
         if(id == 0){
-          daoF!.getCaseDAO().create(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
-          addFunction(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+          let idCase = await daoF!.getCaseDAO().create(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
+          addFunction(new Case(idCase, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
         }else{
-          daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
-          updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+          if (process.env.REACT_APP_ENV === 'web') {
+            daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
+            updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+          } else {
+            daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+            updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+          }
         }
         // On ferme la modal et reset
         closeDef();

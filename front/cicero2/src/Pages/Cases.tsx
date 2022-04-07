@@ -4,7 +4,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import { Case } from '../Modele/metier/Case';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { Client } from "../Modele/metier/Client";
-import { Filesystem, Directory } from "@capacitor/filesystem";
 import { NavLink } from 'react-router-dom';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
@@ -122,12 +121,6 @@ export default function Folders(){
         });
     };
 
-    const deleteCaseFile = async () => {
-      await Filesystem.deleteFile({
-        path: 'case.json',
-        directory: Directory.Documents,
-      });
-    };
     // Fonction de filtre du tableau //
     const checkFilter = (code: string, status: string, clients: Client[]) => {
         if(clients.length === 0) {
@@ -163,7 +156,9 @@ export default function Folders(){
     const updateCase = (cas: Case) => {
         let table = casesList.map(c => c.id === cas.id ? cas : c);
         setCasesList(table);
-        window.location.reload();
+        if (process.env.REACT_APP_ENV === "web") {
+            window.location.reload();
+        }
     };
     // Ajout d'un dossier //
     const addCaseTable = (cas: Case) => {
@@ -255,10 +250,6 @@ export default function Folders(){
                                 {displayCases}
                             </TableBody>
                         </Table>
-                        <button onClick={() => {
-                                deleteCaseFile()
-                            }}> Delete case file
-                        </button>
                         <Grid item xs={12} md={12}>
                             <ReactPaginate 
                                 previousLabel={'<<'}
