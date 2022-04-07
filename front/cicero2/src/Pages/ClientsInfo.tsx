@@ -146,7 +146,25 @@ export default function ClientsInfo(){
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
-                            <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteClient(parseInt(id!))}>Supprimer</Button>
+                            {getClientCases(client.id).length === 0 ? 
+                                <Button 
+                                    variant="contained" 
+                                    color="error" 
+                                    sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} 
+                                    fullWidth
+                                    disabled={true}>
+                                        Supprimer
+                                </Button> 
+                                : 
+                                <Button 
+                                    variant="contained" 
+                                    color="error" 
+                                    sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} 
+                                    fullWidth 
+                                    onClick={() => deleteClient(parseInt(id!))}>
+                                        Supprimer
+                                </Button>
+                            }
                         </Grid>
                     </Grid>
                     <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
