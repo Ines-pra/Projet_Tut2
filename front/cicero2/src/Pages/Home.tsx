@@ -2,6 +2,7 @@
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Filesystem, Directory } from "@capacitor/filesystem";
 import Grid from "@mui/material/Grid";
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
@@ -35,6 +36,13 @@ const StyleContainer3 = {
     padding: "15px",
     color: "#000000",
 }
+
+// const deleteClientFile = async () => {
+//     await Filesystem.deleteFile({
+//       path: 'case.json',
+//       directory: Directory.Documents,
+//     });
+//   };
 
 export default function Home(){
     let navigate = useNavigate();
@@ -96,6 +104,10 @@ export default function Home(){
                     </Grid>
                 </Grid>
         </Grid>
+        {/* <button onClick={() => {
+            deleteClientFile()
+        }}> Delete file
+        </button> */}
     </Grid>
     );
 } 

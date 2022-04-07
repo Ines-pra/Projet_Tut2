@@ -102,7 +102,9 @@ export default function ClientsInfo(){
                         onClick={() => {
                             daoF!.getClientDAO().delete(id);
                             navigate("/clients");
-                            window.location.reload();
+                            if(process.env.REACT_APP_ENV === "web"){
+                                window.location.reload();
+                            }
                             onClose();
                         }}>Confirmer</Button>
                 </div>
@@ -146,7 +148,7 @@ export default function ClientsInfo(){
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
-                            {getClientCases(client.id).length === 0 ? 
+                            {getClientCases(client.id).length !== 0 ? 
                                 <Button 
                                     variant="contained" 
                                     color="error" 
