@@ -41,6 +41,7 @@ function ClientModal(openEdit:any) {
   // Récupération des données //
   useEffect (() => {
     async function fetchData() {
+        // Si l'id est à 0, cela veut dire que c'est un ajout, sinon c'est une modif
         if(openEdit.id !== 0){
             let c1:Client = await daoF!.getClientDAO().findById(openEdit.id);
             setFirstname(c1.firstname);
@@ -48,27 +49,43 @@ function ClientModal(openEdit:any) {
             setAddress(c1.address);
             setBirth(c1.birthDate);
         }else{
-            setFirstname('');
-            setLastname('');
-            setAddress('');
-            setBirth(new Date());
+            resetState();
         }
         return true;
         }
         fetchData();
     }, [openEdit.id]);
+
+  // Pour reset les states //
+  function resetState(){
+    setFirstname('');
+    setLastname('');
+    setAddress('');
+    setBirth(new Date());
+  } 
+
+  // Pour la fermeture de la modal et le reset //
+  function closeDef(){
+    resetState();
+    openEdit.handleClose();
+  }
+  
   // Envoie des données //
   const setClient = async (lastname:string, firstname:string, address:string, birthDate:Date) => {
      let message:Array<string> = [];
      let vld = true;
      let cli = new Client(openEdit.id, lastname, firstname, address, birthDate, new Date());
      let element = [{k:"lastname", v:lastname}, {k:"firstname", v:firstname}, {k:"address", v:address}, {k:"birthDate", v:birthDate}];
+     
+    //  On verifie chaque input est on vérifie si il n'est pas vide
      element.forEach(element => {
          if(element.v === ''){
              vld = false;
              message.push(element.k + ' is empty \n');
          }
      }); 
+
+    //  Test de la validité 
      if(vld){
          if (openEdit.id === 0 ){
               await daoF!.getClientDAO().create(cli);
@@ -77,7 +94,9 @@ function ClientModal(openEdit:any) {
               await daoF!.getClientDAO().update(cli);
               openEdit.updateFunction(cli);
          }
-         openEdit.handleClose();
+        //  Reset des states et femeture de la modal
+        closeDef();
+
      }else{
          alert(message);
      }
@@ -135,7 +154,7 @@ function ClientModal(openEdit:any) {
                     InputLabelProps={{
                     shrink: true,
                     }}                
-                />
+            />
           <Box height={'5vh'}/>
             <Stack direction='row' spacing={2}>
               <Button fullWidth variant="outlined" sx={{marginRight:1}} color="success" onClick= {()=>setClient(lastname, firstname, address, birth)}>

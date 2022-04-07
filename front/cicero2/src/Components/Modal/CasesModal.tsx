@@ -30,16 +30,37 @@ const style = {
 const defaultClient: Array<Client> = [];
 
 function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{openModal: boolean, handleClose: any, id: number, addFunction: any, updateFunction: any}) {
+   
+    // State de l'alerte success qui s'affiche a chaque fois qu'on ajoute un client
     const [openSucc, setOpenSucc] = React.useState(false);
+
+    // Ce sont les state nécessaire pour vérifier qu'un client n'est pas en double
+      // ce state regroupe tout les client précdemment ajouter lors de la création ou d'une ancienne modif
     const [Clients, setClients] = React.useState(defaultClient);
+      // celle-ci tout les clients durant la modif actuelle
     const [newClient, setNewClient] = React.useState(defaultClient);
+      // celui ci récupére l'id dans la value de l'item de la selectbox
     const [lstIdC, setIdCliL] = useState('');
+
+    /*
+      cette façon de faire un peu spécial vise à évité les conflit dans la base de données,
+      étant donnée que l'on rentre 2 clés primaire dans une table formant une clé unique, le faite 
+      que l'on veut créer 2 fois une même clé unique crash la base de données.
+
+      D'autres façon de faire aurait pu être abordé mais au vue du temps, c'était la meilleur solutions
+    */
+
+    // State pour la récupération de la liste des clients afin de les affiché dans le selectbox
     const [ListClients, setListClients] = React.useState(defaultClient);
 
+    // Fonction pour changer le state pour l'ouverture de l'alert success
     const handleOpenSucc = () => setOpenSucc(true);
     const handleCloseSucc = () => setOpenSucc(false);
+
+    // Appel du singleton pour la DAO
     const daoF = DAOFactory.getDAOFactory();
 
+    // State pour la modification du dossier courant 
     const [CaseInfo,setCaseInfo] = React.useState({
         id: (new Date()).getTime(), 
         Code:'',
@@ -64,13 +85,40 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
         return code + "/" + result;
     }
 
+    // Pour reset le state
+    function resetState(){
+      let c1:Array<Client> = [];
+      setClients(c1);
+      setNewClient(c1);
+      setCaseInfo({
+        id: 0, 
+        Code:'',
+        Description:'',
+        Clients:[],
+        DateStart: new Date(),
+        DateEnd: new Date(),
+        Events:[],
+        statut:false
+      })
+    }
+
+    function closeDef(){
+      resetState();
+      handleClose();
+    }
+
+    // A chaque chargement de l'id en paramètre de se composant, plusieurs actions sont faites
     useEffect (() => {
+      // On réinitialise les states de la liste clients actuelle ainsi que le state de la récupération de l'id
       let c1:Array<Client> = [];
       setIdCliL('');
       setNewClient(c1);
+
+      // On récupère les bonne données et on les initalises 
         async function fetchData() { 
           const response2 = await daoF!.getClientDAO().findAll();
           setListClients(response2 as any);
+          // Si l'id est à 0, cela veut dire que c'est un ajout, sinon c'est une modif
           if (id != 0) {
             const response = await daoF!.getCaseDAO().findById(id);      
             setClients(response.clients);    
@@ -85,43 +133,51 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
               statut:response.status as boolean
             })
           } else {
-            setClients(c1);
-            setCaseInfo({
-              id: 0, 
-              Code:'',
-              Description:'',
-              Clients:[],
-              DateStart: new Date(),
-              DateEnd: new Date(),
-              Events:[],
-              statut:false
-            })
+              resetState();
           }
         } fetchData();
       }, [id]);
+
+      // Seulement pour récupérer valeur de la selectbox //
     function handleChangeClient(evt:any) {
       const value = evt.target.value;   
       setIdCliL(value);        
     }
+
+    // Fonction et logique de l'ajout d'un client //
     async function addClient(id:number) {
         const res = await daoF!.getClientDAO().findById(id);
         let tabAll;
         let exist:boolean = false;
+        // on vérifie que le client n'est pas déjà présent dans la liste
         Clients.forEach(element => {
             if(element.id == id){
+              // si oui le boolean passe a true
               exist = true;
             }
         });
+
           if(exist == false){
+            // Si il n'existe pas alors:
+
+            // On ajoute celui ci a une table
             tabAll = [...Clients, res];
+
+            // Que l'on attribura au state des clients précedement ajouter (Pour ne pas pouvoir avoir de fois le même)
             setClients(tabAll);
+
+            // Ainsi que dans le state des nouveaux client pour facilité l'ajout et éviter les crashs
             setNewClient([...newClient, res]);
+
+            // Enfin on affiche l'alert de succés
             handleOpenSucc();
           }else{
+            // Message d'erreur
             alert('Client déjà ajouté'); 
           }
     }
 
+    // Seulement pour la récupértion des données écrite dans les inputs //
     function handleChange(evt:any) {
         const value = evt.target.value;
         setCaseInfo({
@@ -131,18 +187,21 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
 
     }
 
+    // Fonction de validation //
     const handleSubmit = (e:any) => {
         e.preventDefault();
+        // Test si les champs sont pas vide
         if(CaseInfo.Code != '' || CaseInfo.Description != '' ){
+          // Verifie si c'est une mise à jour ou une insertion
         if(id == 0){
           daoF!.getCaseDAO().create(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
           addFunction(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
         }else{
           daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
           updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
-
         }
-        handleClose();
+        // On ferme la modal et reset
+        closeDef();
         }else{
           alert('veuillez remplir tout les champs');
         }
@@ -153,7 +212,7 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
     <ThemeProvider theme={theme}>
     <Modal
       open={openModal}
-      onClose={handleClose}
+      onClose={() => closeDef}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description" 
       > 
@@ -161,6 +220,8 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
         <Typography id="modal-modal-title" variant="h6" component="h2" style={{color:'white'}}>
              { id == 0 ? "Création d'un dossier" : "Modification du dossier " + id}
         </Typography>
+        {console.log(newClient)
+        }
               <Stack spacing={2}>     
                     <TextField
                         variant="outlined"
