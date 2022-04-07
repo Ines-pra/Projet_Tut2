@@ -6,7 +6,7 @@ import { Event } from "../Modele/metier/Event";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert'; 
 import { Client } from '../Modele/metier/Client';
-import { ListItem, ListItemText } from '@mui/material';
+import { ListItem, ListItemText, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
@@ -27,6 +27,18 @@ const StyleContainer = {
   borderRadius: "5px",
   padding: "15px",
   color: "#000000",
+};
+const StyleContainer2 = {
+  margin: "15px",
+  borderRadius: "5px",
+  padding: "15px",
+  border:"1px solid black"
+};
+const StyleContainer3 = {
+  margin: "15px",
+  borderRadius: "5px",
+  padding: "15px",
+  // border:"1px solid black"
 };
 const styleAll = {
   height: "100%",
@@ -161,37 +173,36 @@ export default function CasesInfo(){
             <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
               <span><Link to={'/dossiers'} className='link'>Dossier</Link> {' > ' + caseInfo.code}</span>
             </Grid>
-            <Grid container xs={12} md={12} direction="row" style={StyleContainer} className="shadow" alignItems="center">
-              <Grid item xs={4} md={1} sx={{ height: '100%' }}>
-                <FolderOpenIcon fontSize='large' sx={{fontSize: 85}}/>
+            <Grid container xs={12} md={12} direction="row" style={StyleContainer2} alignItems="center">
+              <Grid item xs={12} md={2} sx={{ height: '100%' }}>
+                <FolderOpenIcon fontSize='large' sx={{fontSize: 120}}/>
               </Grid>
-              <Grid item xs={8} md={8} sx={{fontSize: 14, height: '100%'}}>
+              <Grid item xs={12} md={7} sx={{fontSize: 14, padding:"15px"}}>
                 <Grid item xs={12} md={12}>
-                  <p><b>{caseInfo.code}</b>{ caseInfo.status ? <span> <Brightness1Icon style={{ color: "red", fontSize: "13px"}}/> Clôturée </span> : <span> <Brightness1Icon style={{ color: "green", fontSize: "13px"}}/> En cours </span>}</p>   
+                  <Typography variant="h4"><b>{caseInfo.code}</b>{ caseInfo.status ? <span> <Brightness1Icon style={{ color: "red", fontSize: "13px"}}/> Clôturée </span> : <span> <Brightness1Icon style={{ color: "green", fontSize: "13px"}}/> En cours </span>}</Typography>   
                 </Grid>   
                 <Grid item xs={12} md={12} sx={{fontStyle: 'italic',fontSize: 11,}}>
-                  Affaire ouverte le {moment(caseInfo.startedAt).format('YYYY/MM/DD')}   
-                </Grid>                       
+                  <Typography variant="subtitle2"> Affaire ouverte le {moment(caseInfo.startedAt).format('YYYY/MM/DD')} </Typography>                </Grid>                       
               </Grid>
             <Grid item xs={12} md={3}>
-              <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=> goToModal(caseInfo.id)}>Modifier dossier</Button>
+              <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=> goToModal(caseInfo.id)}>Modifier dossier</Button>
               <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
             </Grid>
             </Grid>
-            <Grid container direction="row" xs={12} md={12} style={StyleContainer} className="shadow" alignItems="center">
-              <Grid item xs={10} md={10}>
-                <h3>Description</h3>
-                <p>{caseInfo.description}</p>
+            <Grid container direction="row" xs={12} md={12} style={StyleContainer3} alignItems="center">
+              <Grid item xs={12} md={10}>
+                <Typography variant="h5">Description</Typography>
+                <Typography variant="body1">{caseInfo.description}</Typography>
               </Grid>
-              <Grid item xs={2} md={2}>
+              <Grid item xs={12} md={2}>
                 <FormGroup>
                   {caseInfo.status ? <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturée le dossier" />  : <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturée le dossier" />}
                 </FormGroup>
               </Grid>
             </Grid>
-            <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
-              <Grid item xs={12} md={6} style={StyleContainer} className="shadow">
-                <h2>Evènements</h2>
+            <Grid container xs={12} md={12} justifyContent="space-around" direction="row" >
+              <Grid item xs={12} md={5} style={StyleContainer}>
+                <Typography variant="h5">Evènements</Typography>
                   <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
                     {caseInfo.events.map((event: Event)=> {
                       total += event?.duration;
@@ -199,18 +210,18 @@ export default function CasesInfo(){
                     })}
                   </ListItem>
                   <Grid item xs={12} md={6}>
-                    <Button variant="contained" color="success" sx={{width:'100%', fontSize: '10px', paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
+                    <Button variant="contained" color="success" sx={{paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
                   </Grid>
-                  <Grid item xs={12} md={12}>
-                    <p><b>Total: {total}h</b></p>  
+                  <Grid item xs={12} md={6} >
+                    <Typography variant="body1"><b>Total: {total}h</b></Typography>  
                   </Grid>
                   <ModalEvent open={open} handleClose={handleClose} eventFunction={createEvent} caseId={caseId}/>
               </Grid>
-              <Grid item xs={12} md={5} style={StyleContainer} className="shadow">
-                <h3>Clients concernés</h3>
+              <Grid item xs={12} md={5} style={StyleContainer}>
+                <Typography variant="h5">Clients concernés</Typography>
                   <ListItem sx={{display:'flex', flexDirection:'column', alignItems:'flex-start'}}>
                     {caseInfo.clients.map((client : Client)=> {
-                      return <ListItemText  key={client?.firstname + client?.lastname}><Link to={'/clientinfo/' + client.id} className='innerLink'>{client?.firstname} {client?.lastname}</Link></ListItemText >
+                      return <ListItemText  key={client?.firstname + client?.lastname}> <Typography variant="body1"><Link to={'/clientinfo/' + client.id} className='innerLink'> {client?.firstname} {client?.lastname}</Link></Typography></ListItemText >
                     })}
                   </ListItem>
               </Grid>

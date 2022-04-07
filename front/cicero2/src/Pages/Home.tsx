@@ -1,6 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
-
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Filesystem, Directory } from "@capacitor/filesystem";
@@ -16,34 +15,27 @@ const styleAll = {
 
 const StyleContainer = {
     margin: "15px",
-    backgroundColor: "#c6e5b3",
-    borderRadius: "5px",
-    padding: "15px",
-    color: "#000000",
-  };
-
-const StyleContainer2 = {
-    backgroundColor:"#7c3324",
-    margin: "15px",
+    backgroundColor: "#000000",
     borderRadius: "5px",
     padding: "15px",
     color: "#fff",
+  };
+
+const StyleContainer2 = {
+    margin: "15px",
+    borderRadius: "5px",
+    padding: "15px",
+    border:"1px solid black"
 }
 
 const StyleContainer3 = {
-    backgroundColor:"#d99354 ",
     margin: "15px",
     borderRadius: "5px",
     padding: "15px",
     color: "#000000",
+    border:"2px dashed black"
 }
 
-// const deleteClientFile = async () => {
-//     await Filesystem.deleteFile({
-//       path: 'case.json',
-//       directory: Directory.Documents,
-//     });
-//   };
 
 export default function Home(){
     
@@ -64,8 +56,8 @@ export default function Home(){
                         </Grid>
                         
                         <Grid container xs={12} md={8}  justifyContent="space-around">
-                            <Grid container xs={12} md={12} direction="row" style={StyleContainer} className="shadow" alignItems="center">
-                            <Typography variant="body1">
+                            <Grid container xs={12} md={12} direction="row" alignItems="center">
+                            <Typography variant="body1" fontSize={22}>
                                 <p> Cette application est un petit bijou 
                                     de technologie pour vous permettre de 
                                     gérer parfaitement votre cabinet d'avocat.</p>
@@ -76,23 +68,22 @@ export default function Home(){
                                 <p> Bien cordialement, l'équipe de Cicéro !</p>
                             </Typography>
                             </Grid>
-                            <Grid container xs={12} md={5} direction="column" style={StyleContainer} justifyContent="space-between" className="shadow">
+                            <Grid container xs={12} md={5} direction="column" style={StyleContainer} justifyContent="space-between">
                                 <Typography variant="h4">  Clients  </Typography>
                                 <Typography variant="body1"> Consulter vos clients depuis ce bouton ou depuis le menu de navigation </Typography>
-                                <Button variant="contained" color="inherit" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => navigate('/clients')}> Y aller ! </Button>
+                                <Button variant="contained"  color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => navigate('/clients')}> Y aller ! </Button>
                             </Grid>
-                            <Grid container xs={12} md={5} direction="column" style={StyleContainer} justifyContent="space-between" className="shadow">
+                            <Grid container xs={12} md={5} direction="column" style={StyleContainer} justifyContent="space-between">
                                 <Typography variant="h4"> Dossiers </Typography>
                                 <Typography variant="body1"> Consulter vos clients depuis ce bouton ou depuis le menu de navigation </Typography>
-                                <Button variant="contained" color="inherit" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => navigate('/dossiers')}> Y aller ! </Button>
+                                <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => navigate('/dossiers')}> Y aller ! </Button>
                             </Grid>
                             
                         </Grid>
 
-                        <Grid container xs={12} md={3} direction="column" style={StyleContainer3} className="shadow" alignItems="center" textAlign="center">
+                        <Grid container xs={12} md={3} direction="column" style={StyleContainer3}  alignItems="center" textAlign="center">
                             <Typography variant="h4"> Cicéron </Typography>
                             <Typography variant="h6">  Marcus Tullius Cicero</Typography> 
-
                             <Box
                                 component="img"
                                 sx={{ height: 260, maxHeight: { xs: 240, md: 260 }, padding: "25px"}}
