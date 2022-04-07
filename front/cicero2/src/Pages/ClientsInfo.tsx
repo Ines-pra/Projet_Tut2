@@ -9,8 +9,8 @@ import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import moment from 'moment';
-import ClientModal from './Modal/ClientModal';
-import './main.css';
+import ClientModal from '../Components/Modal/ClientModal';
+import '../Styles/main.css';
 
 const styleAll = {
     height: "100%",
@@ -46,6 +46,7 @@ export default function ClientsInfo(){
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    // Récupération des données //
     useEffect (() => {
         async function fetchData() {
             const response2 = await daoF!.getCaseDAO().findAll();
@@ -56,7 +57,7 @@ export default function ClientsInfo(){
             }
             fetchData();
     }, []);
-
+    // Récupération des dossiers pour le client //
     const getClientCases = (id: number) => {
         let listCaseClient: Case[] = [];
         
@@ -71,7 +72,7 @@ export default function ClientsInfo(){
         }
         return listCaseClient;
     }
-
+    // Suppression d'un client //
     const deleteClient = async (id: number) => {
         confirmAlert({
             customUI: ({ onClose }) => {
@@ -101,7 +102,9 @@ export default function ClientsInfo(){
                         onClick={() => {
                             daoF!.getClientDAO().delete(id);
                             navigate("/clients");
-                            window.location.reload();
+                            if(process.env.REACT_APP_ENV === "web"){
+                                window.location.reload();
+                            }
                             onClose();
                         }}>Confirmer</Button>
                 </div>
@@ -109,11 +112,11 @@ export default function ClientsInfo(){
             }
         });
     };
-
+    // Ouverture du modal //
     function goToModal(id:number){
         handleOpen();
     };
-
+    // Mise a jour du client //
     const updateClient = (cli: Client) => {
         setClient(cli);
     };
@@ -145,7 +148,25 @@ export default function ClientsInfo(){
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
-                            <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteClient(parseInt(id!))}>Supprimer</Button>
+                            {getClientCases(client.id).length !== 0 ? 
+                                <Button 
+                                    variant="contained" 
+                                    color="error" 
+                                    sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} 
+                                    fullWidth
+                                    disabled={true}>
+                                        Supprimer
+                                </Button> 
+                                : 
+                                <Button 
+                                    variant="contained" 
+                                    color="error" 
+                                    sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} 
+                                    fullWidth 
+                                    onClick={() => deleteClient(parseInt(id!))}>
+                                        Supprimer
+                                </Button>
+                            }
                         </Grid>
                     </Grid>
                     <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >

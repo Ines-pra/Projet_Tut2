@@ -12,11 +12,10 @@ import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import ClientModal from './Modal/ClientModal';
+import ClientModal from '../Components/Modal/ClientModal';
 import InfoIcon from '@mui/icons-material/Info'; 
 import ReactPaginate from 'react-paginate';
 import '../Styles/alert.css';
-import '../Styles/clients.css';
 import '../Styles/pagination.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -48,10 +47,8 @@ const defaultCase: Case[] | (() => Case[]) = [];
 export default function Clients(){
     const [clientsList, setClientsList] = React.useState(defaultClient);
     const [casesList, setCasesList] = React.useState(defaultCase);
-
     const [open, setOpen] = React.useState(false);
     const [id, setId] = React.useState(0);
-
     const [filter, setFilter] = useState("");
     const [pageNumber, setPageNumber] = React.useState(0);
 
@@ -77,26 +74,6 @@ export default function Clients(){
     const handleSearchChange = (e:any) => {
         setFilter(e.target.value);
     };
-    // Ajout d'un client //
-    const writeClientFile = async () => {
-      let client = new Client(2, "John", "Doe", "3 rue des potiers", new Date(), new Date());
-      let id = await daoF!.getClientDAO().create(client);
-      client.id = id;
-      setClientsList([...clientsList, client]);
-    };
-    // Suppression du fichier client.json //
-    const deleteClientFile = async () => {
-        await Filesystem.deleteFile({
-          path: 'client.json',
-          directory: Directory.Documents,
-        });
-      };
-    // Mise à jour du fichier client.json //
-    const updateClientFile = async () => {
-        let client = new Client(5, "OwO", "Yolo", "UwU", new Date(), new Date());
-        daoF!.getClientDAO().update(client);
-        setClientsList(clientsList.map(c => c.id === client.id ? client : c));
-      };
     // Suppression d'un client //
     const deleteClient = async (id: number) => {
         confirmAlert({
@@ -139,11 +116,13 @@ export default function Clients(){
         handleOpen();
         setId(id);
     };
+    // Ajout d'un client //
     const addClientTable = (cli: Client) => {
         let table = clientsList
         table = [...table, cli];
         setClientsList(table);
     };
+    // Modification d'un client //
     const updateClientTable = (cli: Client) => {
         let table = clientsList.map(c => c.id === cli.id ? cli : c);
         setClientsList(table);
@@ -182,7 +161,11 @@ export default function Clients(){
         } 
         return false;
     };
-
+    // Changement de page //
+    const handlePageClick = ({ selected }: any) => {
+        setPageNumber(selected);
+    };
+    // Affichage des clients en fonction de la pagination //
     const displayClients = clientsList
         .slice(pagesVisited, pagesVisited + clientsPerPage)
         .map((client) => {
@@ -197,15 +180,15 @@ export default function Clients(){
                             <TableCell align="center" width={'15%'} sx={StyleCell}>
                                 <Link to={'/clientinfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </Link>
                                 <NoteAltIcon onClick={()=>{ goToModal(client.id) }} color="success" className="cursor"/>
-                                <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error" className="cursor"/>                    
+                                {getClientCases(client.id) === " / "? 
+                                    <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error" className="cursor"/>
+                                    : 
+                                    <DeleteIcon color="disabled"/> 
+                                }           
                             </TableCell>
                         </TableRow>
             }
-        });
-
-    const handlePageClick = ({ selected }: any) => {
-        setPageNumber(selected);
-    };
+    });
 
     return (
         <Grid container style={styleAll}>
@@ -251,10 +234,6 @@ export default function Clients(){
                                 {displayClients}
                             </TableBody>   
                         </Table>
-                        <button onClick={() => {
-                                deleteClientFile()
-                            }}> Delete file
-                        </button>
                         <Grid item xs={12} md={12}>
                             <ReactPaginate 
                                 previousLabel={'<<'}
@@ -273,67 +252,4 @@ export default function Clients(){
             </Grid>
         </Grid>
     );
-
-    // return (
-    //     <Grid sx={StyleAll}>
-    //             <Header/>
-    //     <ClientModal openEdit={open} handleClose={handleClose} id={id}/>
-    //             <Box sx={{ display: 'flex', minWidth: 700 }}>
-    //                 <SideBar />
-    //                 <main className='main'>
-
-    //                     <Box maxWidth="lg" sx={MainStyle}>
-    //                         <Grid sx={{ display: 'flex', justifyContent:'space-between', marginTop:5}}>
-    //                             <h3>Clients</h3>
-    //                             <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-    //                                 <Toolbar>
-    //                                     <Box sx={searchContainer}>
-    //                                         <SearchIcon sx={searchIcon} />
-    //                                         <TextField
-    //                                         sx={searchInput}
-    //                                         onChange={handleSearchChange}
-    //                                         label="Recherche"
-    //                                         variant="standard"
-    //                                         />
-    //                                     </Box>
-    //                                 </Toolbar>
-    //                             </Box>
-    //                             <Button variant="contained" onClick={() => goToModal(0)}>
-    //                                         Ajouter
-    //                             </Button>
-    //                         </Grid>
-    //                     </Box>
-    //                         <Table aria-label="customized table" sx={styletable}>
-    //                             <TableHead>
-    //                             <TableRow>
-    //                                 <TableCell align="center">Nom</TableCell>
-    //                                 <TableCell align="center">Affaires associées</TableCell>
-    //                                 <TableCell align="center">Actions</TableCell>
-    //                             </TableRow>
-    //                             </TableHead>
-    //                             <TableBody>
-    //                                 {clientsList.map(client => { 
-    //                                     if (checkFilter(getClientCases(client.id), client)) {
-    //                                         return <TableRow key={client.id}>
-    //                                                     <TableCell component="th" scope="row" align="center" width={'15%'} >
-    //                                                             {client.firstname} {client.lastname}
-    //                                                     </TableCell>
-    //                                                     <TableCell align="center" sx={StyleCell}>
-    //                                                         {getClientCases(client.id)}
-    //                                                     </TableCell>
-    //                                                     <TableCell align="center" width={'15%'} sx={StyleCell}>
-    //                                                         <NavLink to={'/clientsInfo/'+client.id} style={{ textDecoration: 'none' }} > <InfoIcon color="primary"/> </NavLink>
-    //                                                         <NoteAltIcon onClick={()=>{ handleOpen() }} color="success"/>
-    //                                                         <DeleteIcon onClick={() => { deleteClient(client.id) }} color="error"/>                    
-    //                                                     </TableCell>
-    //                                                 </TableRow>
-    //                                         }
-    //                                         })}
-    //                             </TableBody>   
-    //                         </Table>
-                            
-    //                 </main>
-    //             </Box>
-    //         </Grid>
-    // );
 } 

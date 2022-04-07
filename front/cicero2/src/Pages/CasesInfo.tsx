@@ -14,9 +14,10 @@ import DAOFactory from "../Modele/dao/factory/DAOFactory";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import Brightness1Icon from '@mui/icons-material/Brightness1';
+import CasesModal from "../Components/Modal/CasesModal";
 import moment from 'moment'
-import ModalEvent from './Modal/EventModal'
-import './main.css';
+import ModalEvent from '../Components/Modal/EventModal'
+import '../Styles/main.css';
 import '../Styles/alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -42,9 +43,10 @@ const defaultCase: Case = {
   events: [],
 };
 
-export default function SpeFolder(){
+export default function CasesInfo(){
   const [caseInfo, setCaseInfo] = React.useState(defaultCase);
   const [open, setOpen] = React.useState(false);
+  const [idCase, setIdCase] = React.useState(0);
   const { id } = useParams<{ id: string }>();
   const handleClose = () => setOpen(false);
   const daoF = DAOFactory.getDAOFactory();
@@ -52,6 +54,10 @@ export default function SpeFolder(){
   let caseId = parseInt(id!);
   let total = 0;
   let navigate = useNavigate();
+
+  const [openCase, setOpenCase] = React.useState(false);
+  const handleOpenCase = () => setOpenCase(true);
+  const handleCloseCase = () => setOpenCase(false);
 
   // Récupération du dossier //
   useEffect (() => {
@@ -103,10 +109,12 @@ export default function SpeFolder(){
                       color: "white",
                       marginLeft: "5px",
                       }}
-                      onClick={() => {
-                          daoF!.getCaseDAO().delete(id);
+                      onClick={ async () => {
+                          await daoF!.getCaseDAO().delete(id);
                           navigate("/dossiers");
-                          window.location.reload();
+                          if(process.env.REACT_APP_ENV === "web"){
+                              window.location.reload();
+                          }
                           onClose();
                       }}>Confirmer</Button>
               </div>
@@ -121,9 +129,23 @@ export default function SpeFolder(){
     table.status = true;
     table.endedAt = new Date();
     console.log(table);
+    table.clients = [];
     setCaseInfo(table);
     daoF!.getCaseDAO().update(table);
     window.location.reload();
+  };
+  //Ouverture du modal //
+  function goToModal(id:number){
+    handleOpenCase();
+    setIdCase(id);  
+  };
+  // Update du dossier //
+  const updateCase = (cas: Case) => {
+      setCaseInfo(cas);
+  };
+  // Non utilisé ici//
+  const addCaseTable = (cas: Case) => {
+    console.log(cas);
   };
 
   return (
@@ -132,6 +154,7 @@ export default function SpeFolder(){
       <Grid container style={{ height: '90%'}}>
         <Grid item xs={12} md={2} direction="column">
           <SideBar />
+          <CasesModal id={idCase} openModal={openCase} handleClose={handleCloseCase} addFunction={addCaseTable} updateFunction={updateCase}/>
         </Grid>
         <Grid item xs md style={{ margin: "20px"}}>
           <Grid container xs={12} md={12} direction="row" alignItems="center">
@@ -151,7 +174,7 @@ export default function SpeFolder(){
                 </Grid>                       
               </Grid>
             <Grid item xs={12} md={3}>
-              <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth>Modifier dossier</Button>
+              <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=> goToModal(caseInfo.id)}>Modifier dossier</Button>
               <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
             </Grid>
             </Grid>

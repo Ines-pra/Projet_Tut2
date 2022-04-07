@@ -1,31 +1,29 @@
 import { useState } from "react";
 import { TextField, InputLabel, Stack } from "@mui/material";
 import { Event } from "../../Modele/metier/Event";
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/material/styles';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { ThemeProvider } from '@emotion/react';
-import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
+    palette: {
+      mode: 'dark',
+    },
 });
-
-
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: '50%',
-  borderRadius: 3,
-  bgcolor: "#000",
-  border: "2px solid #FFF",
-  boxShadow: 24,
-  p: 4,
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: '50%',
+    borderRadius: 3,
+    bgcolor: "#000",
+    border: "2px solid #FFF",
+    boxShadow: 24,
+    p: 4,
 };
 
 export default function EventModal(openEdit: any) {
@@ -33,6 +31,7 @@ export default function EventModal(openEdit: any) {
     const [date, setDate] = useState(''); 
     const [duree, setDuree] = useState(''); 
 
+    // Envoie des données //
     function setEvent(description: string, date: Date, duree: string){
         let message:Array<string> = [];
         let valid = true;
@@ -65,7 +64,6 @@ export default function EventModal(openEdit: any) {
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{color:'white'}}>
                 Ajouter un évènement
             </Typography>
-
             <InputLabel id="modal-modal-titleCard">Description :</InputLabel>
             <TextField
                 id="filled-basic"
@@ -98,21 +96,15 @@ export default function EventModal(openEdit: any) {
                 onChange={(e) => setDuree(e.target.value)}
                 fullWidth
             />
-
           <Box height={'5vh'}/>
-
-        
-          <Stack direction='row' spacing={2}>
-            <Button fullWidth variant="outlined" color="success" onClick= {() => setEvent(description, new Date(date), duree)}>
-              Valider
-            </Button> 
-
-            <Button fullWidth variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
-              Annuler
-            </Button>
-          </Stack>
-
-
+            <Stack direction='row' spacing={2}>
+              <Button fullWidth variant="outlined" color="success" onClick= {() => setEvent(description, new Date(date), duree)}>
+                Valider
+              </Button> 
+              <Button fullWidth variant="outlined" color="error"  onClick= {() => openEdit.handleClose()}>
+                Annuler
+              </Button>
+            </Stack>
         </Box>
       </Modal>
       </ThemeProvider>

@@ -1,173 +1,271 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React, { useEffect } from 'react';
-import Box from "@mui/material/Box";
-import SideBar from '../Components/SideBar';
-import DAOFactory from "../Modele/dao/factory/DAOFactory";
-import { Container } from '@mui/material';
-import { Stack } from '@mui/material';
-import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Case } from "../Modele/metier/Case";
-import { Event } from "../Modele/metier/Event";
+import React, { useState, useEffect } from 'react';
+import { confirmAlert } from 'react-confirm-alert'; 
+import { Case } from '../Modele/metier/Case';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { Client } from "../Modele/metier/Client";
+import { NavLink } from 'react-router-dom';
+import SideBar from '../Components/SideBar';
+import Header from '../Components/Header';
+import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import DAOFactory from '../Modele/dao/factory/DAOFactory';
+import CasesModal from "../Components/Modal/CasesModal";
 import InfoIcon from '@mui/icons-material/Info';
+import ReactPaginate from 'react-paginate';
+import '../Styles/alert.css';
+import '../Styles/pagination.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const styleHeader = {
-    background: '#535454',
-    color: '#fff',
-    width: '100%',
+const styleAll = {
+  height: "100%",
+  width: "auto",
 };
+const searchIcon = {
+    alignSelf: "flex-end",
+    marginBottom: "5px",
+};
+const searchInput = {
+    width: "160px",
+    margin: "5px",
+};
+const styletable = {
+    border:'2px solid black',
+    margin:'0 auto',
+    marginTop:5,
+    maxWidth: '90%',
+};
+const StyleCell = {
+   boder:'1px solid grey',
+};
+const FormStyle = {
+    minWidth:200
+};
+const defaultCase: Case[] | (() => Case[]) = [];
 
-const defaultCase: Case[] | (() => Case[]) = []
-const defaultEvent: Event[] | (() => Event[]) = []
- 
-export default function Cases(){
+export default function Folders(){
+    const [SelectChoice, setSelectChoice] = React.useState('Afficher affaires en cours et clôturées');
+    const [filter, setFilter] = useState("");
     const [casesList, setCasesList] = React.useState(defaultCase);
-    const [eventsList, setEventsList] = React.useState(defaultEvent);
+    const [pageNumber, setPageNumber] = React.useState(0);
+    const [open, setOpen] = React.useState(false);
+    const [id, setId] = React.useState(0);
+
     const daoF = DAOFactory.getDAOFactory();
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const casesPerPage = 5;
+    const pagesVisited = pageNumber * casesPerPage;
+
+    // Ouverture du modal //
+    function goToModal(id:number){
+        handleOpen();
+        setId(id);  
+    };
+    // Selection du status du dossier //
+    function handleChangeSelect(event:any){
+        setSelectChoice(event.target.value)
+    }
+    // Filtre des dossiers //
+    const handleSearchChange = (e:any) => {
+        setFilter(e.target.value);
+      };
+ 
     // Récupération de la liste des dossiers //
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getCaseDAO().findAll();
-            console.log(response);
+            // console.log(response);
             setCasesList(response);
             return response;
             }
             fetchData();
     }, []);
-
-    // Récupération de la liste des dossiers //
-    useEffect (() => {
-        async function fetchData() {
-            const response = await daoF!.getCaseDAO().findAll();
-            console.log(response);
-            setCasesList(response);
-            return response;
+    
+    // Suppression d'un dossier //
+    const deleteCase = async (id: number) => {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+              return (
+                <div className='custom-ui'>
+                    <h1>Etes-vous sur ?</h1>
+                    <p>Etes-vous sur de vouloir supprimer ce dossier ?</p>
+                    <Button     
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#d9534f",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginRight: "5px",
+                        }} 
+                        onClick={onClose}>Annuler</Button>
+                    <Button
+                        style={{
+                        borderRadius: 5,
+                        backgroundColor: "#0275d8",
+                        padding: "12px 24px",
+                        fontSize: "12px",
+                        color: "white",
+                        marginLeft: "5px",
+                        }}
+                        onClick={() => {
+                            daoF!.getCaseDAO().delete(id);
+                            setCasesList(casesList.filter(c => c.id !== id));
+                            onClose();
+                        }}>Confirmer</Button>
+                </div>
+              );
             }
-            fetchData();
-    }, []);
+        });
+    };
 
-    //////\ CASE /\\\\\\
-    // Lecture du fichier case.json //
-    const readCaseFile = async () => {
-        let ca = await daoF!.getCaseDAO().findAll();
-        console.log(ca);
+    // Fonction de filtre du tableau //
+    const checkFilter = (code: string, status: string, clients: Client[]) => {
+        if(clients.length === 0) {
+            if(code.toLowerCase().includes(filter.toLowerCase()) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                return true;
+            } 
+        } else {
+            for (let i = 0; i < clients.length; i++) {
+                if((clients[i].firstname.toLowerCase().includes(filter.toLowerCase()) || clients[i].lastname.toLowerCase().includes(filter.toLowerCase()) || code.toLowerCase().includes(filter.toLowerCase())) && SelectChoice.toLowerCase().includes(status.toLowerCase())) {
+                    return true;
+                } 
+            }
+        }
+        return false;
+    };
+    // Récupération des clients //
+    const getClient = (clients: Client[]) => {
+        let client = "";
+        for (let i = 0; i < clients.length; i++) {
+            if (i + 1 === clients.length) {
+                client += clients[i].firstname + " " + clients[i].lastname;
+            } else {
+                client += clients[i].firstname + " " + clients[i].lastname + ", ";
+            }
+        }
+        return client;
+    };
+    // Changement de page //
+    const handlePageClick = ({ selected }: any) => {
+        setPageNumber(selected);
+    };
+    // Mise a jour des dossier //
+    const updateCase = (cas: Case) => {
+        let table = casesList.map(c => c.id === cas.id ? cas : c);
+        setCasesList(table);
+        if (process.env.REACT_APP_ENV === "web") {
+            window.location.reload();
+        }
     };
     // Ajout d'un dossier //
-    const writeCaseFile = async () => {
-        let client = new Client(2, "electron", "", "", new Date(), new Date());
-        let code = "CC/" + (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
-        let cas = new Case(1, code, "Vole à main armée", new Date(), false, new Date(), [client], []);
-        setCasesList([...casesList, cas]);
-        daoF!.getCaseDAO().create(cas);
+    const addCaseTable = (cas: Case) => {
+        let table = casesList
+        table = [...table, cas];
+        setCasesList(table);
     };
-    // Suppression d'un dossier //
-    const deleteCase = async () => {
-      daoF!.getCaseDAO().delete(3);
-      setCasesList(casesList.filter(c => c.id !== 3));
-
-    };
-    // Mise à jour du fichier case.json //
-    const updateCaseFile = async () => {
-      let cas = new Case(5, "OwO", "UwU", new Date(), true, new Date(), [], []);
-      setCasesList(casesList.map(c => c.id === cas.id ? cas : c));
-      daoF!.getCaseDAO().update(cas);
-    };
-
-    //////\ EVENT /\\\\\\
-    // Lecture du fichier event.json //
-    const readEventFile = async () => {
-      let events = await daoF!.getEventDAO().findAll();
-      setEventsList(events);
-      console.log(events);
-    };
-    // Ajout d'un événement //
-    const writeEventFile = async () => {
-      let event = new Event(1, 2, "electron", new Date(), 30);
-      daoF!.getEventDAO().create(event);
-    };
-    // Suppression du fichier event.json //
-    const deleteEventFile = async () => {
-      await Filesystem.deleteFile({
-        path: 'event.json',
-        directory: Directory.Documents,
-      });
-    };
+    // Affichage des dossiers en fonction de la pagination //
+    const displayCases = casesList
+    .slice(pagesVisited, pagesVisited + casesPerPage)
+    .map((casee) => {
+        let status = casee.status ? 'clôturée' : 'En cours'
+            if (checkFilter(casee.code, status, casee.clients)) {
+                return (
+                    <TableRow key={casee.id}>
+                        <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
+                        <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>
+                            <NavLink to={`/dossierinfo/`+ casee.id}>
+                                <InfoIcon color="primary"/>
+                            </NavLink>
+                            <NoteAltIcon onClick={()=> goToModal(casee.id)} color="success" className="cursor"/>
+                            <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error" className="cursor"/>                    
+                        </TableCell>
+                    </TableRow>
+                )
+            }
+    });
 
     return (
-    <Box>
-        <button
-            onClick={() => {
-                writeCaseFile()
-            }}
-        >
-            Write case
-        </button>
-        <button
-            onClick={() => {
-                readCaseFile()
-            }}
-        >
-            Read cases
-        </button>
-        {/* <button
-            onClick={() => {
-                deleteCaseFile()
-            }}
-        >
-            Delete case file
-        </button> */}
-        <button
-            onClick={() => {
-                deleteCase()
-            }}
-        >
-            Delete case
-        </button>
-        <button
-            onClick={() => {
-                updateCaseFile()
-            }}
-        >
-            Update case
-        </button>
-        <Stack sx={styleHeader}>
-            <h1>HEADER</h1>
-        </Stack>
-        <Box sx={{ display: 'flex' }}>
-            <SideBar />
-            <main className="content">
-                <Container maxWidth="lg">
-                    <h2>CONTENU Dossiers</h2>
-                    <button
-                        onClick={() => {
-                            writeEventFile()
-                        }}
-                    >
-                        Write event
-                    </button>
-                    <button
-                        onClick={() => {
-                            readEventFile()
-                        }}
-                    >
-                        Read events
-                    </button>
-                    <button
-                        onClick={() => {
-                            deleteEventFile()
-                        }}
-                    >
-                        Delete event file
-                    </button>
-                    {casesList.map((caseItem: Case) => (
-                        <div key={caseItem.id}>
-                            <p>{caseItem.code}</p>
-
-                        </div>
-                    ))}
-                </Container>
-            </main>
-        </Box>
-    </Box>
+        <Grid container style={styleAll}>
+            <Header/>
+            <Grid container style={{ height: '90%'}}>
+                <Grid item xs={12} md={2} direction="column">
+                    <SideBar />
+                    <CasesModal id={id} openModal={open} handleClose={handleClose} addFunction={addCaseTable} updateFunction={updateCase}/>
+                </Grid>
+                <Grid item xs md style={{ margin: "15px" }}>
+                    <Grid container xs={12} md={12} direction="row" alignItems="center"> 
+                        <Grid item xs={12} md={4} sx={{ height: '100%' }}>
+                            <h2>Dossiers</h2>
+                        </Grid>
+                        <Grid container xs={12} md={8} direction="row" alignItems="center" sx={{height: '100%'}}>   
+                            <Grid item xs={12} md={5}>
+                                <FormControl fullWidth sx={FormStyle}>
+                                    <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
+                                   <Select
+                                       labelId="demo-simple-select-label"
+                                       id="demo-simple-select"
+                                       value={SelectChoice}
+                                       label="Trier par"
+                                       onChange={handleChangeSelect}
+                                   >
+                                       <MenuItem value={'Afficher affaires en cours et clôturées'}>Afficher affaires en cours et clôturées</MenuItem>
+                                       <MenuItem value={'En cours'}>En cours</MenuItem>
+                                       <MenuItem value={'Clôturées'}>Clôturées</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>   
+                            <Grid item xs={12} md={5}>
+                                <Toolbar>
+                                    <SearchIcon sx={searchIcon} />
+                                    <TextField
+                                        sx={searchInput}
+                                        onChange={handleSearchChange}
+                                        label="Recherche"
+                                        variant="standard"
+                                        fullWidth
+                                    />
+                                </Toolbar>   
+                            </Grid>  
+                            <Grid item xs={12} md={2}>
+                                <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
+                            </Grid>                     
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <Table aria-label="customized table" sx={styletable}>
+                            <TableHead style={{ backgroundColor:"#c6e5b3" }}>
+                            <TableRow>
+                                <TableCell align="center">Code</TableCell>
+                                <TableCell align="center">Statut</TableCell>
+                                <TableCell align="center">Clients</TableCell>
+                                <TableCell align="center">Actions</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {displayCases}
+                            </TableBody>
+                        </Table>
+                        <Grid item xs={12} md={12}>
+                            <ReactPaginate 
+                                previousLabel={'<<'}
+                                nextLabel={'>>'}
+                                pageCount={Math.ceil(casesList.length / casesPerPage)}
+                                onPageChange={handlePageClick}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'previousPage'}
+                                nextLinkClassName={'nextPage'}
+                                disabledClassName={'disabledPage'}
+                                activeClassName={'activePage'}
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
     );
 } 
