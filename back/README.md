@@ -12,9 +12,9 @@ Choix des technologies:
 
 ## Installation du back-end 
 
-- Dans le répertoire back, ``` npm install ``` pour installer toute les dépendances de la base de données
-- Ajouté un fichier .env à la racine du back, pour les information relatifs à votre de base de données
-    Sous la forme suivante:
+- Dans le répertoire back, ``` npm install ``` pour installer toutes les dépendances de la base de données
+- Ajoutez un fichier .env à la racine du back, pour les informations relatifs à votre de base de données
+    sous la forme suivante :
     ```
         APP_HOST=<your_host>
         APP_PORT=<your_port>
