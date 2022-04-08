@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Case } from '../Modele/metier/Case';
 import { confirmAlert } from 'react-confirm-alert';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Typography } from '@mui/material';
 import { Client } from "../Modele/metier/Client";
+import { Box } from '@mui/system';
 import SideBar from '../Components/SideBar';
 import Header from '../Components/Header';
 import DAOFactory from "../Modele/dao/factory/DAOFactory";
@@ -19,11 +20,17 @@ const styleAll = {
 const StyleContainer = {
     margin: "15px",
     backgroundColor: "#c6e5b3",
-    borderRadius: "5px",
     padding: "15px",
     color: "#000000",
 };
-
+const StyleContainer2 = {
+    margin: "15px",
+    // backgroundColor: "#c6e5b3",
+    borderRadius: "5px",
+    padding: "15px",
+    // color: "#000000",
+    border:"1px solid black"
+};
 const defaultClient1: Client = {
     id: 0,
     lastname: "",
@@ -134,20 +141,25 @@ export default function ClientsInfo(){
                     <Grid item xs={12} md={12} style={{ color: "#000000", fontSize: "16" }}>
                         <Link to={'/clients'} className='link'>Clients </Link> {' > ' + client.lastname + ' ' + client.firstname}
                     </Grid>
-                    <Grid container xs={12} md={10} direction="row" style={StyleContainer} className="shadow" alignItems="center">
-                        <Grid item xs={0} md={2} sx={{ height: '100%' }}>
-                            <img src="/profil.png" alt="profil"/>
+                    <Grid container xs={12} md={12} direction="row" style={StyleContainer2}  alignItems="center">
+                        <Grid item xs={0} md={3} sx={{ height: '100%' }}>
+                            <Box
+                                component="img"
+                                sx={{ height: 260, maxHeight: { xs: 150, md: 200 }, padding: "25px"}}
+                                alt="Profil"
+                                src="/profil.png"
+                            />
                         </Grid>
-                        <Grid item xs={12} md={7} sx={{fontSize: 14, height: '100%'}}>
+                        <Grid item xs={12} md={6} sx={{fontSize: 14, height: '100%'}}>
                             <Grid item xs={12} md={12}>
-                            <h1> {client.lastname} {client.firstname}</h1>
+                            <Typography variant="h3"> {client.lastname} {client.firstname}</Typography>
                             </Grid>   
                             <Grid item xs={12} md={12} sx={{fontStyle: 'italic',fontSize: 11,}}>
-                            <p> client depuis le {moment(client.createdDate).format('YYYY/MM/DD')} </p>
+                            <Typography variant="subtitle2"> Client depuis le {moment(client.createdDate).format('YYYY/MM/DD')} </Typography>
                             </Grid>                       
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
+                            <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(parseInt(id!))}>Modifier Client</Button>
                             {getClientCases(client.id).length !== 0 ? 
                                 <Button 
                                     variant="contained" 
@@ -169,18 +181,18 @@ export default function ClientsInfo(){
                             }
                         </Grid>
                     </Grid>
-                    <Grid container xs={12} md={12} justifyContent="flex-start" direction="row" >
-                        <Grid item xs={12} md={4} direction="row" style={StyleContainer} className="shadow overflow" alignItems="center">
-                            <h2> Informations générales </h2>
-                            <h3> Adresse </h3>
-                            <p> {client.address} </p>
-                            <h3> Date de naissance </h3>
-                            <p> {moment(client.birthDate).format('YYYY/MM/DD')} </p>
+                    <Grid container xs={12} md={12} justifyContent="space-around" direction="row" >
+                        <Grid item xs={12} md={5} direction="row" style={StyleContainer} className="overflow shadow" alignItems="center">
+                            <Typography style={{padding:"7px"}} variant="h4"> Informations générales </Typography>
+                            <Typography style={{padding:"7px"}} variant="h6"> Adresse </Typography>
+                            <Typography style={{padding:"7px"}} variant="body2"> {client.address} </Typography>
+                            <Typography style={{padding:"7px"}} variant="h6"> Date de naissance </Typography>
+                            <Typography style={{padding:"7px"}} variant="body2"> {moment(client.birthDate).format('YYYY/MM/DD')} </Typography>
                         </Grid>
-                        <Grid item xs={12} md={5} direction="row" style={StyleContainer} className="shadow" alignItems="center">
-                            <h3> Dossiers associés </h3>
+                        <Grid item xs={12} md={5} direction="row" style={StyleContainer} alignItems="center" className="shadow">
+                            <Typography style={{padding:"7px"}} variant="h4"> Dossiers associés </Typography>
                             {getClientCases(client.id).map(cases => (
-                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturée" : "En cours"}</p>
+                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturé" : "En cours"}</p>
                             ))}
                         </Grid>
                     </Grid>

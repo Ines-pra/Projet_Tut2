@@ -8,7 +8,8 @@ import { GET_ALL_CLIENT, GET_CLIENT_ID } from '../../../graphql/Query/queryClien
 
 export class sqlClientDAO implements ClientDAO {
     public async create(cli: Client): Promise<number> {
-        client
+        let idC: number = 0;
+        await client
             .mutate({
                 mutation: CREATE_CLIENT,
                 variables: {
@@ -18,9 +19,12 @@ export class sqlClientDAO implements ClientDAO {
                         birthDate:cli.birthDate,
                         createdDate:cli.createdDate 
                 }
-            });
+            }).then(result =>{
+            idC = result.data.createClient.id;
+            
+        });
         
-        return cli.id;
+        return idC;
     }
     public async update(cli: Client): Promise<boolean> {
         client

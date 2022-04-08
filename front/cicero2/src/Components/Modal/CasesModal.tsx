@@ -12,12 +12,10 @@ const theme = createTheme({
     mode: 'dark',
   },
 });
-
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
-  overflowY: 'scroll',
   transform: "translate(-50%, -50%)",
   width: '50%',
   borderRadius: 3,
@@ -28,20 +26,24 @@ const style = {
   color:"white"
 };
 const defaultClient: Array<Client> = [];
+const defaultCase: Case = {
+    id: (new Date()).getTime(), 
+    code:'',
+    description:'',
+    clients: [],
+    startedAt: new Date(),
+    endedAt: new Date(),
+    events:[],
+    status: false
+};
 
 function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{openModal: boolean, handleClose: any, id: number, addFunction: any, updateFunction: any}) {
-   
-    // State de l'alerte success qui s'affiche a chaque fois qu'on ajoute un client
-    const [openSucc, setOpenSucc] = React.useState(false);
-
-    // Ce sont les state nécessaire pour vérifier qu'un client n'est pas en double
-      // ce state regroupe tout les client précdemment ajouter lors de la création ou d'une ancienne modif
-    const [Clients, setClients] = React.useState(defaultClient);
-      // celle-ci tout les clients durant la modif actuelle
-    const [newClient, setNewClient] = React.useState(defaultClient);
-      // celui ci récupére l'id dans la value de l'item de la selectbox
-    const [lstIdC, setIdCliL] = useState('');
-
+    const [openSucc, setOpenSucc] = React.useState(false);     // State de l'alerte success qui s'affiche a chaque fois qu'on ajoute un client
+    const [clients, setClients] = React.useState(defaultClient);      // ce state regroupe tout les client précdemment ajouter lors de la création ou d'une ancienne modif
+    const [newClient, setNewClient] = React.useState(defaultClient);      // celle-ci tout les clients durant la modif actuelle
+    const [lstIdC, setIdCliL] = useState('');      // celui ci récupére l'id dans la value de l'item de la selectbox
+    const [caseInfo, setCaseInfo] = React.useState(defaultCase);        // State pour la modification du dossier courant 
+    const [description, setDescription] = React.useState('');
     /*
       cette façon de faire un peu spécial vise à évité les conflit dans la base de données,
       étant donnée que l'on rentre 2 clés primaire dans une table formant une clé unique, le faite 
@@ -49,34 +51,18 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
 
       D'autres façon de faire aurait pu être abordé mais au vue du temps, c'était la meilleur solutions
     */
-
-    // State pour la récupération de la liste des clients afin de les affiché dans le selectbox
-    const [ListClients, setListClients] = React.useState(defaultClient);
-
+    const [Listclients, setListclients] = React.useState(defaultClient);
     // Fonction pour changer le state pour l'ouverture de l'alert success
     const handleOpenSucc = () => setOpenSucc(true);
     const handleCloseSucc = () => setOpenSucc(false);
-
-    // Appel du singleton pour la DAO
     const daoF = DAOFactory.getDAOFactory();
 
-    // State pour la modification du dossier courant 
-    const [CaseInfo,setCaseInfo] = React.useState({
-        id: (new Date()).getTime(), 
-        Code:'',
-        Description:'',
-        Clients: [],
-        DateStart: new Date(),
-        DateEnd: new Date(),
-        Events:[],
-        statut: false
-    });
     // Création d'un code aléatoire //
     function makeid() {
         let code = (Math.floor(Math.random() * (99 - 10 + 1)) + 10);
         let length = 8;
-        let result           = '';
-        let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let charactersLength = characters.length;
         for ( var i = 0; i < length; i++ ) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -90,16 +76,7 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
       let c1:Array<Client> = [];
       setClients(c1);
       setNewClient(c1);
-      setCaseInfo({
-        id: 0, 
-        Code:'',
-        Description:'',
-        Clients:[],
-        DateStart: new Date(),
-        DateEnd: new Date(),
-        Events:[],
-        statut:false
-      })
+      setCaseInfo(defaultCase)
     }
 
     function closeDef(){
@@ -117,20 +94,20 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
       // On récupère les bonne données et on les initalises 
         async function fetchData() { 
           const response2 = await daoF!.getClientDAO().findAll();
-          setListClients(response2 as any);
+          setListclients(response2 as any);
           // Si l'id est à 0, cela veut dire que c'est un ajout, sinon c'est une modif
           if (id != 0) {
             const response = await daoF!.getCaseDAO().findById(id);      
             setClients(response.clients);    
             setCaseInfo({
               id: id, 
-              Code:response.code,
-              Description:response.description,
-              Clients:response.clients as any,
-              DateStart: response.startedAt,
-              DateEnd: response.endedAt,
-              Events:response.events as any,
-              statut:response.status as boolean
+              code: response.code,
+              description: response.description,
+              clients: response.clients as any,
+              startedAt: response.startedAt,
+              endedAt: response.endedAt,
+              events: response.events as any,
+              status: response.status as boolean
             })
           } else {
               resetState();
@@ -141,73 +118,54 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
       // Seulement pour récupérer valeur de la selectbox //
     function handleChangeClient(evt:any) {
       const value = evt.target.value;
-      console.log(value);
-         
       setIdCliL(value);        
     }
 
     // Fonction et logique de l'ajout d'un client //
     async function addClient(id:number) {
         const res = await daoF!.getClientDAO().findById(id);
-        console.log(res);
-        console.log(id);
-        
         let tabAll;
         let exist:boolean = false;
         // on vérifie que le client n'est pas déjà présent dans la liste
-        Clients.forEach(element => {
+        clients.forEach(element => {
             if(element.id == id){
-              // si oui le boolean passe a true
               exist = true;
             }
         });
 
           if(exist == false){
-            // Si il n'existe pas alors:
-
-            // On ajoute celui ci a une table
-            tabAll = [...Clients, res];
-
-            // Que l'on attribura au state des clients précedement ajouter (Pour ne pas pouvoir avoir de fois le même)
-            setClients(tabAll);
-
-            // Ainsi que dans le state des nouveaux client pour facilité l'ajout et éviter les crashs
-            setNewClient([...newClient, res]);
-
-            // Enfin on affiche l'alert de succés
-            handleOpenSucc();
+            tabAll = [...clients, res]; // On ajoute celui ci a une table
+            setClients(tabAll);  // Que l'on attribura au state des clients précedement ajouter (Pour ne pas pouvoir avoir de fois le même)
+            setNewClient([...newClient, res]); // Ainsi que dans le state des nouveaux client pour facilité l'ajout et éviter les crashs
+            handleOpenSucc();  // On affiche l'alert de succés
           }else{
-            // Message d'erreur
-            alert('Client déjà ajouté'); 
+            alert('Client déjà ajouté'); // Message d'erreur
           }
     }
 
     // Seulement pour la récupértion des données écrite dans les inputs //
     function handleChange(evt:any) {
         const value = evt.target.value;
-        setCaseInfo({
-          ...CaseInfo,
-          [evt.target.name]: value  
-        });
-
+        setDescription(value);
     }
 
     // Fonction de validation //
     const handleSubmit = async (e:any) => {
         e.preventDefault();
+        caseInfo.description = description;
         // Test si les champs sont pas vide
-        if(CaseInfo.Code != '' || CaseInfo.Description != '' ){
+        if(caseInfo.code != '' || caseInfo.description != '' ){
           // Verifie si c'est une mise à jour ou une insertion
         if(id == 0){
-          let idCase = await daoF!.getCaseDAO().create(new Case(0, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
-          addFunction(new Case(idCase, makeid(), CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+          let idCase = await daoF!.getCaseDAO().create(new Case(0, makeid(), caseInfo.description, new Date(), caseInfo.status, new Date(), newClient, []));
+          addFunction(new Case(idCase, makeid(), caseInfo.description, new Date(), caseInfo.status, new Date(), clients, []));
         }else{
           if (process.env.REACT_APP_ENV === 'web') {
-            daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), newClient, []));
-            updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+            daoF!.getCaseDAO().update(new Case(id, caseInfo.code, caseInfo.description, new Date(), caseInfo.status, new Date(), newClient, []));
+            updateFunction(new Case(id, caseInfo.code, caseInfo.description, new Date(), caseInfo.status, new Date(), clients, []));
           } else {
-            daoF!.getCaseDAO().update(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
-            updateFunction(new Case(id, CaseInfo.Code, CaseInfo.Description, new Date(), CaseInfo.statut, new Date(), Clients, []));
+            daoF!.getCaseDAO().update(new Case(id, caseInfo.code, caseInfo.description, new Date(), caseInfo.status, new Date(), clients, []));
+            updateFunction(new Case(id, caseInfo.code, caseInfo.description, new Date(), caseInfo.status, new Date(), clients, []));
           }
         }
         // On ferme la modal et reset
@@ -216,7 +174,6 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
           alert('veuillez remplir tout les champs');
         }
       }
-
 
   return (      
     <ThemeProvider theme={theme}>
@@ -234,29 +191,16 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
         }
               <Stack spacing={2}>     
                     <TextField
-                        variant="outlined"
                         margin="normal"
                         required
                         type="text"                                                                                                                                                                                                
-                        name="Description"
+                        label="description"
                         multiline
                         fullWidth
-                        value={CaseInfo.Description}
-                        placeholder="Description"
+                        variant="outlined"
+                        value={description}
                         onChange={handleChange}  
                     />        
-                    {/* <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        type="text"                                                                                                                                                                                                
-                        name="Code"
-                        multiline
-                        fullWidth
-                        value={CaseInfo.Code}
-                        placeholder="Code"
-                        onChange={handleChange}  
-                  /> */}
               <FormControl fullWidth>
                       <InputLabel id="clientInput">Client </InputLabel>
                       <Select
@@ -265,10 +209,11 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
                         name="client"
                         value={lstIdC}
                         label="Client"
+                        variant="outlined"
                         sx={{marginBottom:'10px'}}
                         onChange={handleChangeClient}
                       >
-                        { ListClients?.map((client)=> {
+                        { Listclients?.map((client)=> {
                             return <MenuItem value={client?.id}> {client?.lastname} {client?.firstname}</MenuItem>
                           })}
                       </Select>
