@@ -8,8 +8,8 @@ Choix des technologies:
 
 ## Information du back-end (pour web et mobile)
 
-- npm install pour installer toute les dépendances de la base de donnée
-- Ajouté un fichier .env pour les variables secret pour les information relatifs à la bdd
+- ``` npm install ``` pour installer toute les dépendances de la base de données
+- Ajouté un fichier .env à la racine du back, pour les information relatifs à votre de base de données
     Sous la forme suivante:
     ```
         APP_HOST=<your_host>
@@ -18,4 +18,7 @@ Choix des technologies:
         APP_DBUSERNAME=<your_username>
         APP_DBPASS=<your_pass>
     ```
+- La structure de la base de données avec un jeu de données se trouve dans le répertoire database du back
 
+#### Retour 
+- https://github.com/Ines-pra/Projet_Tut2/blob/main

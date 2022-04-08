@@ -90,32 +90,23 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
       let c1:Array<Client> = [];
       setIdCliL('');
       setNewClient(c1);
-
       // On récupère les bonne données et on les initalises 
         async function fetchData() { 
           const response2 = await daoF!.getClientDAO().findAll();
-          setListclients(response2 as any);
+          setListclients(response2);
           // Si l'id est à 0, cela veut dire que c'est un ajout, sinon c'est une modif
           if (id != 0) {
             const response = await daoF!.getCaseDAO().findById(id);      
             setClients(response.clients);    
-            setCaseInfo({
-              id: id, 
-              code: response.code,
-              description: response.description,
-              clients: response.clients as any,
-              startedAt: response.startedAt,
-              endedAt: response.endedAt,
-              events: response.events as any,
-              status: response.status as boolean
-            })
+            setCaseInfo(response);
+            setDescription(response.description);
           } else {
               resetState();
           }
         } fetchData();
       }, [id]);
 
-      // Seulement pour récupérer valeur de la selectbox //
+    // Seulement pour récupérer valeur de la selectbox //
     function handleChangeClient(evt:any) {
       const value = evt.target.value;
       setIdCliL(value);        
@@ -187,8 +178,6 @@ function CasesModal({openModal, handleClose, id, addFunction, updateFunction}:{o
         <Typography id="modal-modal-title" variant="h6" component="h2" style={{color:'white'}}>
              { id == 0 ? "Création d'un dossier" : "Modification du dossier " + id}
         </Typography>
-        {console.log(newClient)
-        }
               <Stack spacing={2}>     
                     <TextField
                         margin="normal"

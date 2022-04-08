@@ -33,11 +33,6 @@ const StyleContainer2 = {
   padding: "15px",
   border:"1px solid black"
 };
-const StyleContainer3 = {
-  margin: "15px",
-  borderRadius: "5px",
-  padding: "15px",
-};
 const styleAll = {
   height: "100%",
   width: "auto",
@@ -72,7 +67,6 @@ export default function CasesInfo(){
   // Récupération du dossier //
   useEffect (() => {
     async function fetchData() { 
-      console.log("fetchData");
         const response = await daoF!.getCaseDAO().findById(caseId);
         setCaseInfo(response);
         return response;
@@ -84,12 +78,12 @@ export default function CasesInfo(){
     let table = caseInfo;
     let newTable = [...table.events, event];
     table.events = newTable;
-    setCaseInfo(table);
     if(env === "web"){
           daoF!.getEventDAO().create(event);
-          window.location.reload();
+          setCaseInfo(table);
     } else {
           daoF!.getCaseDAO().update(table);
+          setCaseInfo(table);
     }
   };
   // Suppression d'un dossier //
@@ -176,30 +170,29 @@ export default function CasesInfo(){
               </Grid>
               <Grid item xs={12} md={7} sx={{fontSize: 14, padding:"15px"}}>
                 <Grid item xs={12} md={12}>
-                  <p><b>{caseInfo.code}</b>{ caseInfo.status ? <span> <Brightness1Icon style={{ color: "red", fontSize: "13px"}}/> Clôturé </span> : <span> <Brightness1Icon style={{ color: "green", fontSize: "13px"}}/> En cours </span>}</p>   
+                  <p><b>{caseInfo.code}</b>{ caseInfo.status ? <span> <Brightness1Icon style={{ color: "red", fontSize: "13px"}}/> Clôturer </span> : <span> <Brightness1Icon style={{ color: "green", fontSize: "13px"}}/> En cours </span>}</p>   
                 </Grid>   
                 <Grid item xs={12} md={12} sx={{fontStyle: 'italic',fontSize: 11,}}>
-                  <Typography variant="subtitle2"> Affaire ouverte le {moment(caseInfo.startedAt).format('YYYY/MM/DD')} </Typography>
-                </Grid>                       
+                  <Typography variant="subtitle2">Affaire ouverte le {moment(caseInfo.startedAt).format('YYYY/MM/DD')} </Typography>                
+                </Grid> 
+                <Grid item xs={12} md={7} style={{paddingTop:"15px"}}>
+                  <Typography variant="h5">Description</Typography>
+                  <Typography variant="body1">{caseInfo.description}</Typography>
+                </Grid>                      
               </Grid>
-            <Grid item xs={12} md={3}>
-              <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=> goToModal(caseInfo.id)}>Modifier dossier</Button>
-              <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
-            </Grid>
-            </Grid>
-            <Grid container direction="row" xs={12} md={12} style={StyleContainer3} alignItems="center">
-              <Grid item xs={12} md={10}>
-                <Typography variant="h5">Description</Typography>
-                <Typography variant="body1">{caseInfo.description}</Typography>
-              </Grid>
-              <Grid item xs={12} md={2}>
-                <FormGroup>
-                  {caseInfo.status ? 
-                    <FormControlLabel disabled control={<Checkbox onChange={endCase} disabled/>} label="Clôturé le dossier" />  
-                    : 
-                    <FormControlLabel control={<Checkbox onChange={endCase}/>} label="Clôturé le dossier" />}
-                </FormGroup>
-              </Grid>
+
+                {caseInfo.status ? 
+                <Grid item xs={12} md={3}>
+                  <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth disabled>Clôturer le dossier</Button>
+                  <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth disabled>Modifier le dossier</Button>
+                  <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
+                </Grid>
+                : 
+                <Grid item xs={12} md={3}>
+                  <Button variant="contained" color="primary" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=> endCase()}>Clôturer le dossier</Button>
+                  <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=> goToModal(caseInfo.id)}>Modifier le dossier</Button>
+                  <Button variant="contained" color="error" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => deleteCase(caseId)}>Supprimer</Button>
+                </Grid>}
             </Grid>
             <Grid container xs={12} md={12} justifyContent="space-around" direction="row" >
               <Grid item xs={12} md={5} style={StyleContainer} className="shadow">
@@ -211,7 +204,10 @@ export default function CasesInfo(){
                     })}
                   </ListItem>
                   <Grid item xs={12} md={6}>
-                    <Button variant="contained" color="success" sx={{paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> 
+                    {caseInfo.status ?                     
+                      <Button variant="contained" color="success" sx={{paddingTop:'10px'}} disabled>Ajouter un évènement</Button> 
+                      :                     
+                      <Button variant="contained" color="success" sx={{paddingTop:'10px'}} onClick={()=> setOpen(true)}>Ajouter un évènement</Button> }
                   </Grid>
                   <Grid item xs={12} md={6} >
                     <Typography variant="body1"><b>Total: {total}h</b></Typography>  

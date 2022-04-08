@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material/styles';
-import { TextField, InputLabel, Stack } from "@mui/material";
+import { TextField, Stack } from "@mui/material";
 import { Client } from "../../Modele/metier/Client";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
