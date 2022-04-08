@@ -75,7 +75,6 @@ export default function Folders(){
     useEffect (() => {
         async function fetchData() {
             const response = await daoF!.getCaseDAO().findAll();
-            // console.log(response);
             setCasesList(response);
             return response;
             }
@@ -180,7 +179,10 @@ export default function Folders(){
                             <NavLink to={`/dossierinfo/`+ casee.id}>
                                 <InfoIcon color="primary"/>
                             </NavLink>
-                            <NoteAltIcon onClick={()=> goToModal(casee.id)} color="success" className="cursor"/>
+                            {casee.status ?                             
+                            <NoteAltIcon color="disabled" className="cursor"/> 
+                            :
+                            <NoteAltIcon onClick={()=> goToModal(casee.id)} color="success" className="cursor"/> }
                             <DeleteIcon onClick={() => { deleteCase(casee.id) }} color="error" className="cursor"/>                    
                         </TableCell>
                     </TableRow>

@@ -25,10 +25,8 @@ const StyleContainer = {
 };
 const StyleContainer2 = {
     margin: "15px",
-    // backgroundColor: "#c6e5b3",
     borderRadius: "5px",
     padding: "15px",
-    // color: "#000000",
     border:"1px solid black"
 };
 const defaultClient1: Client = {
@@ -192,7 +190,7 @@ export default function ClientsInfo(){
                         <Grid item xs={12} md={5} direction="row" style={StyleContainer} alignItems="center" className="shadow">
                             <Typography style={{padding:"7px"}} variant="h4"> Dossiers associés </Typography>
                             {getClientCases(client.id).map(cases => (
-                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturé" : "En cours"}</p>
+                                    <p><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturer" : "En cours"}</p>
                             ))}
                         </Grid>
                     </Grid>

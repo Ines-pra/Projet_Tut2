@@ -1,46 +1,39 @@
-# Getting Started with Create React App
+# Projet_Tut2
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Installation
+    
+#### Back-end
+- https://github.com/Ines-pra/Projet_Tut2/blob/main/back/README.md
 
-## Available Scripts
+#### Front-end
+- Placez-vous dans le répertoire cicero2 ```sh cd/front/cicero2```
+- Téléchargez et build le projet ```sh npm install npm run build```
+- Placez-vous dans le répertoire electron ```sh cd/electron```
+- Téléchargez et build electron ```sh npm install npm run build```
 
-In the project directory, you can run:
+## Lancement du projet 
 
-### `npm start`
+- En étant dans le répertoire back, lancer le serveur ```sh npm start```
+- En étant dans le répertoire cicero2, Syncronisez le projet  ```sh npm run sync```
+- En étant dans le répertoire cicero2, lancez le web ```sh npm start```
+- En étant dans le répertoire cicero2, lancez electron ```sh npm run electron```
+- En étant dans le répertoire cicero2, lancez ionic ```sh npm run ionic```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Liens utiles 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Trello : <br>
+https://trello.com/b/aFEvsdsN/projet-tutor%C3%A9-2-lpweb
 
-### `npm test`
+Doc de notes : <br>
+https://docs.google.com/document/d/1bw8kXYWGi4jmzJQx-w-n1J6gIsqk_TBZgc3NaR88vFY/edit?usp=sharing
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technologie utilisées
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [Electron](https://electronjs.org/)
+- [Ionic](https://ionicframework.com/)
+- [React](https://reactjs.org/)
+- [Node.js](https://nodejs.org/)
+- [Capacitor](https://capacitor.ionicframework.com/)
+- [MySQL](https://www.mysql.com/)
+- [Apollo](https://www.apollographql.com/)
+- [GraphQL](https://graphql.org/)
