@@ -191,7 +191,7 @@ export default function ClientsInfo(){
                             <Typography style={{padding:"7px"}} variant="body2"> {moment(client.birthDate).format('YYYY/MM/DD')} </Typography>
                         </Grid>
                         <Grid item xs={12} md={5} direction="row" style={StyleContainer} alignItems="center">
-                            <Typography style={{padding:"7px"}} variant="h4"> Dossiers associés </Typography>
+                            <Typography style={{padding:"7px"}} variant="h4"> Affaires associées </Typography>
                             {getClientCases(client.id).map(cases => (
                                     <Typography style={{padding:"7px"}} variant="body2"><Link to={'/dossierinfo/' + cases.id} className='innerLink'>{cases.code}</Link> - {cases.status ? "Clôturée" : "En cours"}</Typography>
                             ))}

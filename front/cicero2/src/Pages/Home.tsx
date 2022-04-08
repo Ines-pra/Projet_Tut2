@@ -75,7 +75,7 @@ export default function Home(){
                             </Grid>
                             <Grid container xs={12} md={5} direction="column" style={StyleContainer} justifyContent="space-between">
                                 <Typography variant="h4"> Dossiers </Typography>
-                                <Typography variant="body1"> Consulter vos clients depuis ce bouton ou depuis le menu de navigation </Typography>
+                                <Typography variant="body1"> Consulter vos affaires depuis ce bouton ou depuis le menu de navigation </Typography>
                                 <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => navigate('/dossiers')}> Y aller ! </Button>
                             </Grid>
                             
