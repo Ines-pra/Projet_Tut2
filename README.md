@@ -27,7 +27,7 @@
 - En étant dans le répertoire cicero2, synchronisez le projet  ``` npm run sync ```
 - En étant dans le répertoire cicero2, lancez le web ``` npm start ```
 - En étant dans le répertoire cicero2, lancez electron ``` npm run electron ```
-- En étant dans le répertoire cicero2, lancez ionic ``` npm run ionic ```
+- En étant dans le répertoire cicero2, lancez ionic ``` npm run ionic ``` <br> <br>
 
 ## Bilan 
 
