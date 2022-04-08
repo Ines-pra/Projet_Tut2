@@ -1,6 +1,6 @@
 <div align="center">
 
-# Projet Tutore S6 - Cicero 2  :avocado:
+# Projet Tutoré S6 - Cicero 2  :avocado:
     
 </div>
 
@@ -17,14 +17,14 @@
 
 #### Front-end
 - Placez-vous dans le répertoire cicero2 ``` cd/front/cicero2 ```
-- Téléchargez et build le projet ``` npm install npm run build ```
+- Téléchargez les packages du projet ``` npm install ```
 - Placez-vous dans le répertoire electron ``` cd/electron ```
-- Téléchargez et build electron ``` npm install npm run build ```
+- Téléchargez les packages electron ``` npm install ```
 
 ## Lancement du projet 
 
 - En étant dans le répertoire back, lancer le serveur ``` npm start ```
-- En étant dans le répertoire cicero2, Syncronisez le projet  ``` npm run sync ```
+- En étant dans le répertoire cicero2, synchronisez le projet  ``` npm run sync ```
 - En étant dans le répertoire cicero2, lancez le web ``` npm start ```
 - En étant dans le répertoire cicero2, lancez electron ``` npm run electron ```
 - En étant dans le répertoire cicero2, lancez ionic ``` npm run ionic ```
@@ -47,7 +47,7 @@
 - Recherche par clients/dossiers
 - Tri des dossiers clôturés/non clôturés
 - Affichage des détails d'un dossier
-- Création d'un évènement dans un dossier
+- Création d'un événement dans un dossier
 - Pagination des clients/dossiers
 
 #### Ce qui ne fonctionne pas 

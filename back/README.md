@@ -18,7 +18,7 @@ Choix des technologies:
         APP_DBUSERNAME=<your_username>
         APP_DBPASS=<your_pass>
     ```
-- La structure de la base de données avec un jeu de données se trouve dans le répertoire database du back
+- La structure de la base de données et un jeu de données se trouve dans le répertoire mySQL à la racine du projet
 
 #### Retour 
 - https://github.com/Ines-pra/Projet_Tut2/blob/main
