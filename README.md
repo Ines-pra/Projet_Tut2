@@ -35,6 +35,7 @@
 
 - Mise en place des builds electron/ionic/web
 - Mise en place de données cohérentes entre local et SQL
+- Liaisons Front/Back
 
 #### Ce qui fonctionne
 
