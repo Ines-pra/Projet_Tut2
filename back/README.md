@@ -12,7 +12,7 @@ Choix des technologies:
 
 ## Information du back-end (pour web et mobile)
 
-- ``` npm install ``` pour installer toute les dépendances de la base de données
+- Dans le répertoire back, ``` npm install ``` pour installer toute les dépendances de la base de données
 - Ajouté un fichier .env à la racine du back, pour les information relatifs à votre de base de données
     Sous la forme suivante:
     ```
