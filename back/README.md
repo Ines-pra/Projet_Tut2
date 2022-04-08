@@ -10,7 +10,7 @@ Choix des technologies:
 -    MySql/MariaDB pour la base de données
 -    PhpMyAdmin pour la gestion de la base de données <br> <br>
 
-## Information du back-end (pour web et mobile)
+## Installation du back-end 
 
 - Dans le répertoire back, ``` npm install ``` pour installer toute les dépendances de la base de données
 - Ajouté un fichier .env à la racine du back, pour les information relatifs à votre de base de données
