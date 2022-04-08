@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextField, InputLabel, Stack } from "@mui/material";
+import { TextField, Stack } from "@mui/material";
 import { Event } from "../../Modele/metier/Event";
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material/styles';
@@ -64,37 +64,40 @@ export default function EventModal(openEdit: any) {
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{color:'white'}}>
                 Ajouter un évènement
             </Typography>
-            <InputLabel id="modal-modal-titleCard">Description :</InputLabel>
             <TextField
                 id="filled-basic"
                 label="Description"
-                variant="filled"
+                variant="outlined"
+                required
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 fullWidth
+                sx={{marginTop: 3}}
             /> 
-            <InputLabel id="modal-modal-titleCard">Date :</InputLabel>
             <TextField
                 id="date"
                 label="Date"
                 type="date"
-                variant="filled"
+                variant="outlined"
                 defaultValue={date}
+                required
+                sx={{marginTop: 3}}
                 InputLabelProps={{
                 shrink: true,
                 }}
                 fullWidth
                 onChange={(e) => setDate(e.target.value)}
             />
-            <InputLabel id="modal-modal-titleCard">Durée :</InputLabel>
             <TextField
                 id="filled-basic"
-                label="Duration"
+                label="Durée"
                 type="number"
-                variant="filled"
+                variant="outlined"
+                required
                 value={duree}
                 onChange={(e) => setDuree(e.target.value)}
                 fullWidth
+                sx={{marginTop: 3}}
             />
           <Box height={'5vh'}/>
             <Stack direction='row' spacing={2}>

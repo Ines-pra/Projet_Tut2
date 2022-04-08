@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { confirmAlert } from 'react-confirm-alert'; 
 import { Case } from '../Modele/metier/Case';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
+import { Button, Typography, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar } from '@mui/material';
 import { Client } from "../Modele/metier/Client";
 import { NavLink } from 'react-router-dom';
 import SideBar from '../Components/SideBar';
@@ -27,7 +27,7 @@ const searchIcon = {
     marginBottom: "5px",
 };
 const searchInput = {
-    width: "160px",
+    width: "250px",
     margin: "5px",
 };
 const styletable = {
@@ -39,7 +39,7 @@ const StyleCell = {
    boder:'1px solid grey',
 };
 const FormStyle = {
-    minWidth:200
+    minWidth:200,
 };
 const defaultCase: Case[] | (() => Case[]) = [];
 
@@ -174,7 +174,7 @@ export default function Folders(){
                 return (
                     <TableRow key={casee.id}>
                         <TableCell component="th" scope="row" align="center" width={'15%'} >{casee.code}</TableCell>
-                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'clôturée' : 'En cours'}</TableCell>
+                        <TableCell align="center" width={'15%'} sx={StyleCell}>{casee.status ? 'Clôturé' : 'En cours'}</TableCell>
                         <TableCell align="center" sx={StyleCell}>{getClient(casee.clients)}</TableCell>
                         <TableCell align="center" width={'15%'} sx={StyleCell}>
                             <NavLink to={`/dossierinfo/`+ casee.id}>
@@ -198,14 +198,17 @@ export default function Folders(){
                 </Grid>
                 <Grid item xs md style={{ margin: "15px" }}>
                     <Grid container xs={12} md={12} direction="row" alignItems="center"> 
-                        <Grid item xs={12} md={4} sx={{ height: '100%' }}>
-                            <h2>Dossiers</h2>
+                        <Grid item xs={5} md={2} sx={{ height: '100%' }}>
+                            <Typography variant="h4">Dossiers</Typography>
                         </Grid>
-                        <Grid container xs={12} md={8} direction="row" alignItems="center" sx={{height: '100%'}}>   
+                        <Grid item xs={7} md={2}>
+                            <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
+                        </Grid>  
+                        <Grid container xs={12} md={8} direction="row" alignItems="end" justifyContent="end" sx={{height: '100%'}}>   
                             <Grid item xs={12} md={5}>
                                 <FormControl fullWidth sx={FormStyle}>
                                     <InputLabel id="demo-simple-select-label">Trier par</InputLabel>
-                                   <Select
+                                    <Select
                                        labelId="demo-simple-select-label"
                                        id="demo-simple-select"
                                        value={SelectChoice}
@@ -229,10 +232,7 @@ export default function Folders(){
                                         fullWidth
                                     />
                                 </Toolbar>   
-                            </Grid>  
-                            <Grid item xs={12} md={2}>
-                                <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={()=>goToModal(0)}>Nouveau</Button>
-                            </Grid>                     
+                            </Grid>                 
                         </Grid>
                     </Grid>
                     <Grid item xs={12} md={12}>

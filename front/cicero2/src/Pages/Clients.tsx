@@ -1,12 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect, useState } from 'react';
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button } from '@mui/material';
+import { Grid, Table, TableBody, TableCell, TableHead, TableRow, TextField, Toolbar, Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Client } from "../Modele/metier/Client";
 import { Case } from "../Modele/metier/Case";
 import { confirmAlert } from 'react-confirm-alert';
 import SideBar from '../Components/SideBar';
-import DAOFactory from "../Modele/dao/factory/DAOFactory";
+import DAOFactory from '../Modele/dao/factory/DAOFactory';
 import Header from '../Components/Header';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,7 +27,7 @@ const searchIcon = {
     marginBottom: "5px",
 };
 const searchInput = {
-    width: "160px",
+    width: "250px",
     margin: "5px",
 };
 const styletable = {
@@ -198,11 +198,14 @@ export default function Clients(){
                 </Grid>
                 <Grid item xs md style={{ margin: "15px" }}>
                     <Grid container xs={12} md={12} direction="row" alignItems="center"> 
-                        <Grid item xs={12} md={4} sx={{ height: '100%' }}>
-                            <h2>Clients</h2>
+                        <Grid item xs={5} md={2} sx={{ height: '100%' }}>
+                            <Typography variant="h4" style={{ marginLeft: "15px" }}> Clients </Typography>
                         </Grid>
-                        <Grid container xs={12} md={8} direction="row" alignItems="center" sx={{height: '100%'}}>    
-                            <Grid item xs={12} md={10}>
+                        <Grid item xs={7} md={2}>
+                            <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px'}} fullWidth onClick={() => goToModal(0)}>Nouveau</Button>
+                        </Grid> 
+                        <Grid container xs={12} md={8} direction="row" justifyContent="end" sx={{height: '100%'}}>    
+                            {/* <Grid item xs={12} md={10}> */}
                                 <Toolbar>
                                     <SearchIcon sx={searchIcon} />
                                     <TextField
@@ -213,10 +216,6 @@ export default function Clients(){
                                         fullWidth
                                     />
                                 </Toolbar>   
-                            </Grid>  
-                            <Grid item xs={12} md={2}>
-                                <Button variant="contained" color="success" sx={{height:'45px', fontSize:'13px', marginBottom:'10px'}} fullWidth onClick={() => goToModal(0)}>Nouveau</Button>
-                            </Grid>                     
                         </Grid>
                     </Grid>
                     <Grid item xs={12} md={12}>
@@ -224,7 +223,7 @@ export default function Clients(){
                             <TableHead style={{ backgroundColor:"#c6e5b3" }}>
                             <TableRow>
                                 <TableCell align="center">Nom</TableCell>
-                                <TableCell align="center">Affaires associées</TableCell>
+                                <TableCell align="center">Dossiers associés</TableCell>
                                 <TableCell align="center">Actions</TableCell>
                             </TableRow>
                             </TableHead>

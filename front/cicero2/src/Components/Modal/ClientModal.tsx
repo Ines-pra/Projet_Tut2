@@ -19,7 +19,6 @@ const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
-  overflowY: 'scroll',
   transform: "translate(-50%, -50%)",
   width: '50%',
   borderRadius: 3,
@@ -31,7 +30,6 @@ const style = {
 };
 
 function ClientModal(openEdit:any) {
-
   const [firstname,setFirstname] = useState('');
   const [lastname,setLastname] = useState(''); 
   const [address,setAddress] = useState(''); 
@@ -116,41 +114,43 @@ function ClientModal(openEdit:any) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
            {openEdit.id === 0 ? 'Ajouter un client'  :  'Edité client'}
           </Typography>
-          <InputLabel sx={{marginTop:1}} id="modal-modal-titleCard">Prénom :</InputLabel>
           <TextField
             id="filled-basic"
-            label="Firstname"
-            variant="filled"
+            label="Prénom"
+            variant="outlined"
+            required
             value={firstname}
             onChange={(e) => setFirstname(e.target.value)}
             fullWidth
+            sx={{marginTop: 3}}
           />
-          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Nom :</InputLabel>
           <TextField
             id="filled-basic"
-            label="Lastname"
-            variant="filled"
+            label="Nom"
+            variant="outlined"
+            required
             value={lastname}
             onChange={(e) => setLastname(e.target.value)}
             fullWidth
+            sx={{marginTop: 3}}
           />
-          <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Adresse :</InputLabel>
           <TextField
             id="filled-basic"
-            label="Address"
-            variant="filled"
+            label="Adresse"
+            variant="outlined"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             fullWidth
+            sx={{marginTop: 3}}
           />
-            <InputLabel sx={{marginTop:2}} id="modal-modal-titleCard">Date de naissance :</InputLabel>
             <TextField
                     id="date"
-                    label="Birth Date"
+                    label="Date de naissance"
                     type="date"
-                    variant="filled"
+                    variant="outlined"
                     defaultValue={birth}
                     fullWidth
+                    sx={{marginTop: 3}}
                     onChange={(e) => setBirth(new Date(e.target.value))}
                     InputLabelProps={{
                     shrink: true,
