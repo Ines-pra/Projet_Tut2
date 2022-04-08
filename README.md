@@ -5,10 +5,10 @@
 </div>
 
 ### Membres du projet
-- **Flavien LAMBERT**
-- **Adel Boukada**
-- **Ines PERRIA**
-- **Julian HENRY** <br> <br>
+- **LAMBERT Flavien**
+- **BOUKADA Adel**
+- **PERRIA Ines**
+- **HENRY Julian** <br> <br>
 
 ## Installation
     
