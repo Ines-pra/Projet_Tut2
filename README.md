@@ -23,7 +23,7 @@
 
 ## Lancement du projet 
 
-- En étant dans le répertoire back, lancer le serveur ``` npm start ```
+- En étant dans le répertoire back, lancez le serveur ``` npm start ```
 - En étant dans le répertoire cicero2, synchronisez le projet  ``` npm run sync ```
 - En étant dans le répertoire cicero2, lancez le web ``` npm start ```
 - En étant dans le répertoire cicero2, lancez electron ``` npm run electron ```
