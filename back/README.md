@@ -1,10 +1,14 @@
-### PROJET CICERO 2 BACK END
+<div align="center">
+
+# Projet Tutoré S6 - Cicero 2 - Back-end :avocado:
+    
+</div>
 
 Choix des technologies:
 -    GraphQL avec Apollo
 -    Sequelize pour communication avec la base de données
 -    MySql/MariaDB pour la base de données
--    PhpMyAdmin pour la gestion de la base de données
+-    PhpMyAdmin pour la gestion de la base de données <br> <br>
 
 ## Information du back-end (pour web et mobile)
 
@@ -18,7 +22,7 @@ Choix des technologies:
         APP_DBUSERNAME=<your_username>
         APP_DBPASS=<your_pass>
     ```
-- La structure de la base de données et un jeu de données se trouve dans le répertoire mySQL à la racine du projet
+- La structure de la base de données et un jeu de données se trouve dans le répertoire mySQL à la racine du projet <br> <br>
 
 #### Retour 
-- https://github.com/Ines-pra/Projet_Tut2/blob/main
+- https://github.com/Ines-pra/Projet_Tut2
