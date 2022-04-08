@@ -8,12 +8,12 @@
 - **Flavien LAMBERT**
 - **Adel Boukada**
 - **Ines PERRIA**
-- **Julian HENRY**
+- **Julian HENRY** <br> <br>
 
 ## Installation
     
 #### Back-end
-- https://github.com/Ines-pra/Projet_Tut2/blob/main/back/README.md
+- https://github.com/Ines-pra/Projet_Tut2/blob/main/back
 
 #### Front-end
 - Placez-vous dans le répertoire cicero2 ``` cd/front/cicero2 ```
@@ -29,13 +29,35 @@
 - En étant dans le répertoire cicero2, lancez electron ``` npm run electron ```
 - En étant dans le répertoire cicero2, lancez ionic ``` npm run ionic ```
 
-## Liens utiles 
+## Bilan 
 
-Trello : <br>
-https://trello.com/b/aFEvsdsN/projet-tutor%C3%A9-2-lpweb
+#### Difficultés rencontrés
 
-Doc de notes : <br>
-https://docs.google.com/document/d/1bw8kXYWGi4jmzJQx-w-n1J6gIsqk_TBZgc3NaR88vFY/edit?usp=sharing
+- Mise en place des builds electron/ionic/web
+- Mise en place de données cohérentes entre local et SQL
+
+#### Ce qui fonctionne
+
+- Création/modification/suppression d'un client
+- Affichage des clients dans un tableau
+- Recherche par clients/dossiers
+- Affichage des détails d'un client
+- Création/modification/suppression d'un dossier
+- Affichage des dossiers dans un tableau
+- Recherche par clients/dossiers
+- Tri des dossiers clôturés/non clôturés
+- Affichage des détails d'un dossier
+- Création d'un évènement dans un dossier
+- Pagination des clients/dossiers
+
+#### Ce qui ne fonctionne pas 
+
+- Récupération des données SQL en local sur l'émulateur android pour ionic
+- Problème de refresh des pages <br> <br>
+
+### Tâches de chaque membre du groupe dans le projet - Trello 
+
+https://trello.com/b/aFEvsdsN/projet-tutor%C3%A9-2-lpweb <br> <br>
 
 ## Technologie utilisées
 
@@ -46,4 +68,7 @@ https://docs.google.com/document/d/1bw8kXYWGi4jmzJQx-w-n1J6gIsqk_TBZgc3NaR88vFY/
 - [Capacitor](https://capacitor.ionicframework.com/)
 - [MySQL](https://www.mysql.com/)
 - [Apollo](https://www.apollographql.com/)
-- [GraphQL](https://graphql.org/)
+- [GraphQL](https://graphql.org/) <br> <br>
+
+Doc de notes : <br>
+https://docs.google.com/document/d/1bw8kXYWGi4jmzJQx-w-n1J6gIsqk_TBZgc3NaR88vFY/edit?usp=sharing
