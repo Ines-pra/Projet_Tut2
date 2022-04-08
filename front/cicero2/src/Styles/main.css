@@ -1,0 +1,15 @@
+.main {
+    width: 100%;
+}
+
+.labelDate{
+    text-align: center;
+}
+
+.link{
+    text-decoration: none;
+}
+
+.overflow {
+    overflow: hidden;
+}
